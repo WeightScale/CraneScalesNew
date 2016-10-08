@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CraneScales.iml" filepath="$PROJECT_DIR$/.idea/modules/CraneScales.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mylibrary/mylibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/mylibrary/mylibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scaleslibrary/scaleslibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/scaleslibrary/scaleslibrary.iml" />
+    </modules>
+  </component>
+</project>

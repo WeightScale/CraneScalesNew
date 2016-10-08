@@ -1,0 +1,40 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.0"
+    defaultConfig {
+        applicationId "com.kostya.cranescale"
+        minSdkVersion 15
+        targetSdkVersion 24
+        versionCode 17
+        //versionName 'CraneScales'
+        versionName 'WeightScales'
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+    }
+}
+
+repositories{
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    provided fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    //compile files('libs/scalesmodule.jar')
+    compile 'com.android.support:appcompat-v7:24.1.1'
+    compile 'com.google.android.gms:play-services-ads:9.4.0'
+    compile 'com.android.support:design:24.1.1'
+    //compile 'com.konst.weightmodule:weightmodule-release@aar'
+    //compile(name: 'scaleslibrary-release', ext: 'aar')
+    compile project(':scaleslibrary')
+}

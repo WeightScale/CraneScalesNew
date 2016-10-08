@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomButtonImage">
+        <item name="android:background">@drawable/image_selector</item>
+        <item name="android:layout_marginLeft">@dimen/corners3</item>
+        <!--<item name="android:layout_marginTop">@dimen/corners</item>-->
+        <item name="android:layout_marginRight">@dimen/corners3</item>
+        <!--<item name="android:layout_marginBottom">@dimen/corners</item>-->
+        <item name="android:clickable">true</item>
+        <item name="android:paddingTop">@dimen/corners</item>
+        <item name="android:paddingBottom">@dimen/corners</item>
+    </style>
+
+    <style name="shadowEffect1">
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">5</item>
+        <item name="android:shadowDy">5</item>
+        <item name="android:shadowRadius">5</item>
+    </style>
+
+    <style name="shadowEffect2">
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">10</item>
+    </style>
+
+    <style name="SpanTextKg" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_large_xx</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+</resources>
