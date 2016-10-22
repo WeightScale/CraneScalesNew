@@ -8,12 +8,14 @@ import android.preference.PreferenceManager;
 public class Settings {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
-
-    public static final String PREFERENCES = "preferences"; //настройки общии для весов
-    public static final String PREF_UPDATE = "pref_update";    //настройки сохраненные при обновлении прошивки
-
-    public static final String KEY_NUMBER_SMS = "number_sms";
-    public static final String KEY_SENT_SERVICE = "sent_service";
+    /** Настройки общии для весов. */
+    public static final String SETTINGS = ScalesView.class.getName() + ".SETTINGS"; //
+    /** ключ адресс bluetooth. */
+    public static final String KEY_ADDRESS = ScalesView.class.getPackage() +".KEY_ADDRESS";
+    /** Ключ значения дискретности веса. */
+    public static final String KEY_DISCRETE = ScalesView.class.getPackage() +".KEY_DISCRETE";
+    /** Ключь флага стабилизации веса. */
+    public static final String KEY_STABLE = ScalesView.class.getPackage() +".KEY_STABLE";
 
     Settings(Context context, String name) {
         load(context.getSharedPreferences(name, Context.MODE_PRIVATE)); //загрузить настройки

@@ -33,7 +33,7 @@ public class SearchDialog extends Dialog implements View.OnClickListener{
         super(context);
         message = text;
         this.callbackScales = callbackScales;
-        settings = new Settings(context, ScalesView.SETTINGS);
+        settings = new Settings(context, Settings.SETTINGS);
         foundDevice = new ArrayList<>();
         broadcastReceiver = new BaseReceiver(getContext());
         broadcastReceiver.register();
@@ -56,8 +56,8 @@ public class SearchDialog extends Dialog implements View.OnClickListener{
         listView = (ListView)findViewById(R.id.listViewDevices);  //список весов
         listView.setOnItemClickListener(onItemClickListener);
 
-        for (int i = 0; settings.contains(ScalesView.KEY_ADDRESS + i); i++) { //заполнение списка
-            foundDevice.add(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(settings.read(ScalesView.KEY_ADDRESS + i, "")));
+        for (int i = 0; settings.contains(Settings.KEY_ADDRESS + i); i++) { //заполнение списка
+            foundDevice.add(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(settings.read(Settings.KEY_ADDRESS + i, "")));
         }
 
         bluetoothAdapter = new BluetoothListAdapter(getContext(), foundDevice);
@@ -87,11 +87,11 @@ public class SearchDialog extends Dialog implements View.OnClickListener{
         }
         broadcastReceiver.unregister();
 
-        for (int i = 0; settings.contains(ScalesView.KEY_ADDRESS + i); i++) { //стереть прошлый список
-            settings.remove(ScalesView.KEY_ADDRESS + i);
+        for (int i = 0; settings.contains(Settings.KEY_ADDRESS + i); i++) { //стереть прошлый список
+            settings.remove(Settings.KEY_ADDRESS + i);
         }
         for (int i = 0; i < foundDevice.size(); i++) { //сохранить новый список
-            settings.write(ScalesView.KEY_ADDRESS + i, ((BluetoothDevice) foundDevice.toArray()[i]).getAddress());
+            settings.write(Settings.KEY_ADDRESS + i, ((BluetoothDevice) foundDevice.toArray()[i]).getAddress());
         }
         super.dismiss();
     }

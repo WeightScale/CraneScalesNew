@@ -16,10 +16,10 @@
         <com.konst.scaleslibrary.ScalesView
                 android:id="@+id/scalesView"
                 android:layout_width="fill_parent"
-                android:layout_height="60sp">
+                android:layout_height="wrap_content">
         </com.konst.scaleslibrary.ScalesView>
 
-        <LinearLayout android:layout_width="fill_parent"
+        <!--<LinearLayout android:layout_width="fill_parent"
                       android:layout_height="wrap_content"
                       android:orientation="vertical"
                       android:background="@color/holo_orange_dark">
@@ -60,9 +60,9 @@
                          android:focusableInTouchMode="false"
                          android:layout_marginBottom="@dimen/padding"
             />
-        </LinearLayout>
+        </LinearLayout>-->
 
-        <LinearLayout
+        <!--<LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/imageViewWait"
                     android:src="@drawable/ic_action_wait_measure"/>
-        </LinearLayout>
+        </LinearLayout>-->
 
         <LinearLayout android:orientation="horizontal"
                       android:layout_width="fill_parent"

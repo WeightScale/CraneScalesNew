@@ -688,9 +688,9 @@ public class ScaleModule extends Module /*implements Serializable*/{
         public void run() {
             while (!interrupted() && !cancel){
                 try{
-                    objectScales.setWeight(getWeightToStepMeasuring(version.updateWeight()));
+                    int temp = version.updateWeight();
                     ResultWeight resultWeight;
-                    if (objectScales.getWeight() == Integer.MIN_VALUE) {
+                    if (temp == Integer.MIN_VALUE) {
                         resultWeight = ResultWeight.WEIGHT_ERROR;
                     } else {
                         if (version.isLimit())
@@ -699,6 +699,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
                             resultWeight = ResultWeight.WEIGHT_NORMAL;
                         }
                     }
+                    objectScales.setWeight(getWeightToStepMeasuring(temp));
                     objectScales.setResultWeight(resultWeight);
                     objectScales.setTenzoSensor(version.getSensor());
 

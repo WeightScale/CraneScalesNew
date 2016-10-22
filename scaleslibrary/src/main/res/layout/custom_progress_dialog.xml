@@ -10,7 +10,8 @@
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:padding="@dimen/stroke">
+            android:padding="@dimen/stroke"
+            android:background="@color/transparent">
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"

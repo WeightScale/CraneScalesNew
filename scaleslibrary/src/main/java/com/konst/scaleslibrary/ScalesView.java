@@ -43,11 +43,9 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     private BaseReceiver baseReceiver;
     private String version;
     private String device;
-    private int discrete = 1;
-    public static final String SETTINGS = ScalesView.class.getName() + "SETTINGS";
     private static final String TAG_FRAGMENT = ScalesView.class.getName() + "TAG_FRAGMENT";
-    private static final String KEY_DISCRETE = ScalesView.class.getPackage() +".KEY_DISCRETE";
-    public static final String KEY_ADDRESS = ScalesView.class.getPackage() +".KEY_ADDRESS";
+
+
 
     /** Создаем новый обьект индикатора весового модуля.
      * @param context the context
@@ -63,12 +61,15 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     public ScalesView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
-        settings = new Settings(context, SETTINGS);
-        discrete = settings.read(KEY_DISCRETE, context.getResources().getInteger(R.integer.default_step_scale));
-        device = settings.read(KEY_ADDRESS, "");
+        settings = new Settings(context, Settings.SETTINGS);
+        device = settings.read(Settings.KEY_ADDRESS, "");
 
         scalesFragment = new ScalesFragment();
         searchFragment = new SearchFragment();
+
+        //fragmentTransaction = ((AppCompatActivity)context).getFragmentManager().beginTransaction();
+        //fragmentTransaction.add(R.id.fragment, scalesFragment, scalesFragment.getClass().getName());
+        //fragmentTransaction.commit();
 
         baseReceiver = new BaseReceiver(context);
         baseReceiver.register();
@@ -106,13 +107,14 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         public void onCallback(Module module) {
             if (module instanceof ScaleModule){
                 scaleModule = (ScaleModule)module;
-                scaleModule.setStepScale(discrete);
+                scaleModule.setStepScale(settings.read(Settings.KEY_DISCRETE, getContext().getResources().getInteger(R.integer.default_step_scale)));
+                scaleModule.stableActionEnable(settings.read(Settings.KEY_STABLE, false));
                 scaleModule.scalesProcessEnable(true);
             }else if (module instanceof BootModule){
                 bootModule = (BootModule)module;
             }
             device = module.getAddressBluetoothDevice();
-            settings.write(KEY_ADDRESS, module.getAddressBluetoothDevice());
+            settings.write(Settings.KEY_ADDRESS, module.getAddressBluetoothDevice());
         }
     };
 
@@ -122,8 +124,16 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     public void setDiscrete(int discrete){
         if (scaleModule != null)
             scaleModule.setStepScale(discrete);
-        this.discrete = discrete;
-        settings.write(KEY_DISCRETE, discrete);
+        settings.write(Settings.KEY_DISCRETE, discrete);
+    }
+
+    /** Устанавливаем флаг определять стабильный вес.
+     * @param stable
+     */
+    public void setStable(boolean stable){
+        if (scaleModule != null)
+            scaleModule.stableActionEnable(stable);
+        settings.write(Settings.KEY_STABLE, stable);
     }
 
     /**
@@ -145,6 +155,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
 
     @Override
     public void detachScales() {
+
         if (scaleModule != null)
             scaleModule.dettach();
     }
@@ -182,11 +193,22 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                         scalesFragment = new ScalesFragment();
                         scalesFragment.loadModule(scaleModule);
                         scalesFragment.setOnInteractionListener(ScalesView.this);
+                        //fragmentTransaction.attach(scalesFragment);
                         fragmentTransaction.replace(R.id.fragment, scalesFragment, scalesFragment.getClass().getName());
                         fragmentTransaction.commit();
                         break;
                     case InterfaceModule.ACTION_ATTACH_START:
-                        if(dialogSearch != null){
+                        String msg = intent.getStringExtra(InterfaceModule.EXTRA_DEVICE_NAME);
+                        if (msg!=null){
+                            Bundle bundle = new Bundle();
+                            bundle.putString(SearchFragment.ARG_MESSAGE, msg);
+                        }
+                        searchFragment = SearchFragment.newInstance(msg);
+                        searchFragment.show(fragmentTransaction, searchFragment.getClass().getName());
+                        //fragmentTransaction.replace(R.id.fragment, searchFragment, searchFragment.getClass().getName());
+                        //fragmentTransaction.commit();
+
+                        /*if(dialogSearch != null){
                             if(dialogSearch.isShowing())
                                 break;
                         }
@@ -199,12 +221,15 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                         dialogSearch.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         String msg = intent.getStringExtra(InterfaceModule.EXTRA_DEVICE_NAME);
                         TextView tv1 = (TextView) dialogSearch.findViewById(R.id.textView1);
-                        tv1.setText(context.getString(R.string.Connecting) + '\n' + msg);
+                        tv1.setText(context.getString(R.string.Connecting) + '\n' + msg);*/
                         break;
                     case InterfaceModule.ACTION_ATTACH_FINISH:
-                        if (dialogSearch.isShowing()) {
+                        //fragmentTransaction.remove(searchFragment);
+                        //fragmentTransaction.commit();
+                        searchFragment.dismiss();
+                        /*if (dialogSearch.isShowing()) {
                             dialogSearch.dismiss();
-                        }
+                        }*/
                         break;
                     case InterfaceModule.ACTION_CONNECT_ERROR:
                         String message = intent.getStringExtra(InterfaceModule.EXTRA_MESSAGE);

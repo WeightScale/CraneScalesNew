@@ -2,7 +2,7 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <!--<solid android:color="#FFF5A8"/>-->
-    <solid android:color="@color/background_item_press"/>
+    <solid android:color="@color/background_light"/>
     <!--<stroke  android:width="@dimen/stroke1"android:color="#ff525252" />-->
-    <corners android:radius="@dimen/corners3"/>
+    <corners android:radius="@dimen/corners"/>
 </shape>

@@ -202,9 +202,12 @@ public class ScalesFragment extends Fragment {
 
                 switch (direction) {
                     case SimpleGestureFilter.SWIPE_RIGHT:
-                    case SimpleGestureFilter.SWIPE_LEFT:
+                    //case SimpleGestureFilter.SWIPE_LEFT:
                         weightViewIsSwipe = true;
                         getActivity().sendBroadcast(new Intent(InterfaceModule.ACTION_WEIGHT_STABLE));
+                        break;
+                    case SimpleGestureFilter.SWIPE_DOWN:
+                        openSearch();
                         break;
                     default:
                 }
@@ -230,13 +233,13 @@ public class ScalesFragment extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_MOVE:
                         touchWeightView = true;
-                        vibrator.vibrate(5);
-                        int progress = (int) (event.getX() / (detectorWeightView.getSwipeMaxDistance() / progressBarStable.getMax()));
-                        progressBarStable.setProgress(progress);
+                        //vibrator.vibrate(5);
+                        //int progress = (int) (event.getX() / (detectorWeightView.getSwipeMaxDistance() / progressBarStable.getMax()));
+                        //progressBarStable.setProgress(progress);
                         break;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL:
-                        progressBarStable.setProgress(0);
+                        //progressBarStable.setProgress(0);
                         touchWeightView = false;
                         break;
                     default:
@@ -244,41 +247,17 @@ public class ScalesFragment extends Fragment {
                 return false;
             }
         });
-        weightTextView.setOnLongClickListener(new View.OnLongClickListener() {
+        /*weightTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 openSearch();
                 return false;
             }
-        });
+        });*/
     }
 
     private void openSearch(){
-
         onInteractionListener.openSearchDialog("Выбор устройства для соединения");
-
-        /*SearchDialog searchDialog = new SearchDialog(getActivity());
-        searchDialog.show();*/
-
-        /** Диалог отображения подключения к весовому модулю. */
-        /*ProgressDialog dialogSearch = null;
-        dialogSearch = new ProgressDialog((AppCompatActivity)getActivity());
-        dialogSearch.setCancelable(true);
-        dialogSearch.setIndeterminate(false);
-        dialogSearch.show();
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_search, null);
-        dialogSearch.setContentView(view);
-        dialogSearch.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        //String msg = intent.getStringExtra(InterfaceModule.EXTRA_DEVICE_NAME);
-        ImageView buttonSearch = (ImageView)dialogSearch.findViewById(R.id.buttonSearchBluetooth);
-        buttonSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                return;
-            }
-        });*/
-        //TextView tv1 = (TextView) dialogSearch.findViewById(R.id.textView1);
-        //tv1.setText(context.getString(R.string.Connecting) + '\n' + msg);
     }
 
     @Override
@@ -397,18 +376,28 @@ public class ScalesFragment extends Fragment {
                         }
                         weightTextView.setText(w, TextView.BufferType.SPANNABLE);
                         textViewTemperature.setText(obj.getTemperature() + "°C");
-                        if (obj.getBattery() > 15) {
-                            textViewBattery.setText(obj.getBattery() + "%");
-                            textViewBattery.setTextColor(Color.WHITE);
-                            textViewBattery.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_action_battery, 0, 0, 0);
+                        textViewBattery.setText(obj.getBattery() + "%");
+                        textViewBattery.setTextColor(Color.WHITE);
+                        if (obj.getBattery() > 90) {
+                            textViewBattery.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_battery_full, 0, 0, 0);
+                        } else if (obj.getBattery() > 80){
+                            textViewBattery.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_battery_90, 0, 0, 0);
+                        } else if (obj.getBattery() > 60){
+                            textViewBattery.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_battery_80, 0, 0, 0);
+                        } else if (obj.getBattery() > 50){
+                            textViewBattery.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_battery_60, 0, 0, 0);
+                        } else if (obj.getBattery() > 30){
+                            textViewBattery.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_battery_50, 0, 0, 0);
+                        } else if (obj.getBattery() > 20){
+                            textViewBattery.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_battery_30, 0, 0, 0);
                         } else if (obj.getBattery() >= 0) {
-                            textViewBattery.setText(obj.getBattery() + "%");
+                            //textViewBattery.setText(obj.getBattery() + "%");
                             textViewBattery.setTextColor(Color.RED);
-                            textViewBattery.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_action_battery_red, 0, 0, 0);
+                            textViewBattery.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_battery_20, 0, 0, 0);
                         }else {
                             textViewBattery.setText("нет данных!!!");
                             textViewBattery.setTextColor(Color.BLUE);
-                            textViewBattery.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_action_battery_red, 0, 0, 0);
+                            textViewBattery.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_battery_20, 0, 0, 0);
                         }
                         //    }
                         break;

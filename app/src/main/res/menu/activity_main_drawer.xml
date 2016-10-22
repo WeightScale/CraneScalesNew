@@ -1,30 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<!--<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:showAsAction="never" android:id="@+id/settings" android:icon="@drawable/ic_menu_settings" android:title="Настройки"></item>
 
-    <group android:checkableBehavior="single">
+    &lt;!&ndash;<group android:checkableBehavior="single">
         <item
-                android:id="@+id/nav_camera"
-                android:title="Import"/>
-        <item
-                android:id="@+id/nav_gallery"
-                android:title="Gallery"/>
+                android:id="@+id/search_scales"
+                android:title="Поиск весов"/>
+
         <item
                 android:id="@+id/nav_slideshow"
                 android:title="Slideshow"/>
         <item
                 android:id="@+id/nav_manage"
                 android:title="Tools"/>
-    </group>
-
-    <item android:title="Communicate">
+    </group>&ndash;&gt;
+</menu>-->
+<!--<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/search_scales" android:title="Поиск весов"/>
+    <item android:id="@+id/nav_slideshow" android:title="Slideshow"/>
+    <item android:id="@+id/nav_manage" android:title="Tools"/>
+    <item android:title=" ">
         <menu>
-            <item
-                    android:id="@+id/nav_share"
-                    android:title="Share"/>
-            <item
-                    android:id="@+id/nav_send"
-                    android:title="Send"/>
+            <item android:id="@+id/settings" android:icon="@drawable/ic_menu_settings" android:title="Настройки"/>
+            <item android:id="@+id/about" android:title="@string/about" android:actionLayout="@layout/about"></item>
         </menu>
     </item>
 
+</menu>-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<group android:id="@+id/menu_top" android:checkableBehavior="single">
+    <item android:id="@+id/search_scales" android:title="Поиск весов"/>
+    <item android:id="@+id/nav_slideshow" android:title="Slideshow"/>
+    <item android:id="@+id/nav_manage" android:title="Tools"/>
+</group>
+<group android:id="@+id/menu_bottom" android:checkableBehavior="none">
+    <item android:id="@+id/settings" android:icon="@drawable/ic_menu_settings" android:title="Настройки"/>
+    <item android:id="@+id/about" android:icon="@drawable/ic_about" android:title="@string/about" android:actionLayout="@layout/about"/>
+</group>
 </menu>

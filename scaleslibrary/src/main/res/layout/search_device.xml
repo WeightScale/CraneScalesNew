@@ -58,13 +58,13 @@
         <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/buttonSearchBluetooth" android:src="@drawable/ic_action_bluetooth"
+                android:id="@+id/buttonSearchBluetooth" android:src="@drawable/ic_bluetooth"
                 android:layout_weight="1"
                 style="@style/CustomButtonImage" android:clickable="true"/>
         <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/buttonBack" android:src="@drawable/ic_action_back" android:layout_weight="1"
+                android:id="@+id/buttonBack" android:src="@drawable/ic_back" android:layout_weight="1"
                 style="@style/CustomButtonImage" android:clickable="true"/>
     </LinearLayout>
 
