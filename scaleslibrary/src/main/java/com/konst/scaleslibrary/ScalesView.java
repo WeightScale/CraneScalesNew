@@ -1,8 +1,6 @@
 package com.konst.scaleslibrary;
 
-import android.app.Dialog;
-import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
+import android.app.*;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -32,20 +30,18 @@ import com.konst.scaleslibrary.module.scale.ScaleModule;
 /** Класс индикатора весового модуля.
  * @author Kostya on 26.09.2016.
  */
-public class ScalesView extends LinearLayout implements ScalesFragment.OnInteractionListener {
+public class ScalesView extends LinearLayout implements ScalesFragment.OnInteractionListener, SearchFragment.OnFragmentInteractionListener {
     /** Настройки для весов. */
     public Settings settings;
     private ScaleModule scaleModule;
     private BootModule bootModule;
     private ScalesFragment scalesFragment;
     private SearchFragment searchFragment;
-    private FragmentTransaction fragmentTransaction;
+    private FragmentManager fragmentManager;
     private BaseReceiver baseReceiver;
     private String version;
     private String device;
     private static final String TAG_FRAGMENT = ScalesView.class.getName() + "TAG_FRAGMENT";
-
-
 
     /** Создаем новый обьект индикатора весового модуля.
      * @param context the context
@@ -64,18 +60,66 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         settings = new Settings(context, Settings.SETTINGS);
         device = settings.read(Settings.KEY_ADDRESS, "");
 
-        scalesFragment = new ScalesFragment();
-        searchFragment = new SearchFragment();
+        fragmentManager = ((AppCompatActivity)getContext()).getFragmentManager();
 
-        //fragmentTransaction = ((AppCompatActivity)context).getFragmentManager().beginTransaction();
-        //fragmentTransaction.add(R.id.fragment, scalesFragment, scalesFragment.getClass().getName());
-        //fragmentTransaction.commit();
+        scalesFragment = ScalesFragment.newInstance(this);
+        searchFragment = SearchFragment.newInstance("", this);
 
         baseReceiver = new BaseReceiver(context);
         baseReceiver.register();
 
         LayoutInflater.from(context).inflate(R.layout.indicator, this);
     }
+
+    @Override
+    public void onLinkBroken() {
+        //fragmentTransaction = ((AppCompatActivity)getContext()).getFragmentManager().beginTransaction();
+        fragmentManager.beginTransaction().remove(scalesFragment).commit();
+        fragmentManager.beginTransaction().remove(searchFragment).commit();
+        //fragmentTransaction.commit();
+        //searchFragment.dismiss();
+        openSearchDialog("Выбор устройства для соединения");
+    }
+
+    /** Процедура обратного вызова {@link ScalesFragment.OnInteractionListener}.
+     * Открыть диалог для поиска весов.
+     * @param msg Текст в поле сообщение формы диалога.
+     */
+    @Override
+    public void openSearchDialog(String msg) {
+        SearchDialog dialog = new SearchDialog(getContext(), msg, new OnCreateScalesListener() {
+            @Override
+            public void onCreate(String device) {
+                Fragment fragment = fragmentManager.findFragmentByTag(scalesFragment.getClass().getName());
+                if (fragment != null) {
+                    fragmentManager.beginTransaction().remove(fragment).commit();
+                }
+                createScalesModule(device);
+            }
+        });
+        dialog.show();
+    }
+
+    /**
+     * Процедура обратного вызова интерфейса {@link ScalesFragment.OnInteractionListener}.
+     * Разрывает соединение с весовым модулем.
+     */
+    @Override
+    public void detachScales() {
+
+        if (scaleModule != null)
+            scaleModule.dettach();
+    }
+
+    /**
+     * Прцедура вызывается при закрытии главной программы.
+     */
+    public void exit(){
+        baseReceiver.unregister();
+        BluetoothAdapter.getDefaultAdapter().disable();
+        while (BluetoothAdapter.getDefaultAdapter().isEnabled());
+    }
+
 
     /** Создаем обьект весовой модуль.
      * @param version Имя версии весового модуля.
@@ -95,7 +139,13 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         }
     }
 
+    /**
+     * Интерфейс обратного вызова.
+     */
     protected interface OnCreateScalesListener{
+        /** Процедура вызывается при создании класса весового модуля.
+         * @param device Адресс bluetooth весового модуля.
+         */
         void onCreate(String device);
     }
 
@@ -136,30 +186,6 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         settings.write(Settings.KEY_STABLE, stable);
     }
 
-    /**
-     * Открыть активность поиска весов.
-     */
-    @Override
-    public void openSearchDialog(String msg) {
-        SearchDialog dialog = new SearchDialog(getContext(), msg, new OnCreateScalesListener() {
-            @Override
-            public void onCreate(String device) {
-                fragmentTransaction = ((AppCompatActivity)getContext()).getFragmentManager().beginTransaction();
-                fragmentTransaction.remove(scalesFragment);
-                fragmentTransaction.commit();
-                createScalesModule(device);
-            }
-        });
-        dialog.show();
-    }
-
-    @Override
-    public void detachScales() {
-
-        if (scaleModule != null)
-            scaleModule.dettach();
-    }
-
     /** Приемник сообщений. */
     private class BaseReceiver extends BroadcastReceiver {
         /** Контекст программы. */
@@ -177,6 +203,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         BaseReceiver(Context context){
             mContext = context;
             intentFilter = new IntentFilter(InterfaceModule.ACTION_LOAD_OK);
+            intentFilter.addAction(InterfaceModule.ACTION_RECONNECT_OK);
             intentFilter.addAction(InterfaceModule.ACTION_ATTACH_START);
             intentFilter.addAction(InterfaceModule.ACTION_ATTACH_FINISH);
             intentFilter.addAction(InterfaceModule.ACTION_CONNECT_ERROR);
@@ -186,16 +213,21 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         public void onReceive(Context context, Intent intent) { //обработчик Bluetooth
             String action = intent.getAction();
             if (action != null) {
-                fragmentTransaction = ((AppCompatActivity)context).getFragmentManager().beginTransaction();
+                //fragmentTransaction = ((AppCompatActivity)context).getFragmentManager().beginTransaction();
                 switch (action) {
                     case InterfaceModule.ACTION_LOAD_OK:
                         //unlockOrientation();
-                        scalesFragment = new ScalesFragment();
+                        scalesFragment = ScalesFragment.newInstance(ScalesView.this);
                         scalesFragment.loadModule(scaleModule);
                         scalesFragment.setOnInteractionListener(ScalesView.this);
                         //fragmentTransaction.attach(scalesFragment);
-                        fragmentTransaction.replace(R.id.fragment, scalesFragment, scalesFragment.getClass().getName());
-                        fragmentTransaction.commit();
+                        fragmentManager.beginTransaction().replace(R.id.fragment, scalesFragment, scalesFragment.getClass().getName()).commit();
+                        //fragmentTransaction.commit();
+                        break;
+                    case InterfaceModule.ACTION_RECONNECT_OK:
+                        scalesFragment.loadModule(scaleModule);
+                        fragmentManager.beginTransaction().show(scalesFragment).commit();
+                        //fragmentTransaction.commit();
                         break;
                     case InterfaceModule.ACTION_ATTACH_START:
                         String msg = intent.getStringExtra(InterfaceModule.EXTRA_DEVICE_NAME);
@@ -203,9 +235,11 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                             Bundle bundle = new Bundle();
                             bundle.putString(SearchFragment.ARG_MESSAGE, msg);
                         }
-                        searchFragment = SearchFragment.newInstance(msg);
-                        searchFragment.show(fragmentTransaction, searchFragment.getClass().getName());
-                        //fragmentTransaction.replace(R.id.fragment, searchFragment, searchFragment.getClass().getName());
+                        searchFragment = SearchFragment.newInstance(msg, ScalesView.this);
+                        searchFragment.setCancelable(false);
+                        //searchFragment.show(fragmentTransaction, searchFragment.getClass().getName());
+                        fragmentManager.beginTransaction().hide(scalesFragment).commit();
+                        fragmentManager.beginTransaction().add(R.id.fragment, searchFragment, searchFragment.getClass().getName()).commit();
                         //fragmentTransaction.commit();
 
                         /*if(dialogSearch != null){
@@ -224,9 +258,10 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                         tv1.setText(context.getString(R.string.Connecting) + '\n' + msg);*/
                         break;
                     case InterfaceModule.ACTION_ATTACH_FINISH:
-                        //fragmentTransaction.remove(searchFragment);
+                        //fragmentTransaction.show(scalesFragment);
+                        fragmentManager.beginTransaction().remove(searchFragment).commit();
                         //fragmentTransaction.commit();
-                        searchFragment.dismiss();
+                        //searchFragment.dismiss();
                         /*if (dialogSearch.isShowing()) {
                             dialogSearch.dismiss();
                         }*/

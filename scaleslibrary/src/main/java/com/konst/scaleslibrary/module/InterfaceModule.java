@@ -8,6 +8,7 @@ public interface InterfaceModule {
     String ACTION_ATTACH_FINISH = "com.konst.module.ACTION_ATTACH_FINISH";
     String ACTION_CONNECT_ERROR = "com.konst.module.ACTION_CONNECT_ERROR";
     String ACTION_LOAD_OK = "com.konst.module.ACTION_LOAD_OK";
+    String ACTION_RECONNECT_OK = "com.konst.module.ACTION_RECONNECT_OK";
     String ACTION_MODULE_ERROR = "com.konst.module.ACTION_MODULE_ERROR";
     String ACTION_TERMINAL_ERROR = "com.konst.module.ACTION_TERMINAL_ERROR";
     String ACTION_SCALES_RESULT = "com.konst.module.ACTION_SCALES_RESULT";

@@ -21,6 +21,7 @@
     <dimen name="height_progress_weight">10dp</dimen>
     <dimen name="image_button_size">65dp</dimen>
     <dimen name="title_size">22dp</dimen>
+    <dimen name="text_search_log">48sp</dimen>
 
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>

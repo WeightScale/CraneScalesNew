@@ -12,12 +12,8 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.os.Vibrator;
-import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -26,10 +22,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.konst.scaleslibrary.module.InterfaceModule;
 import com.konst.scaleslibrary.module.scale.ObjectScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
@@ -68,7 +61,7 @@ public class ScalesFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnInteractionListener onInteractionListener;
+    private static OnInteractionListener onInteractionListener;
 
     public ScalesFragment(){
         // Required empty public constructor
@@ -84,19 +77,13 @@ public class ScalesFragment extends Fragment {
 
     /**
      * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * this fragment using the provided parameters.     *
      * @return A new instance of fragment ScalesFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ScalesFragment newInstance(String param1, String param2) {
+    public static ScalesFragment newInstance(OnInteractionListener listener) {
+        onInteractionListener = listener;
         ScalesFragment fragment = new ScalesFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -180,7 +167,7 @@ public class ScalesFragment extends Fragment {
         super.onDetach();
         baseReceiver.unregister();
         onInteractionListener.detachScales();
-        onInteractionListener = null;
+        //onInteractionListener = null;
     }
 
     private void setupWeightView() {
@@ -274,21 +261,19 @@ public class ScalesFragment extends Fragment {
         ZeroThread(Context context) {
             // Создаём новый поток
             super(getString(R.string.Zeroing));
-            dialog = new ProgressDialog(context);
+            dialog = new ProgressDialog(getActivity());
             dialog.setCancelable(false);
             dialog.setIndeterminate(false);
             dialog.show();
-            dialog.setContentView(R.layout.custom_progress_dialog);
+            dialog.setContentView(R.layout.connect_dialog);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             TextView tv1 = (TextView) dialog.findViewById(R.id.textView1);
             tv1.setText(R.string.Zeroing);
-            //start(); // Запускаем поток
         }
 
         @Override
         public void run() {
             scaleModule.setOffsetScale();
-            //mContext.sendBroadcast(new Intent(mContext, ServiceScales.class).setAction(ServiceScales.ACTION_OFFSET_SCALES));
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
@@ -424,16 +409,9 @@ public class ScalesFragment extends Fragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Интерфейс обратного вызова.
      */
-    public interface OnInteractionListener {
+    protected interface OnInteractionListener {
         void openSearchDialog(String msg);
         void detachScales();
     }

@@ -29,7 +29,7 @@
 
 </menu>-->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-<group android:id="@+id/menu_top" android:checkableBehavior="single">
+<group android:id="@+id/menu_top" android:checkableBehavior="none">
     <item android:id="@+id/search_scales" android:title="Поиск весов"/>
     <item android:id="@+id/nav_slideshow" android:title="Slideshow"/>
     <item android:id="@+id/nav_manage" android:title="Tools"/>

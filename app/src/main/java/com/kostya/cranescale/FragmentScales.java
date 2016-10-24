@@ -404,7 +404,7 @@ public class FragmentScales extends Fragment implements /*View.OnClickListener,*
             dialog.setCancelable(false);
             dialog.setIndeterminate(false);
             dialog.show();
-            dialog.setContentView(R.layout.custom_progress_dialog);
+            dialog.setContentView(R.layout.connect_dialog);
             TextView tv1 = (TextView) dialog.findViewById(R.id.textView1);
             tv1.setText(R.string.Zeroing);
             //start(); // Запускаем поток

@@ -84,7 +84,6 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         customListAdapter.notifyDataSetChanged();
 
         scalesView = (ScalesView)findViewById(R.id.scalesView);
-        //scalesView.setDiscrete(10);
         scalesView.create( globals.getPackageInfo().versionName);
     }
 
@@ -125,6 +124,12 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        scalesView.exit();
     }
 
     class BaseReceiver extends BroadcastReceiver {

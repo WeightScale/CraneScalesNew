@@ -246,7 +246,7 @@ public class FragmentSearch extends Fragment implements View.OnClickListener {
                             dialogSearch.setCancelable(false);
                             dialogSearch.setIndeterminate(false);
                             dialogSearch.show();
-                            dialogSearch.setContentView(R.layout.custom_progress_dialog);
+                            dialogSearch.setContentView(R.layout.connect_dialog);
                             TextView tv1 = (TextView) dialogSearch.findViewById(R.id.textView1);
                             tv1.setText(getString(R.string.Connecting) + '\n' + msg);
                             //setProgressBarIndeterminateVisibility(true);

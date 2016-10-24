@@ -6,7 +6,7 @@
 
     <color name="transparent">#00000000</color>
     <color name="background">#ffb0b0b0</color>
-    <color name="background_light">#ffefefef</color>
+    <color name="background_light">#efefef</color>
     <color name="background_item_list">#ffcccccc</color>
     <color name="background_item_press">#ff9a9a9a</color>
     <color name="background1">#ff898989</color>

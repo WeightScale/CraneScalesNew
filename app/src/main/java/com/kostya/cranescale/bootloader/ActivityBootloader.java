@@ -4,28 +4,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.*;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Message;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.konst.bootloader.AVRProgrammer;
-import com.konst.bootloader.HandlerBootloader;
 import com.konst.module.*;
 import com.konst.module.boot.BootModule;
-import com.konst.module.scale.ObjectScales;
-import com.konst.module.scale.ScaleModule;
 import com.kostya.cranescale.*;
 import com.kostya.cranescale.R;
 import com.kostya.cranescale.services.ServiceScales;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
 
 
 /**
@@ -265,7 +252,7 @@ public class ActivityBootloader extends Activity /*implements View.OnClickListen
                         dialogSearch.setCancelable(true);
                         dialogSearch.setIndeterminate(false);
                         dialogSearch.show();
-                        dialogSearch.setContentView(R.layout.custom_progress_dialog);
+                        dialogSearch.setContentView(R.layout.connect_dialog);
                         String msg = intent.getStringExtra(InterfaceModule.EXTRA_DEVICE_NAME);
                         TextView tv1 = (TextView) dialogSearch.findViewById(R.id.textView1);
                         tv1.setText(getString(R.string.Connecting) + '\n' + msg);

@@ -4,18 +4,19 @@
               android:layout_height="wrap_content"
               android:layout_gravity="center"
               android:orientation="vertical" android:padding="@dimen/stroke"
-              android:background="@color/transparent">
+              android:gravity="center">
 
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:padding="@dimen/stroke"
-            android:background="@color/transparent">
+            android:background="@color/transparent"
+            android:gravity="center">
         <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:background="@drawable/progress_dialog">
             <ProgressBar
                     android:id="@+id/progressBar"
@@ -28,7 +29,26 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/text"
                     android:textSize="@dimen/text_micro" android:layout_marginTop="@dimen/corners2"
-                    android:layout_gravity="center" android:gravity="center"/>
+                    android:layout_gravity="center" android:gravity="center"
+                    />
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/material_deep_teal_500"
+                    android:gravity="center"
+                    >
+
+                <ImageButton
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/buttonBack"
+                        style="@style/CustomButtonImage"
+                        android:src="@drawable/ic_broken_link"
+                        android:visibility="gone"/>
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 

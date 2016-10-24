@@ -3,8 +3,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:visibility="visible"
         android:id="@+id/searchScreen"
         android:background="@color/background_light"
@@ -19,7 +19,7 @@
 
     <ListView
             android:layout_width="fill_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:id="@+id/listViewDevices"
             android:clickable="false"
             android:padding="@dimen/corners" android:divider="@color/background"
@@ -33,14 +33,15 @@
 
     <ScrollView
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/text_search_log"
             android:background="@color/white" android:paddingLeft="1dp"
             >
         <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textLog" android:maxLines="100" android:minLines="3"
-                android:textColor="@android:color/black" android:padding="@dimen/padding"/>
+                android:textColor="@android:color/black" android:padding="@dimen/padding"
+                android:textSize="@dimen/text_micro"/>
     </ScrollView>
 
     <LinearLayout

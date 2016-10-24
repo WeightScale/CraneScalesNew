@@ -16,6 +16,7 @@ import android.util.Log;
 import com.konst.scaleslibrary.module.bluetooth.BluetoothHandler;
 import com.konst.scaleslibrary.module.bluetooth.BluetoothProcessManager;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
+import com.konst.scaleslibrary.module.scale.ObjectScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 import java.io.IOException;
@@ -283,11 +284,11 @@ public abstract class Module implements InterfaceModule{
 
         public RunnableAttach() throws IOException {
             BluetoothSocket tmp;
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
-                    tmp = device.createInsecureRfcommSocketToServiceRecord(uuid);
-                else
-                    tmp = device.createRfcommSocketToServiceRecord(uuid);
-                mmSocket = tmp;
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
+                tmp = device.createInsecureRfcommSocketToServiceRecord(uuid);
+            else
+                tmp = device.createRfcommSocketToServiceRecord(uuid);
+            mmSocket = tmp;
         }
 
         @Override
@@ -338,7 +339,6 @@ public abstract class Module implements InterfaceModule{
             BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
             try { TimeUnit.SECONDS.sleep(2); } catch (InterruptedException e) {}
             try {
-
                 mmSocket.connect();
                 bluetoothProcessManager = new BluetoothProcessManager(mmSocket, bluetoothHandler);
             } catch (IOException connectException) {
@@ -369,8 +369,13 @@ public abstract class Module implements InterfaceModule{
                 case CONNECT:
                     try {
                         if (isVersion()){
-                            isAttach = true;
                             load();
+                            if (!isAttach){
+                                isAttach = true;
+                                mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_LOAD_OK).putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales()));
+                            }else {
+                                mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_RECONNECT_OK).putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales()));
+                            }
                         }else {
                             dettach();
                         }

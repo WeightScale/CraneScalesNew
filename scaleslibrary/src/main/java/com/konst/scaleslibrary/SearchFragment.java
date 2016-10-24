@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 /**
@@ -28,7 +29,7 @@ public class SearchFragment extends DialogFragment {
     // TODO: Rename and change types of parameters
     private String message;
 
-    private OnFragmentInteractionListener mListener;
+    private static OnFragmentInteractionListener mListener;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -40,7 +41,8 @@ public class SearchFragment extends DialogFragment {
      * @return A new instance of fragment SearchFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SearchFragment newInstance(String message) {
+    public static SearchFragment newInstance(String message, OnFragmentInteractionListener listener) {
+        mListener = listener;
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
         args.putString(ARG_MESSAGE, message);
@@ -58,18 +60,27 @@ public class SearchFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.custom_progress_dialog, container, false);
+        View view = inflater.inflate(R.layout.connect_dialog, container, false);
 
         TextView textView = (TextView)view.findViewById(R.id.textView1);
         textView.setText(getActivity().getString(R.string.Connecting) + '\n' + message);
+
+        ImageButton buttonBack = (ImageButton)view.findViewById(R.id.buttonBack);
+        buttonBack.setVisibility(View.VISIBLE);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onButtonPressed();
+            }
+        });
+        //getDialog().setCancelable(false);
         //getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed() {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onLinkBroken();
         }
     }
 
@@ -101,6 +112,7 @@ public class SearchFragment extends DialogFragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        //void onFragmentInteraction(Uri uri);
+        void onLinkBroken();
     }
 }

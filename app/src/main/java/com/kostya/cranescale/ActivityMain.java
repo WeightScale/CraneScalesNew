@@ -1,6 +1,5 @@
 package com.kostya.cranescale;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
@@ -226,7 +225,7 @@ public class ActivityMain extends AppCompatActivity implements NavigationView.On
                         dialogSearch.setIndeterminate(false);
                         dialogSearch.show();
                         //View view = LayoutInflater.from(context).inflate(R.layout.custom_progress_dialog, null);
-                        dialogSearch.setContentView(R.layout.custom_progress_dialog);
+                        dialogSearch.setContentView(R.layout.connect_dialog);
                         dialogSearch.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         String msg = intent.getStringExtra(InterfaceModule.EXTRA_DEVICE_NAME);
                         TextView tv1 = (TextView) dialogSearch.findViewById(R.id.textView1);
