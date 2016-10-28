@@ -4,10 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -26,6 +23,7 @@ import android.widget.*;
 import com.konst.scaleslibrary.module.InterfaceModule;
 import com.konst.scaleslibrary.module.scale.ObjectScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
+import com.konst.scaleslibrary.settings.ActivitySettings;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,7 +33,7 @@ import com.konst.scaleslibrary.module.scale.ScaleModule;
  * Use the {@link ScalesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ScalesFragment extends Fragment {
+public class ScalesFragment extends Fragment implements View.OnClickListener {
     //private Context mContext;
     private ScaleModule scaleModule;
     private SpannableStringBuilder textKg;
@@ -110,12 +108,11 @@ public class ScalesFragment extends Fragment {
         view.findViewById(R.id.imageViewBluetooth).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                //startActivityForResult(new Intent(getActivity(), ActivitySearch.class), REQUEST_SEARCH_SCALE);
-                //scaleModule.dettach();//todo надо сделать так чтобы фрагмент закрывался (менялся на фрагмент прогресс бара поиска)
                 openSearch();
                 return false;
             }
         });
+        view.findViewById(R.id.buttonSettings).setOnClickListener(this);
 
         textViewBattery = (TextView)view.findViewById(R.id.textBattery);
         textViewTemperature = (TextView)view.findViewById(R.id.textTemperature);
@@ -252,6 +249,17 @@ public class ScalesFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+        if (i == R.id.buttonSettings) {
+            startActivity(new Intent(getActivity(), ActivitySettings.class));
+            //openSearch();
+        } else if (i == R.id.imageViewBluetooth) {
+            openSearch();
+        }
+    }
+
     /**
      * Обработка обнуления весов.
      */
@@ -265,7 +273,7 @@ public class ScalesFragment extends Fragment {
             dialog.setCancelable(false);
             dialog.setIndeterminate(false);
             dialog.show();
-            dialog.setContentView(R.layout.connect_dialog);
+            dialog.setContentView(R.layout.zeroing_dialog);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             TextView tv1 = (TextView) dialog.findViewById(R.id.textView1);
             tv1.setText(R.string.Zeroing);

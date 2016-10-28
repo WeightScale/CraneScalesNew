@@ -18,7 +18,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.konst.module.InterfaceModule;
 import com.konst.module.scale.ObjectScales;
-import com.konst.module.scale.ScaleModule;
+import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.kostya.cranescale.services.ServiceScales;
 import com.kostya.cranescale.settings.ActivityPreferences;
 

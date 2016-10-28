@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="WeightScaleDialogFilter">
+        <item name="minFilterADC">0</item>
+        <item name="maxFilterADC">15</item>
+    </style>
+
+    <style name="SettingsTheme" parent="@android:style/Theme.Holo.Dialog.MinWidth">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+        <!--<item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/MyActionBarTabText</item>-->
+        <!--<item name="android:windowTitleStyle">@style/titleTextStyle</item>
+        <item name="android:windowTitleSize">@dimen/title_size</item>-->
+        <item name="numberPickerStyle">@style/NPWidget.Holo.Light.NumberPicker</item>
+        <item name="dialogFilterADCStyle">@style/WeightScaleDialogFilter</item>
+    </style>
+
+</resources>

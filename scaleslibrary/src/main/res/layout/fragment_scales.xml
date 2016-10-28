@@ -1,106 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@color/material_deep_teal_500">
 
     <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            >
-
-        <FrameLayout
+            android:layout_gravity="bottom">
+        <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/layoutIndicator"
+                >
+
+            <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                <ProgressBar
+                        style="@android:style/Widget.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/corners"
+                        android:id="@+id/progressBarStable"
+                        android:focusableInTouchMode="false"
+                        android:progressDrawable="@drawable/progress_stable"
+                        android:layout_marginTop="@dimen/padding"
+                        android:progress="46"
+                        android:layout_gravity="bottom"/>
+
+                <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/linearLayout2"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
+
+                    <TextView
+                            style="@style/shadowEffect2"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/weightTextView"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/text_weight"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:textStyle="italic"
+                            android:singleLine="true"
+                            />
+                </LinearLayout>
+            </FrameLayout>
 
             <ProgressBar
                     style="@android:style/Widget.ProgressBar.Horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/corners"
-                    android:id="@+id/progressBarStable"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/height_progress_weight"
+                    android:id="@+id/progressBarWeight"
+                    android:layout_gravity="left|center_vertical"
+                    android:progressDrawable="@drawable/progress_weight"
                     android:focusableInTouchMode="false"
-                    android:progressDrawable="@drawable/progress_stable"
-                    android:layout_marginTop="@dimen/padding"
-                    android:progress="46"
-                    android:layout_gravity="bottom"/>
+                    android:layout_marginBottom="@dimen/padding"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layoutSub"
+                >
 
             <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/linearLayout2"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_weight="1">
 
                 <TextView
-                        style="@style/shadowEffect2"
-                        android:layout_width="fill_parent"
+                        android:id="@+id/textBattery"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/weightTextView"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text_weight"
-                        android:gravity="center"
-                        android:clickable="true"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textStyle="italic"
-                        android:singleLine="true"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:drawableLeft="@drawable/ic_battery_full"
+                        android:textSize="@dimen/text_small"
+                        android:gravity="left|center"
                         />
+
+                <TextView
+                        android:id="@+id/textTemperature"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:drawableLeft="@drawable/ic_temperature"
+                        android:textSize="@dimen/text_small"
+                        android:layout_weight="1"
+                        android:gravity="left|center"/>
+
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/imageViewBluetooth"
+                        android:src="@drawable/ic_bluetooth"
+                        android:clickable="true"
+                        android:longClickable="true"
+                        />
+
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/imageViewWait"
+                        android:src="@drawable/ic_stable"/>
             </LinearLayout>
-        </FrameLayout>
 
-        <ProgressBar
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/height_progress_weight"
-                android:id="@+id/progressBarWeight"
-                android:layout_gravity="left|center_vertical"
-                android:progressDrawable="@drawable/progress_weight"
-                android:focusableInTouchMode="false"
-                android:layout_marginBottom="@dimen/padding"/>
+            <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonSettings"
+                    android:src="@drawable/ic_properties"
+                    style="@style/CustomButtonSettings"
+                    android:clickable="true"
+                    android:padding="5dp"
+                    android:layout_gravity="right"/>
+        </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/layoutSub">
-
-        <TextView
-                android:id="@+id/textBattery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:drawableLeft="@drawable/ic_battery_full"
-                android:textSize="@dimen/text_small"
-                android:gravity="left|center"/>
-
-        <TextView
-                android:id="@+id/textTemperature"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:drawableLeft="@drawable/ic_temperature"
-                android:textSize="@dimen/text_small"
-                android:layout_weight="1"
-                android:gravity="left|center"/>
-
-        <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageViewBluetooth"
-                android:src="@drawable/ic_bluetooth"
-                android:clickable="true"
-                android:longClickable="true"/>
-
-        <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageViewWait"
-                android:src="@drawable/ic_stable"/>
-    </LinearLayout>
-</LinearLayout>
+</FrameLayout>

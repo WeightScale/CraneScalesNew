@@ -8,7 +8,7 @@ import android.text.Spanned;
 import android.text.style.StyleSpan;
 import android.view.WindowManager;
 import android.widget.TextView;
-import com.konst.module.scale.ScaleModule;
+import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 /*
  * Created by Kostya on 26.04.14.

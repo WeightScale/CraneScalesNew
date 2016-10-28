@@ -5,9 +5,9 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="transparent">#00000000</color>
-    <color name="background">#ffb0b0b0</color>
+    <color name="background">#b0b0b0</color>
     <color name="background_light">#efefef</color>
-    <color name="background_item_list">#ffcccccc</color>
+    <color name="background_item_list">#cccccc</color>
     <color name="background_item_press">#ff9a9a9a</color>
     <color name="background1">#ff898989</color>
     <color name="background2">#ff4e4e4e</color>

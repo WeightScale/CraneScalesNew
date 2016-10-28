@@ -15,7 +15,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.konst.module.scale.ScaleModule;
+import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.kostya.cranescale.ActivityAbout;
 import com.kostya.cranescale.Globals;
 import com.kostya.cranescale.R;

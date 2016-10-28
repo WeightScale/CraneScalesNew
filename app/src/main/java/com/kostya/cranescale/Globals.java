@@ -3,8 +3,8 @@ package com.kostya.cranescale;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import com.konst.module.boot.BootModule;
-import com.konst.module.scale.ScaleModule;
+import com.konst.scaleslibrary.module.boot.BootModule;
+import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 /**
  * @author Kostya

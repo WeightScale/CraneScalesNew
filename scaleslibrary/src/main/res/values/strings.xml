@@ -6,11 +6,34 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="Connecting">Соеденяемся</string>
-    <string name="Zeroing">Обнуление...</string>
+    <string name="Zeroing">Обнуление…</string>
     <string name="bluetooth_off">bluetooth выключен</string>
     <string name="bluetooth_turning_on">bluetooth включается</string>
     <string name="bluetooth_on">bluetooth включен</string>
     <string name="scales_kg">кг</string>
-    <string name="discovery_started">Поиск...</string>
+    <string name="discovery_started">Поиск…</string>
     <string name="device_found">Найдено устройство</string>
+    <string name="Settings">Настройки</string>
+    <string name="Set_values">Установки значений</string>
+    <string name="TEXT_MESSAGES13">Ограничения, лимиты, прочее</string>
+    <string name="TEXT_MESSAGE14">Обновление весов до последней версии</string>
+    <string name="setting_auto_zero">Настройки авто ноль</string>
+    <string name="sum_setting_auto_zero">Настройки авто ноль время, вес …</string>
+    <string name="Auto_zero">Авто ноль</string>
+    <string name="sum_auto_zero">Настройки определения сброса на ноль</string>
+    <string name="Time">Время</string>
+    <string name="sum_time_auto_zero">Время после которого весы автоматически обнуляются, максимальное значение</string>
+    <string name="weight">Вес</string>
+    <string name="sum_weight">Предел авто ноля</string>
+    <string name="Timer_off">Время бездействия:</string>
+    <string name="measuring_step">Шаг взвешивания:</string>
+    <string name="auto_capture">Автозахват:</string>
+    <string name="filter_adc">Фильтр АЦП:</string>
+    <string name="sum_filter_adc">Чем больше число тем точнее, но медленей измерения.</string>
+    <string name="zeroing">Установить Ноль</string>
+    <string name="about">О программе</string>
+    <string name="OK">OK</string>
+    <string name="Close">Close</string>
+    <string name="Update_scale">Обновление весов</string>
+    <string name="KEY_UPDATE">key_update</string>
 </resources>

@@ -15,7 +15,7 @@ import android.preference.PreferenceActivity;
 import android.view.WindowManager;
 import android.widget.Toast;
 import com.konst.module.Commands;
-import com.konst.module.scale.ScaleModule;
+import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.kostya.cranescale.Globals;
 import com.kostya.cranescale.R;
 import com.kostya.cranescale.bootloader.ActivityBootloader;

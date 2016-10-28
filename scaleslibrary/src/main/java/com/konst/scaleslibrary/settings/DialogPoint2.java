@@ -1,14 +1,15 @@
-package com.kostya.cranescale.settings;
+package com.konst.scaleslibrary.settings;
 
+import android.app.Activity;
 import android.content.Context;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.konst.scaleslibrary.R;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
-import com.kostya.cranescale.Globals;
-import com.kostya.cranescale.R;
+
 
 /**
  * @author Kostya
@@ -16,7 +17,7 @@ import com.kostya.cranescale.R;
 public class DialogPoint2 extends DialogPreference /*implements ScaleModule.WeightCallback*/ {
     TextView textViewSensor;
     EditText editTextPoint2;
-    final ScaleModule scaleModule;
+    ScaleModule scaleModule;
     final Context mContext;
 
     public DialogPoint2(Context context, AttributeSet attrs) {
@@ -24,13 +25,13 @@ public class DialogPoint2 extends DialogPreference /*implements ScaleModule.Weig
         mContext = context;
         setPersistent(false);
         setDialogLayoutResource(R.layout.dialog_point2);
-        scaleModule = Globals.getInstance().getScaleModule();
+        //scaleModule = Globals.getInstance().getScaleModule();
         //scaleModule.setWeightCallback(this);
     }
 
     @Override
     protected View onCreateDialogView() {
-        scaleModule.scalesProcessEnable(true);
+        //scaleModule.startMeasuringWeight(this);
         return super.onCreateDialogView();
     }
 
@@ -47,11 +48,9 @@ public class DialogPoint2 extends DialogPreference /*implements ScaleModule.Weig
             // needed when user edits the text field and clicks OK
             setValue(editTextPoint2.getText().toString());
         }
-        scaleModule.scalesProcessEnable(false);
+        scaleModule.scalesProcessEnable(true);
     }
 
-
-    /*@Override
     public void weight(ScaleModule.ResultWeight what, int weight, final int sensor) {
         ((Activity)mContext).runOnUiThread(new Runnable() {
             @Override
@@ -59,7 +58,7 @@ public class DialogPoint2 extends DialogPreference /*implements ScaleModule.Weig
                 textViewSensor.setText("датчик:"+ sensor);
             }
         });
-    }*/
+    }
 
     public void setValue(String value) {
         notifyChanged();

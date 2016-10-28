@@ -34,6 +34,9 @@ import com.konst.module.scale.ObjectScales;
 import com.konst.scaleslibrary.ScalesFragment;
 import com.konst.scaleslibrary.ScalesView;
 import com.konst.scaleslibrary.module.ErrorDeviceException;
+import com.konst.scaleslibrary.module.Module;
+import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
+import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.kostya.cranescale.settings.ActivityPreferences;
 
 import java.util.ArrayList;
@@ -84,7 +87,12 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         customListAdapter.notifyDataSetChanged();
 
         scalesView = (ScalesView)findViewById(R.id.scalesView);
-        scalesView.create( globals.getPackageInfo().versionName);
+        scalesView.create(globals.getPackageInfo().versionName, new InterfaceCallbackScales() {
+            @Override
+            public void onCallback(Module obj) {
+                globals.setScaleModule((ScaleModule)obj);
+            }
+        });
     }
 
     @Override

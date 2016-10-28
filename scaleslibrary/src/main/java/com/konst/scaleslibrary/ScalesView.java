@@ -26,6 +26,7 @@ import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.boot.BootModule;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
+import com.konst.scaleslibrary.settings.ActivitySettings;
 
 /** Класс индикатора весового модуля.
  * @author Kostya on 26.09.2016.
@@ -40,7 +41,8 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     private FragmentManager fragmentManager;
     private BaseReceiver baseReceiver;
     private String version;
-    private String device;
+    private String addressDevice;
+    private InterfaceCallbackScales interfaceCallbackScales;
     private static final String TAG_FRAGMENT = ScalesView.class.getName() + "TAG_FRAGMENT";
 
     /** Создаем новый обьект индикатора весового модуля.
@@ -58,7 +60,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         super(context, attrs);
 
         settings = new Settings(context, Settings.SETTINGS);
-        device = settings.read(Settings.KEY_ADDRESS, "");
+        addressDevice = settings.read(Settings.KEY_ADDRESS, "");
 
         fragmentManager = ((AppCompatActivity)getContext()).getFragmentManager();
 
@@ -69,6 +71,23 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         baseReceiver.register();
 
         LayoutInflater.from(context).inflate(R.layout.indicator, this);
+        ImageButton buttonSearch = (ImageButton)findViewById(R.id.buttonSearch);
+        buttonSearch.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openSearchDialog("Выбор устройства для соединения");
+            }
+        });
+    }
+
+    /**
+     * Интерфейс обратного вызова.
+     */
+    protected interface OnCreateScalesListener{
+        /** Процедура вызывается при создании класса весового модуля.
+         * @param device Адресс bluetooth весового модуля.
+         */
+        void onCreate(String device);
     }
 
     @Override
@@ -120,53 +139,42 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         while (BluetoothAdapter.getDefaultAdapter().isEnabled());
     }
 
-
     /** Создаем обьект весовой модуль.
      * @param version Имя версии весового модуля.
      * @throws ErrorDeviceException Ошибка создания удаленного устройства.
      * @throws Exception            Ошибка создания обьекта.
      */
-    public void create(String version) {
+    public void create(String version, InterfaceCallbackScales listener) {
         this.version = version;
-        createScalesModule(device);
+        interfaceCallbackScales = listener;
+        createScalesModule(addressDevice);
     }
 
     private void createScalesModule(String device){
         try {
-            ScaleModule.create(getContext(), version, device, interfaceCallbackScales);
+            ScaleModule.create(getContext(), version, device, new InterfaceCallbackScales() {
+
+                /** Сообщение о результате соединения.
+                 * @param module Модуль с которым соединились. */
+                @Override
+                public void onCallback(Module module) {
+                    if (module instanceof ScaleModule){
+                        scaleModule = (ScaleModule)module;
+                        scaleModule.setStepScale(settings.read(Settings.KEY_DISCRETE, getContext().getResources().getInteger(R.integer.default_step_scale)));
+                        scaleModule.stableActionEnable(settings.read(Settings.KEY_STABLE, false));
+                        scaleModule.scalesProcessEnable(true);
+                    }else if (module instanceof BootModule){
+                        bootModule = (BootModule)module;
+                    }
+                    addressDevice = module.getAddressBluetoothDevice();
+                    settings.write(Settings.KEY_ADDRESS, module.getAddressBluetoothDevice());
+                    interfaceCallbackScales.onCallback(module);
+                }
+            });
         }catch (Exception | ErrorDeviceException e) {
             openSearchDialog(e.getMessage());
         }
     }
-
-    /**
-     * Интерфейс обратного вызова.
-     */
-    protected interface OnCreateScalesListener{
-        /** Процедура вызывается при создании класса весового модуля.
-         * @param device Адресс bluetooth весового модуля.
-         */
-        void onCreate(String device);
-    }
-
-    private final InterfaceCallbackScales interfaceCallbackScales = new  InterfaceCallbackScales() {
-
-        /** Сообщение о результате соединения.
-         * @param module Модуль с которым соединились. */
-        @Override
-        public void onCallback(Module module) {
-            if (module instanceof ScaleModule){
-                scaleModule = (ScaleModule)module;
-                scaleModule.setStepScale(settings.read(Settings.KEY_DISCRETE, getContext().getResources().getInteger(R.integer.default_step_scale)));
-                scaleModule.stableActionEnable(settings.read(Settings.KEY_STABLE, false));
-                scaleModule.scalesProcessEnable(true);
-            }else if (module instanceof BootModule){
-                bootModule = (BootModule)module;
-            }
-            device = module.getAddressBluetoothDevice();
-            settings.write(Settings.KEY_ADDRESS, module.getAddressBluetoothDevice());
-        }
-    };
 
     /** Устанавливаем необходимую дискретность отображения значения веса.
      * @param discrete Значение дискретности (1/2/5/10/20/50).

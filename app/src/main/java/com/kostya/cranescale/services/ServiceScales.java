@@ -17,11 +17,11 @@ import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
-import com.konst.module.ErrorDeviceException;
-import com.konst.module.Module;
-import com.konst.module.boot.BootModule;
-import com.konst.module.scale.InterfaceCallbackScales;
-import com.konst.module.scale.ScaleModule;
+import com.konst.scaleslibrary.module.ErrorDeviceException;
+import com.konst.scaleslibrary.module.Module;
+import com.konst.scaleslibrary.module.boot.BootModule;
+import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
+import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.kostya.cranescale.ActivityMain;
 import com.kostya.cranescale.Globals;
 import com.kostya.cranescale.Internet;
@@ -31,7 +31,7 @@ public class ServiceScales extends Service {
     private Globals globals;
     Module module;
     private ScaleModule scaleModule;
-    private BootModule  bootModule;
+    private BootModule bootModule;
     private Vibrator vibrator; //вибратор
     private NotificationManager notificationManager;
     private NotificationCompat.Builder builder;
