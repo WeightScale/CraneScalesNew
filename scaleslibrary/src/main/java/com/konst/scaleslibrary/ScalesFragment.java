@@ -23,7 +23,7 @@ import android.widget.*;
 import com.konst.scaleslibrary.module.InterfaceModule;
 import com.konst.scaleslibrary.module.scale.ObjectScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
-import com.konst.scaleslibrary.settings.ActivitySettings;
+import com.konst.scaleslibrary.settings.ActivityProperties;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -253,7 +253,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         int i = view.getId();
         if (i == R.id.buttonSettings) {
-            startActivity(new Intent(getActivity(), ActivitySettings.class));
+            startActivity(new Intent(getActivity(), ActivityProperties.class));
             //openSearch();
         } else if (i == R.id.imageViewBluetooth) {
             openSearch();

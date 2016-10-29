@@ -20,11 +20,11 @@ import java.util.ArrayList;
  * @author Kostya on 04.10.2016.
  */
 public class SearchDialog extends Dialog implements View.OnClickListener{
-    private final BaseReceiver broadcastReceiver;                 //приёмник намерений
-    private final ArrayList<BluetoothDevice> foundDevice;         //чужие устройства
-    private ArrayAdapter<BluetoothDevice> bluetoothAdapter; //адаптер имён
-    private ListView listView;                              //список весов
-    private TextView textViewLog;                           //лог событий
+    private final BaseReceiver broadcastReceiver;                   //приёмник намерений
+    private final ArrayList<BluetoothDevice> foundDevice;           //чужие устройства
+    private ArrayAdapter<BluetoothDevice> bluetoothAdapter;         //адаптер имён
+    private ListView listView;                                      //список весов
+    private TextView textViewLog;                                   //лог событий
     private final Settings settings;
     private final String message;
     private final ScalesView.OnCreateScalesListener callbackScales;
@@ -34,6 +34,7 @@ public class SearchDialog extends Dialog implements View.OnClickListener{
         message = text;
         this.callbackScales = callbackScales;
         settings = new Settings(context, Settings.SETTINGS);
+        //settings = new Settings(context);
         foundDevice = new ArrayList<>();
         broadcastReceiver = new BaseReceiver(getContext());
         broadcastReceiver.register();
@@ -56,8 +57,8 @@ public class SearchDialog extends Dialog implements View.OnClickListener{
         listView = (ListView)findViewById(R.id.listViewDevices);  //список весов
         listView.setOnItemClickListener(onItemClickListener);
 
-        for (int i = 0; settings.contains(Settings.KEY_ADDRESS + i); i++) { //заполнение списка
-            foundDevice.add(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(settings.read(Settings.KEY_ADDRESS + i, "")));
+        for (int i = 0; settings.contains(getContext().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i); i++) { //заполнение списка
+            foundDevice.add(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(settings.read(getContext().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i, "")));
         }
 
         bluetoothAdapter = new BluetoothListAdapter(getContext(), foundDevice);
@@ -87,11 +88,11 @@ public class SearchDialog extends Dialog implements View.OnClickListener{
         }
         broadcastReceiver.unregister();
 
-        for (int i = 0; settings.contains(Settings.KEY_ADDRESS + i); i++) { //стереть прошлый список
-            settings.remove(Settings.KEY_ADDRESS + i);
+        for (int i = 0; settings.contains(getContext().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i); i++) { //стереть прошлый список
+            settings.remove(getContext().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i);
         }
         for (int i = 0; i < foundDevice.size(); i++) { //сохранить новый список
-            settings.write(Settings.KEY_ADDRESS + i, ((BluetoothDevice) foundDevice.toArray()[i]).getAddress());
+            settings.write(getContext().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i, ((BluetoothDevice) foundDevice.toArray()[i]).getAddress());
         }
         super.dismiss();
     }

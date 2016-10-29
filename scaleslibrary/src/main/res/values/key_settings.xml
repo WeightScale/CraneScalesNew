@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="KEY_ADDRESS">com.konst.scaleslibrary.KEY_ADDRESS</string>
+    <string name="KEY_DISCRETE">com.konst.scaleslibrary.KEY_DISCRETE</string>
+    <string name="KEY_TIMER_ZERO">com.konst.scaleslibrary.KEY_TIMER_ZERO</string>
+    <string name="KEY_MAX_ZERO">com.konst.scaleslibrary.KEY_MAX_ZERO</string>
+    <string name="KEY_TIMER">com.konst.scaleslibrary.KEY_TIMER</string>
+    <!--<string name="KEY_STEP">com.konst.scaleslibrary.KEY_STEP</string>-->
+    <!--<string name="KEY_AUTO_CAPTURE">com.konst.scaleslibrary.KEY_AUTO_CAPTURE</string>-->
+    <string name="KEY_FILTER">com.konst.scaleslibrary.KEY_FILTER</string>
+    <string name="KEY_ADMIN">com.konst.scaleslibrary.KEY_ADMIN</string>
+    <string name="KEY_CLOSED">com.konst.scaleslibrary.KEY_CLOSED</string>
+</resources>

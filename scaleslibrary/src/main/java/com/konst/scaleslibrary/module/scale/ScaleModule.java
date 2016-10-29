@@ -734,9 +734,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
          * @param weight Вес для преобразования.
          * @return Преобразованый вес. */
         private int getWeightToStepMeasuring(int weight) {
-            int i = weight / getStepScale();
-            i*=getStepScale();
-            return i;
+            return (weight / stepScale) * stepScale;
             //return weight / globals.getStepMeasuring() * globals.getStepMeasuring();
         }
 

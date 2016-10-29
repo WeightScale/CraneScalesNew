@@ -162,7 +162,7 @@ public class ServiceScales extends Service {
             ServiceScales.this.module = module;
             if (module instanceof ScaleModule){
                 scaleModule = (ScaleModule)module;
-                scaleModule.setStepScale(globals.preferencesScale.read(getString(R.string.KEY_STEP), getResources().getInteger(R.integer.default_step_scale)));
+                //scaleModule.setStepScale(globals.preferencesScale.read(getString(R.string.KEY_STEP), getResources().getInteger(R.integer.default_step_scale)));
                 scaleModule.scalesProcessEnable(true);
                 globals.setScaleModule(scaleModule);
             }else if (module instanceof BootModule){

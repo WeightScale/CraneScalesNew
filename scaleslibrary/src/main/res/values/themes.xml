@@ -6,7 +6,7 @@
         <item name="maxFilterADC">15</item>
     </style>
 
-    <style name="SettingsTheme" parent="@android:style/Theme.Holo.Dialog.MinWidth">
+    <style name="SettingsTheme" parent="@android:style/Theme.Holo.Dialog.NoActionBar.MinWidth">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>

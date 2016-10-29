@@ -103,7 +103,7 @@ public class Globals {
 
         preferencesScale = new Preferences(context.getApplicationContext());//загрузить настройки
 
-        stepMeasuring = preferencesScale.read(context.getString(R.string.KEY_STEP), context.getResources().getInteger(R.integer.default_step_scale));
+        //stepMeasuring = preferencesScale.read(context.getString(R.string.KEY_STEP), context.getResources().getInteger(R.integer.default_step_scale));
         autoCapture = preferencesScale.read(context.getString(R.string.KEY_AUTO_CAPTURE), context.getResources().getInteger(R.integer.default_max_auto_capture));
         //scaleModule.setTimerNull(Preferences.read(getString(R.string.KEY_TIMER_NULL), default_max_time_auto_null));
         //scaleModule.setWeightError(Preferences.read(getString(R.string.KEY_MAX_NULL), default_limit_auto_null));

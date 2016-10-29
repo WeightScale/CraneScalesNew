@@ -154,7 +154,7 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
                 });
             }
         },
-        STEP(R.string.KEY_STEP){
+        /*STEP(R.string.KEY_STEP){
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
@@ -176,7 +176,7 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
                     }
                 });
             }
-        },
+        },*/
         AUTO_CAPTURE(R.string.KEY_AUTO_CAPTURE){
             @Override
             void setup(Preference name)throws Exception {

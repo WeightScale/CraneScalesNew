@@ -6,7 +6,7 @@
             android:allowBackup="true"
             android:label="@string/app_name"
             android:supportsRtl="true">
-        <activity android:name=".settings.ActivitySettings"
+        <activity android:name=".settings.ActivityProperties"
                 android:theme="@style/SettingsTheme">
         </activity>
     </application>

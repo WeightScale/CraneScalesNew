@@ -26,12 +26,12 @@ import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.boot.BootModule;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
-import com.konst.scaleslibrary.settings.ActivitySettings;
 
 /** Класс индикатора весового модуля.
  * @author Kostya on 26.09.2016.
  */
 public class ScalesView extends LinearLayout implements ScalesFragment.OnInteractionListener, SearchFragment.OnFragmentInteractionListener {
+    private static ScalesView instance;
     /** Настройки для весов. */
     public Settings settings;
     private ScaleModule scaleModule;
@@ -59,8 +59,11 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     public ScalesView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
+        instance = this;
+
         settings = new Settings(context, Settings.SETTINGS);
-        addressDevice = settings.read(Settings.KEY_ADDRESS, "");
+        //settings = new Settings(context);
+        addressDevice = settings.read(Settings.KEY.KEY_ADDRESS, "");
 
         fragmentManager = ((AppCompatActivity)getContext()).getFragmentManager();
 
@@ -78,6 +81,10 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                 openSearchDialog("Выбор устройства для соединения");
             }
         });
+    }
+
+    public static ScalesView getInstance(){
+        return instance;
     }
 
     /**
@@ -130,6 +137,11 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
             scaleModule.dettach();
     }
 
+
+    public ScaleModule getScaleModule() {
+        return scaleModule;
+    }
+
     /**
      * Прцедура вызывается при закрытии главной программы.
      */
@@ -160,14 +172,14 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                 public void onCallback(Module module) {
                     if (module instanceof ScaleModule){
                         scaleModule = (ScaleModule)module;
-                        scaleModule.setStepScale(settings.read(Settings.KEY_DISCRETE, getContext().getResources().getInteger(R.integer.default_step_scale)));
+                        scaleModule.setStepScale(settings.read(Settings.KEY.KEY_DISCRETE, getContext().getResources().getInteger(R.integer.default_step_scale)));
                         scaleModule.stableActionEnable(settings.read(Settings.KEY_STABLE, false));
                         scaleModule.scalesProcessEnable(true);
                     }else if (module instanceof BootModule){
                         bootModule = (BootModule)module;
                     }
                     addressDevice = module.getAddressBluetoothDevice();
-                    settings.write(Settings.KEY_ADDRESS, module.getAddressBluetoothDevice());
+                    settings.write(Settings.KEY.KEY_ADDRESS, module.getAddressBluetoothDevice());
                     interfaceCallbackScales.onCallback(module);
                 }
             });
@@ -182,7 +194,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     public void setDiscrete(int discrete){
         if (scaleModule != null)
             scaleModule.setStepScale(discrete);
-        settings.write(Settings.KEY_DISCRETE, discrete);
+        settings.write(Settings.KEY.KEY_DISCRETE, discrete);
     }
 
     /** Устанавливаем флаг определять стабильный вес.
