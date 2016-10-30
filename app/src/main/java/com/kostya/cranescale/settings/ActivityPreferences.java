@@ -112,7 +112,7 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
-                name.setTitle(context.getString(R.string.Time) + ' ' + scaleModule.getTimerNull() + ' ' + context.getString(R.string.second));
+                name.setTitle(context.getString(R.string.Time) + ' ' + scaleModule.getTimerZero() + ' ' + context.getString(R.string.second));
                 name.setSummary(context.getString(R.string.sum_time_auto_zero) + ' ' + context.getResources().getInteger(R.integer.default_max_time_auto_null) + ' ' + context.getString(R.string.second));
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
@@ -122,10 +122,10 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
                             return false;
                         }
 
-                        scaleModule.setTimerNull(Integer.valueOf(o.toString()));
-                        preference.setTitle(context.getString(R.string.Time) + ' ' + scaleModule.getTimerNull() + ' ' + context.getString(R.string.second));
+                        scaleModule.setTimerZero(Integer.valueOf(o.toString()));
+                        preference.setTitle(context.getString(R.string.Time) + ' ' + scaleModule.getTimerZero() + ' ' + context.getString(R.string.second));
                         //preference.getEditor().putInt(preference.getKey(), scaleModule.getTimerNull());
-                        Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + scaleModule.getTimerNull() + ' ' + context.getString(R.string.second), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + scaleModule.getTimerZero() + ' ' + context.getString(R.string.second), Toast.LENGTH_SHORT).show();
                         return true;
                     }
                 });

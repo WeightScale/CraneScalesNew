@@ -5,9 +5,13 @@
     <string name="KEY_TIMER_ZERO">com.konst.scaleslibrary.KEY_TIMER_ZERO</string>
     <string name="KEY_MAX_ZERO">com.konst.scaleslibrary.KEY_MAX_ZERO</string>
     <string name="KEY_TIMER">com.konst.scaleslibrary.KEY_TIMER</string>
-    <!--<string name="KEY_STEP">com.konst.scaleslibrary.KEY_STEP</string>-->
-    <!--<string name="KEY_AUTO_CAPTURE">com.konst.scaleslibrary.KEY_AUTO_CAPTURE</string>-->
+    <string name="KEY_STABLE">com.konst.scaleslibrary.KEY_STABLE</string>
+    <string name="KEY_SERVICE_COD">com.konst.scaleslibrary.KEY_SERVICE_COD</string>
     <string name="KEY_FILTER">com.konst.scaleslibrary.KEY_FILTER</string>
     <string name="KEY_ADMIN">com.konst.scaleslibrary.KEY_ADMIN</string>
     <string name="KEY_CLOSED">com.konst.scaleslibrary.KEY_CLOSED</string>
+    <string name="KEY_SEAL">com.konst.scaleslibrary.KEY_SEAL</string>
+    <string name="KEY_POINT1">com.konst.scaleslibrary.KEY_POINT1</string>
+    <string name="KEY_POINT2">com.konst.scaleslibrary.KEY_POINT2</string>
+    <string name="KEY_WEIGHT_MAX">com.konst.scaleslibrary.KEY_WEIGHT_MAX</string>
 </resources>

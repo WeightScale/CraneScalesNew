@@ -27,6 +27,9 @@ import com.konst.scaleslibrary.module.boot.BootModule;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 
+import java.util.Map;
+import java.util.Set;
+
 /** Класс индикатора весового модуля.
  * @author Kostya on 26.09.2016.
  */
@@ -172,8 +175,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                 public void onCallback(Module module) {
                     if (module instanceof ScaleModule){
                         scaleModule = (ScaleModule)module;
-                        scaleModule.setStepScale(settings.read(Settings.KEY.KEY_DISCRETE, getContext().getResources().getInteger(R.integer.default_step_scale)));
-                        scaleModule.stableActionEnable(settings.read(Settings.KEY_STABLE, false));
+                        updateSettings(settings);
                         scaleModule.scalesProcessEnable(true);
                     }else if (module instanceof BootModule){
                         bootModule = (BootModule)module;
@@ -203,7 +205,37 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     public void setStable(boolean stable){
         if (scaleModule != null)
             scaleModule.stableActionEnable(stable);
-        settings.write(Settings.KEY_STABLE, stable);
+        settings.write(Settings.KEY.KEY_STABLE, stable);
+    }
+
+    public void updateSettings(Settings settings){
+
+        for (Settings.KEY key : Settings.KEY.values()){
+            switch (key){
+                case KEY_DISCRETE:
+                    scaleModule.setStepScale(settings.read(key, 5));
+                break;
+                case KEY_STABLE:
+                    scaleModule.stableActionEnable(settings.read(key, false));
+                break;
+                case KEY_TIMER_ZERO:
+                    scaleModule.setTimerZero(settings.read(key, 120));
+                break;
+                case KEY_MAX_ZERO:
+                    scaleModule.setTimerZero(settings.read(key, 50));
+                break;
+                default:
+            }
+        }
+/*
+        if (settings != null){
+            Map<String,?> map = settings.getSharedPreferences().getAll();
+            for (Map.Entry<String, ?> entry : map.entrySet()) {
+                if (getContext().getString(R.string.KEY_DISCRETE).equals(entry.getKey())){
+
+                }
+            }
+        }*/
     }
 
     /** Приемник сообщений. */
@@ -233,21 +265,17 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         public void onReceive(Context context, Intent intent) { //обработчик Bluetooth
             String action = intent.getAction();
             if (action != null) {
-                //fragmentTransaction = ((AppCompatActivity)context).getFragmentManager().beginTransaction();
                 switch (action) {
                     case InterfaceModule.ACTION_LOAD_OK:
                         //unlockOrientation();
                         scalesFragment = ScalesFragment.newInstance(ScalesView.this);
                         scalesFragment.loadModule(scaleModule);
                         scalesFragment.setOnInteractionListener(ScalesView.this);
-                        //fragmentTransaction.attach(scalesFragment);
                         fragmentManager.beginTransaction().replace(R.id.fragment, scalesFragment, scalesFragment.getClass().getName()).commit();
-                        //fragmentTransaction.commit();
                         break;
                     case InterfaceModule.ACTION_RECONNECT_OK:
                         scalesFragment.loadModule(scaleModule);
                         fragmentManager.beginTransaction().show(scalesFragment).commit();
-                        //fragmentTransaction.commit();
                         break;
                     case InterfaceModule.ACTION_ATTACH_START:
                         String msg = intent.getStringExtra(InterfaceModule.EXTRA_DEVICE_NAME);
@@ -257,34 +285,11 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                         }
                         searchFragment = SearchFragment.newInstance(msg, ScalesView.this);
                         searchFragment.setCancelable(false);
-                        //searchFragment.show(fragmentTransaction, searchFragment.getClass().getName());
                         fragmentManager.beginTransaction().hide(scalesFragment).commit();
                         fragmentManager.beginTransaction().add(R.id.fragment, searchFragment, searchFragment.getClass().getName()).commit();
-                        //fragmentTransaction.commit();
-
-                        /*if(dialogSearch != null){
-                            if(dialogSearch.isShowing())
-                                break;
-                        }
-                        dialogSearch = new ProgressDialog((AppCompatActivity)context);
-                        dialogSearch.setCancelable(true);
-                        dialogSearch.setIndeterminate(false);
-                        dialogSearch.show();
-                        View view = LayoutInflater.from(context).inflate(R.layout.custom_progress_dialog, null);
-                        dialogSearch.setContentView(view);
-                        dialogSearch.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                        String msg = intent.getStringExtra(InterfaceModule.EXTRA_DEVICE_NAME);
-                        TextView tv1 = (TextView) dialogSearch.findViewById(R.id.textView1);
-                        tv1.setText(context.getString(R.string.Connecting) + '\n' + msg);*/
                         break;
                     case InterfaceModule.ACTION_ATTACH_FINISH:
-                        //fragmentTransaction.show(scalesFragment);
                         fragmentManager.beginTransaction().remove(searchFragment).commit();
-                        //fragmentTransaction.commit();
-                        //searchFragment.dismiss();
-                        /*if (dialogSearch.isShowing()) {
-                            dialogSearch.dismiss();
-                        }*/
                         break;
                     case InterfaceModule.ACTION_CONNECT_ERROR:
                         String message = intent.getStringExtra(InterfaceModule.EXTRA_MESSAGE);

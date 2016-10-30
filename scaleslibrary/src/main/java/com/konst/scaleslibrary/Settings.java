@@ -17,13 +17,16 @@ public class Settings {
     /** Ключ значения дискретности веса. */
     /*public static final String KEY_DISCRETE = ScalesView.class.getPackage() +".KEY_DISCRETE";*/
     /** Ключь флага стабилизации веса. */
-    public static final String KEY_STABLE = ScalesView.class.getPackage() +".KEY_STABLE";
+    /*public static final String KEY_STABLE = ScalesView.class.getPackage() +".KEY_STABLE";*/
 
     enum KEY{
         /** ключ адресс bluetooth. */
         KEY_ADDRESS(R.string.KEY_ADDRESS),
         /** Ключ значения дискретности веса. */
-        KEY_DISCRETE(R.string.KEY_DISCRETE);
+        KEY_DISCRETE(R.string.KEY_DISCRETE),
+        KEY_STABLE(R.string.KEY_STABLE),
+        KEY_TIMER_ZERO(R.string.KEY_TIMER_ZERO),
+        KEY_MAX_ZERO(R.string.KEY_MAX_ZERO);;
         private final int resId;
         KEY(int key){
             resId = key;
@@ -50,38 +53,40 @@ public class Settings {
     }
 
     public void write(String key, String value) {
-        editor.putString(key, value);
-        editor.commit();
+        editor.putString(key, value).apply();
     }
 
     public void write(KEY key, String value) {
-        editor.putString(mContext.getString(key.getResId()), value);
-        editor.commit();
+        editor.putString(mContext.getString(key.getResId()), value).apply();
+    }
+
+    public void write(KEY key, boolean value) {
+        editor.putBoolean(mContext.getString(key.getResId()), value).apply();
     }
 
     public void write(KEY key, int value) {
-        editor.putInt(mContext.getString(key.getResId()), value);
-        editor.commit();
+        editor.putInt(mContext.getString(key.getResId()), value).apply();
     }
 
     public void write(String key, int value) {
-        sharedPreferences.edit().putInt(key, value).apply();
-        //sharedPreferences.edit().commit();
+        editor.putInt(key, value).apply();
     }
 
     public void write(String key, float value) {
-        editor.putFloat(key, value);
-        editor.commit();
+        editor.putFloat(key, value).apply();
     }
 
     public void write(String key, boolean value) {
-        editor.putBoolean(key, value);
-        editor.commit();
+        editor.putBoolean(key, value).apply();
     }
 
     public String read(KEY key, String def) {
-
         return sharedPreferences.getString(mContext.getString(key.getResId()), def);
+    }
+
+    public boolean read(KEY key, boolean def) {
+
+        return sharedPreferences.getBoolean(mContext.getString(key.getResId()), def);
     }
 
     public String read(String key, String def) {
@@ -115,7 +120,7 @@ public class Settings {
         editor.commit();
     }
 
-    /*public void preferenceChangeListener(Preference.OnPreferenceClickListener listener){
-        sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
-    }*/
+    public SharedPreferences getSharedPreferences() {
+        return sharedPreferences;
+    }
 }

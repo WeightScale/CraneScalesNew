@@ -3,11 +3,11 @@ package com.konst.scaleslibrary.settings;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.widget.EditText;
 import com.konst.scaleslibrary.R;
+import com.konst.scaleslibrary.ScalesView;
 
 import java.util.List;
 
@@ -26,14 +26,11 @@ public class ActivityProperties extends PreferenceActivity {
     public void onHeaderClick(Header header, int position) {
         if (header.id == R.id.settingsHeaderAdmin) {
             startDialog(header);
-            //startPreferencePanel(FragmentSettingsAdmin.class.getName(), header.fragmentArguments, header.titleRes, header.title, null, 0);
         }else if (header.id == R.id.settingsHeader){
-            //startPreferenceFragment(new FragmentSettings(), true);
             startPreferencePanel(FragmentSettings.class.getName(), header.fragmentArguments, header.titleRes, header.title, null, 0);
         }else if (header.id == R.id.closedHeader){
             finish();
         }
-        //this.startPreferencePanel(FragmentSettingsAdmin.class.getName(), header.fragmentArguments, header.titleRes, header.title, null, 0);
     }
 
     @Override
@@ -60,12 +57,10 @@ public class ActivityProperties extends PreferenceActivity {
                         try{
                             if ("343434".equals(string))
                                 key = true;
-                                    /*else if (string.equals(scaleModule.getModuleServiceCod()))
-                                        key = true;*/
+                            else if (string.equals(ScalesView.getInstance().getScaleModule().getModuleServiceCod()))
+                                key = true;
                             if (key){
                                 startPreferencePanel(FragmentSettingsAdmin.class.getName(), header.fragmentArguments, header.titleRes, header.title, null, 0);
-                                //startPreferenceFragment(new FragmentSettingsAdmin(), false);
-                                return;
                             }
                         }catch (Exception e){}
                     }

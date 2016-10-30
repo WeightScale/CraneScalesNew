@@ -105,13 +105,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
         //weightTextView.setShadowLayer(10, 0, 0,   getResources().getColor(R.color.text));
 
         imageViewWait = (ImageView)view.findViewById(R.id.imageViewWait);
-        view.findViewById(R.id.imageViewBluetooth).setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                openSearch();
-                return false;
-            }
-        });
+
         view.findViewById(R.id.buttonSettings).setOnClickListener(this);
 
         textViewBattery = (TextView)view.findViewById(R.id.textBattery);
@@ -254,9 +248,6 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
         int i = view.getId();
         if (i == R.id.buttonSettings) {
             startActivity(new Intent(getActivity(), ActivityProperties.class));
-            //openSearch();
-        } else if (i == R.id.imageViewBluetooth) {
-            openSearch();
         }
     }
 

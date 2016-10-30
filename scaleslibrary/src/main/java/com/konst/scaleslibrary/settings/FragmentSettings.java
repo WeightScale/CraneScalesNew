@@ -3,9 +3,8 @@ package com.konst.scaleslibrary.settings;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.app.ProgressDialog;
+import android.content.*;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -16,25 +15,18 @@ import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.konst.scaleslibrary.R;
-import com.konst.scaleslibrary.ScalesView;
-import com.konst.scaleslibrary.Settings;
+import com.konst.scaleslibrary.*;
+import com.konst.scaleslibrary.module.InterfaceModule;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 import java.util.List;
 
-public class FragmentSettings extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+public class FragmentSettings extends PreferenceFragment{
     private static Settings settings;
     public static ScalesView scalesView;
 
-    @Override
-    public boolean onPreferenceClick(Preference preference) {
-
-        return false;
-    }
-
     enum EnumSettings{
-        TIMER_NULL(R.string.KEY_TIMER_ZERO){
+        TIMER_ZERO(R.string.KEY_TIMER_ZERO){
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
@@ -47,18 +39,15 @@ public class FragmentSettings extends PreferenceFragment implements Preference.O
                             Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
                             return false;
                         }
-
-                        //scalesView.getScaleModule().setTimerNull(Integer.valueOf(o.toString()));
                         preference.setTitle(context.getString(R.string.Time) + ' ' + o + ' ' + context.getString(R.string.second));
                         settings.write(preference.getKey(), Integer.valueOf(o.toString()));
-                        //preference.getEditor().putInt(preference.getKey(), scaleModule.getTimerNull());
                         Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o + ' ' + context.getString(R.string.second), Toast.LENGTH_SHORT).show();
                         return true;
                     }
                 });
             }
         },
-        MAX_NULL(R.string.KEY_MAX_ZERO){
+        MAX_ZERO(R.string.KEY_MAX_ZERO){
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
@@ -71,11 +60,8 @@ public class FragmentSettings extends PreferenceFragment implements Preference.O
                             Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
                             return false;
                         }
-
-                        //scalesView.getScaleModule().setWeightError(Integer.valueOf(o.toString()));
                         preference.setTitle(context.getString(R.string.sum_weight) + ' ' + o + ' ' + context.getString(R.string.scales_kg));
                         settings.write(preference.getKey(), Integer.valueOf(o.toString()));
-                        //preference.getEditor().putInt(preference.getKey(), scaleModule.getWeightError());
                         Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o + ' ' + context.getString(R.string.scales_kg), Toast.LENGTH_SHORT).show();
                         return true;
                     }
@@ -99,17 +85,16 @@ public class FragmentSettings extends PreferenceFragment implements Preference.O
                             Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
                             return false;
                         }
-                        /*try {
+                        try {
                             if (scalesView.getScaleModule().setModuleTimeOff(Integer.valueOf(o.toString()))) {
-                                scalesView.getScaleModule().setTimeOff(Integer.valueOf(o.toString()));
+                                settings.write(preference.getKey(), Integer.valueOf(o.toString()));
+                                preference.setTitle(context.getString(R.string.Timer_off) + ' ' + o + ' ' + context.getString(R.string.minute));
+                                Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o + ' ' + context.getString(R.string.minute), Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
                             Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
                             return false;
-                        }*/
-                        preference.setTitle(context.getString(R.string.Timer_off) + ' ' + o + ' ' + context.getString(R.string.minute));
-                        settings.write(preference.getKey(), Integer.valueOf(o.toString()));
-                        Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o + ' ' + context.getString(R.string.minute), Toast.LENGTH_SHORT).show();
+                        }
                         return true;
                     }
                 });
@@ -128,8 +113,6 @@ public class FragmentSettings extends PreferenceFragment implements Preference.O
                             Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
                             return false;
                         }
-
-                        //scalesView.setDiscrete(Integer.valueOf(o.toString()));
                         preference.setTitle(context.getString(R.string.measuring_step) + ' ' + o + ' ' + context.getString(R.string.scales_kg));
                         settings.write(preference.getKey(), Integer.valueOf(o.toString()));
                         Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o + ' ' + context.getString(R.string.scales_kg), Toast.LENGTH_SHORT).show();
@@ -153,18 +136,29 @@ public class FragmentSettings extends PreferenceFragment implements Preference.O
                             Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
                             return false;
                         }
-                        /*try {
-                            if (scaleModule.setModuleFilterADC(Integer.valueOf(o.toString()))) {
-                                scaleModule.setFilterADC(Integer.valueOf(o.toString()));
-
+                        try {
+                            if (scalesView.getScaleModule().setModuleFilterADC(Integer.valueOf(o.toString()))) {
+                                settings.write(preference.getKey(), Integer.valueOf(o.toString()));
+                                preference.setTitle(context.getString(R.string.filter_adc) + ' ' + o);
+                                Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o.toString(), Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
-                            Toast.makeText(context, R.string.preferences_no, Toast.LENGTH_SHORT).show();
-                        }*/
-                        settings.write(preference.getKey(), Integer.valueOf(o.toString()));
-                        preference.setTitle(context.getString(R.string.filter_adc) + ' ' + o);
-                        Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
                         return true;
+                    }
+                });
+            }
+        },
+        CLOSED(R.string.KEY_CLOSED){
+            @Override
+            void setup(Preference name) throws Exception {
+                name.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        ((Activity)preference.getContext()).onBackPressed();
+                        return false;
                     }
                 });
             }
@@ -180,11 +174,6 @@ public class FragmentSettings extends PreferenceFragment implements Preference.O
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.fragment_settings);
@@ -192,6 +181,12 @@ public class FragmentSettings extends PreferenceFragment implements Preference.O
         settings = new Settings(getActivity(), Settings.SETTINGS);
         scalesView = ScalesView.getInstance();
         initPreferences();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        scalesView.updateSettings(settings);
     }
 
     public void initPreferences(){

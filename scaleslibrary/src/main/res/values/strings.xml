@@ -48,4 +48,5 @@
     <string name="Range_between">"Диапазон между "</string>
     <string name="and">" и "</string>
     <string name="The_range_is_from_0_to">"Диапазон от 0 до "</string>
+    <string name="Max_weight">"Максимальный вес: "</string>
 </resources>

@@ -107,15 +107,6 @@
                 <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/imageViewBluetooth"
-                        android:src="@drawable/ic_bluetooth"
-                        android:clickable="true"
-                        android:longClickable="true"
-                        />
-
-                <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:id="@+id/imageViewWait"
                         android:src="@drawable/ic_stable"/>
             </LinearLayout>

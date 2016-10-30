@@ -40,7 +40,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
     /** Счётчик автообнуления. */
     private int autoNull;
     /** Время срабатывания авто ноля. */
-    private int timerNull;
+    private int timerZero;
     /** Номер версии программы. */
     private int numVersion;
     /** Имя версии программы */
@@ -316,15 +316,15 @@ public class ScaleModule extends Module /*implements Serializable*/{
     /** Время для срабатывания автоноль.
      * @return возвращяем время после которого установливается автоноль.
      */
-    public int getTimerNull() {
-        return timerNull;
+    public int getTimerZero() {
+        return timerZero;
     }
 
     /** Устонавливаем значение времени после которого срабатывает автоноль.
-     * @param timerNull Значение времени в секундах.
+     * @param timer Значение времени в секундах.
      */
-    public void setTimerNull(int timerNull) {
-        this.timerNull = timerNull;
+    public void setTimerZero(int timer) {
+        timerZero = timer;
     }
 
     /** Получить номер версии программы.
@@ -709,7 +709,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
                         if (enableAutoNull){
                             if (version.getWeight() != Integer.MIN_VALUE && Math.abs(version.getWeight()) < weightError) { //автоноль
                                 autoNull += 1;
-                                if (autoNull > timerNull / DIVIDER_AUTO_NULL) {
+                                if (autoNull > timerZero / DIVIDER_AUTO_NULL) {
                                     setOffsetScale();
                                     autoNull = 0;
                                 }
