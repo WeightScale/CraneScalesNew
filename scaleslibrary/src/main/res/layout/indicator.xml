@@ -11,18 +11,38 @@
             android:layout_height="wrap_content"
             android:background="@color/material_deep_teal_500">
 
-        <ImageButton
+        <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/buttonSearch"
-                android:src="@drawable/ic_search"
-                android:layout_gravity="center"
-                style="@style/CustomButtonSettings"
-                android:clickable="true"
-                android:paddingRight="30dp"
-                android:paddingLeft="30dp"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"/>
+                android:layout_height="match_parent"
+                android:layout_gravity="center">
+
+            <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonSearch"
+                    android:src="@drawable/ic_search"
+                    android:layout_gravity="center"
+                    style="@style/CustomButtonSettings"
+                    android:clickable="true"
+                    android:paddingRight="30dp"
+                    android:paddingLeft="30dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"/>
+
+            <ImageButton
+                    style="@style/CustomButtonSettings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonSettings"
+                    android:src="@drawable/ic_settings_admin"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:paddingRight="30dp"
+                    android:paddingLeft="30dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"/>
+        </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>

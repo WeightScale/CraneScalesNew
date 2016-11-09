@@ -23,7 +23,7 @@ public class DialogPoint2 extends DialogPreference /*implements ScaleModule.Weig
         super(context, attrs);
         mContext = context;
         setPersistent(false);
-        setDialogLayoutResource(R.layout.dialog_point2);
+        setDialogLayoutResource(R.layout.point2_dialog);
         scaleModule = Globals.getInstance().getScaleModule();
         //scaleModule.setWeightCallback(this);
     }

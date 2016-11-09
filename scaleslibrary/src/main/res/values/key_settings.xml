@@ -14,4 +14,5 @@
     <string name="KEY_POINT1">com.konst.scaleslibrary.KEY_POINT1</string>
     <string name="KEY_POINT2">com.konst.scaleslibrary.KEY_POINT2</string>
     <string name="KEY_WEIGHT_MAX">com.konst.scaleslibrary.KEY_WEIGHT_MAX</string>
+    <string name="KEY_SAVE_MAN">com.konst.scaleslibrary.KEY_SAVE_MAN</string>
 </resources>

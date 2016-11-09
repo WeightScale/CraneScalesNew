@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Калибровка весов">
+        <EditTextPreference android:enabled="true" android:title="Максимальный вес" android:summary="Введите найбольший предел взвешивания"
+                            android:key="@string/KEY_WEIGHT_MAX" android:gravity="right" android:inputType="number"/>
+        <Preference android:enabled="false" android:title="Нулевой вес" android:summary="Установите нулевой вес на весах (пустая платформа), и нажминте на это поле. " android:key="@string/KEY_POINT1"/>
+        <com.konst.scaleslibrary.settings.DialogPoint2 android:enabled="false" android:title="Контрольный вес" android:summary=" Установите калиброваный вес на весах, и введите вес в поле"
+                                                       android:key="@string/KEY_POINT2" android:gravity="right" android:inputType="number"/>
+        <!--<Preference android:enabled="false" android:title="Опломбировать" android:key="@string/KEY_SEAL"/>-->
+        <com.konst.scaleslibrary.settings.SealingLayout android:enabled="false" android:key="@string/KEY_SEAL" android:layout="@layout/seal_action"/>
+    </PreferenceCategory>
+    <!--<PreferenceCategory android:title="Калибровка">
+        <PreferenceScreen android:title="Калибровка весов" android:summary="Калибровка весов с ипользыванием калиброваного веса">
+            <PreferenceCategory android:title="Калибровка весов">
+                <EditTextPreference android:enabled="true" android:title="Максимальный вес" android:summary="Введите найбольший предел взвешивания"
+                                    android:key="@string/KEY_WEIGHT_MAX" android:gravity="right" android:inputType="number"/>
+                <Preference android:enabled="false" android:title="Нулевой вес" android:summary="Установите нулевой вес на весах (пустая платформа), и нажминте на это поле. " android:key="@string/KEY_POINT1"/>
+                <com.konst.scaleslibrary.settings.DialogPoint2 android:enabled="false" android:title="Контрольный вес" android:summary=" Установите калиброваный вес на весах, и введите вес в поле"
+                                                               android:key="@string/KEY_POINT2" android:gravity="right" android:inputType="number"/>
+                &lt;!&ndash;<Preference android:enabled="false" android:title="Опломбировать" android:key="@string/KEY_SEAL"/>&ndash;&gt;
+                <com.konst.scaleslibrary.settings.SealingLayout android:enabled="false" android:key="@string/KEY_SEAL" android:layout="@layout/seal_action"/>
+            </PreferenceCategory>
+        </PreferenceScreen>
+    </PreferenceCategory>-->
+</PreferenceScreen>

@@ -171,7 +171,7 @@ public class BootModule extends Module {
 
     @Override
     public ObjectCommand sendCommand(Commands commands) {
-        return null;
+        return bluetoothProcessManager.sendCommand(commands);
     }
 
     /**

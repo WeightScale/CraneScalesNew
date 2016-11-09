@@ -49,4 +49,11 @@
     <string name="and">" и "</string>
     <string name="The_range_is_from_0_to">"Диапазон от 0 до "</string>
     <string name="Max_weight">"Максимальный вес: "</string>
+    <string name="error_code">Неверный Код</string>
+    <string name="ConstantA">Константа А:</string>
+    <string name="NO">НЕТ</string>
+    <string name="Battery">"Батарея: "</string>
+    <string name="Is_new_version">Есть новая версия микропрограммы</string>
+    <string name="Scale_update">"Весы обновлены до последней версии "</string>
+    <string name="start_load">Начать загрузку</string>
 </resources>

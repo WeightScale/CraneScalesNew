@@ -13,7 +13,9 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.konst.scaleslibrary.*;
 import com.konst.scaleslibrary.module.InterfaceModule;
@@ -161,6 +163,14 @@ public class FragmentSettings extends PreferenceFragment{
                         return false;
                     }
                 });
+            }
+        },
+        TEST(R.string.KEY_ABOUT){
+            @Override
+            void setup(Preference name) throws Exception {
+                //View view = name.getView(null, null);
+                //TextView textView = (TextView)view.findViewById(R.id.textView1);
+                //textView.setText("test");
             }
         };
 

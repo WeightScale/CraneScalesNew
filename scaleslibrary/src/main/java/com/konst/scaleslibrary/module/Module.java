@@ -293,21 +293,19 @@ public abstract class Module implements InterfaceModule{
 
         @Override
         public void run() {
-            //resultCallback.resultConnect(ResultConnect.STATUS_ATTACH_START, getNameBluetoothDevice(), null);
             mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_ATTACH_START).putExtra(InterfaceModule.EXTRA_DEVICE_NAME,getNameBluetoothDevice()));
             //try { TimeUnit.SECONDS.sleep(2); } catch (InterruptedException e) {}
             BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
-            try { TimeUnit.SECONDS.sleep(2); } catch (InterruptedException e) {}
+            //try { TimeUnit.SECONDS.sleep(2); } catch (InterruptedException e) {}
             try {
                 mmSocket.connect();
                 bluetoothProcessManager = new BluetoothProcessManager(mmSocket, bluetoothHandler);
             } catch (IOException connectException) {
                 try {mmSocket.close();} catch (IOException closeException) { }
-                //resultCallback.resultConnect(ResultConnect.CONNECT_ERROR, connectException.getMessage(), null);
+                try { TimeUnit.SECONDS.sleep(2); } catch (InterruptedException e) {}
                 mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_CONNECT_ERROR).putExtra(InterfaceModule.EXTRA_MESSAGE, connectException.getMessage()));
             }finally {
                 mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_ATTACH_FINISH));
-                //resultCallback.resultConnect(ResultConnect.STATUS_ATTACH_FINISH, "", null);
             }
             Log.i(TAG, "thread done");
         }
@@ -334,18 +332,17 @@ public abstract class Module implements InterfaceModule{
 
         @Override
         public void run() {
-            //resultCallback.resultConnect(ResultConnect.STATUS_ATTACH_START, getNameBluetoothDevice(), null);
             mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_ATTACH_START).putExtra(InterfaceModule.EXTRA_DEVICE_NAME,getNameBluetoothDevice()));
             BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
-            try { TimeUnit.SECONDS.sleep(2); } catch (InterruptedException e) {}
+            //try { TimeUnit.SECONDS.sleep(2); } catch (InterruptedException e) {}
             try {
                 mmSocket.connect();
                 bluetoothProcessManager = new BluetoothProcessManager(mmSocket, bluetoothHandler);
             } catch (IOException connectException) {
                 try {mmSocket.close();} catch (IOException closeException) { }
+                try { TimeUnit.SECONDS.sleep(2); } catch (InterruptedException e) {}
                 bluetoothHandler.obtainMessage(BluetoothHandler.MSG.DISCONNECT.ordinal()).sendToTarget();
             }finally {
-                //resultCallback.resultConnect(ResultConnect.STATUS_ATTACH_FINISH, "", null);
                 mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_ATTACH_FINISH));
             }
 

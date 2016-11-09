@@ -179,6 +179,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
         }
         try {
             threadAttach = new Thread(new RunnableAttach());
+            threadAttach.setPriority(Thread.MAX_PRIORITY);
             threadAttach.start();
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
@@ -193,6 +194,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
         }
         try {
             threadAttach = new Thread(new RunnableConnect());
+            threadAttach.setPriority(Thread.MAX_PRIORITY);
             threadAttach.start();
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
@@ -544,7 +546,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
      * @return Заряд батареи в процентах.
      * @see Commands#GBT
      */
-    private int getModuleBatteryCharge() {
+    public int getModuleBatteryCharge() {
         try {
             battery = Integer.valueOf(Commands.GBT.getParam());
         } catch (Exception e) {

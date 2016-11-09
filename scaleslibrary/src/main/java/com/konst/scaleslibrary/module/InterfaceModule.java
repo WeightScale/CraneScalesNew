@@ -13,6 +13,7 @@ public interface InterfaceModule {
     String ACTION_TERMINAL_ERROR = "com.konst.module.ACTION_TERMINAL_ERROR";
     String ACTION_SCALES_RESULT = "com.konst.module.ACTION_SCALES_RESULT";
     String ACTION_WEIGHT_STABLE = "com.konst.module.ACTION_WEIGHT_STABLE";
+    String ACTION_BOOT_MODULE = "com.konst.module.ACTION_BOOT_MODULE";
     String EXTRA_DEVICE_NAME = "com.konst.module.EXTRA_DEVICE_NAME";
     String EXTRA_MESSAGE = "com.konst.module.EXTRA_MESSAGE";
     String EXTRA_MODULE = "com.konst.module.EXTRA_MODULE";

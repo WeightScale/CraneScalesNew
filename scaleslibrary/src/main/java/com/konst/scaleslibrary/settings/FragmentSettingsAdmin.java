@@ -2,20 +2,30 @@ package com.konst.scaleslibrary.settings;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.DialogPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
+import android.transition.Transition;
+import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.konst.scaleslibrary.R;
 import com.konst.scaleslibrary.ScalesView;
+import com.konst.scaleslibrary.module.Commands;
+import com.konst.scaleslibrary.module.InterfaceModule;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 /**
@@ -23,112 +33,65 @@ import com.konst.scaleslibrary.module.scale.ScaleModule;
  */
 public class FragmentSettingsAdmin extends PreferenceFragment {
     public static ScaleModule scaleModule;
-    private static final Point point1 = new Point(Integer.MIN_VALUE, 0);
-    private static final Point point2 = new Point(Integer.MIN_VALUE, 0);
+    private static float coefficientA;
 
     enum EnumSettings{
-        POINT1(R.string.KEY_POINT1){
-            Context context;
-            @Override
-            void setup(final Preference name) throws Exception {
-                context = name.getContext();
-                if(!scaleModule.isAttach())
-                    throw new Exception(" ");
-                name.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        return startDialog(name);
-                        /*try {
-                            String str = scaleModule.feelWeightSensor();
-                            scaleModule.setSensorTenzo(Integer.valueOf(str));
-                            point1.x = Integer.valueOf(str);
-                            point1.y = 0;
-                            Toast.makeText(name.getContext(), R.string.preferences_yes, Toast.LENGTH_SHORT).show();
-                            flag_restore = true;
-                            return true;
-                        } catch (Exception e) {
-                            Toast.makeText(name.getContext(), R.string.preferences_no + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            return false;
-                        }*/
-                    }
-                });
-            }
-
-            boolean startDialog(final Preference name){
-                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-                dialog.setTitle("Установка ноль");
-                dialog.setCancelable(false);
-                dialog.setPositiveButton(context.getString(R.string.OK), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        try {
-                            String sensor = scaleModule.feelWeightSensor();
-                            //scaleModule.setSensorTenzo(Integer.valueOf(str));
-                            point1.x = Integer.valueOf(sensor);
-                            point1.y = 0;
-                            Toast.makeText(name.getContext(), R.string.preferences_yes, Toast.LENGTH_SHORT).show();
-                            //flag_restore = true;
-                        } catch (Exception e) {
-                            Toast.makeText(name.getContext(), R.string.error + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-                dialog.setNegativeButton(context.getString(R.string.Close), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.setMessage("Вы действительно хотите установить ноль калибровки.");
-                dialog.show();
-                return true;
-            }
-        },
-        POINT2(R.string.KEY_POINT2){
-            @Override
-            void setup(final Preference name) throws Exception {
-                if(!scaleModule.isAttach())
-                    throw new Exception(" ");
-                name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                    @Override
-                    public boolean onPreferenceChange(Preference preference, Object o) {
-                        try {
-                            String sensor = scaleModule.feelWeightSensor();
-                            if (sensor.isEmpty()) {
-                                Toast.makeText(name.getContext(), R.string.error, Toast.LENGTH_SHORT).show();
-                                return false;
-                            }
-                            //scaleModule.setSensorTenzo(Integer.valueOf(str));
-                            point2.x = Integer.valueOf(sensor);
-                            point2.y = Integer.valueOf(o.toString());
-                            Toast.makeText(name.getContext(), R.string.preferences_yes, Toast.LENGTH_SHORT).show();
-                            //flag_restore = true;
-                            return true;
-                        } catch (Exception e) {
-                            Toast.makeText(name.getContext(), R.string.error + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            return false;
-                        }
-                    }
-                });
-            }
-        },
-        WEIGHT_MAX(R.string.KEY_WEIGHT_MAX){
+        COEFFICIENT_A(R.string.KEY_COEFFICIENT_A){
             @Override
             void setup(Preference name) throws Exception {
                 final Context context = name.getContext();
-                name.setTitle(context.getString(R.string.Max_weight) + scaleModule.getWeightMax() + context.getString(R.string.scales_kg));
+                name.setTitle(context.getString(R.string.ConstantA) + Float.toString(scaleModule.getCoefficientA()));
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
                     public boolean onPreferenceChange(Preference preference, Object o) {
-                        if (o.toString().isEmpty() || Integer.valueOf(o.toString()) < context.getResources().getInteger(R.integer.default_max_weight)) {
+                        try {
+                            scaleModule.setCoefficientA(Float.valueOf(o.toString()));
+                            coefficientA = Float.valueOf(o.toString());
+                            preference.setTitle(context.getString(R.string.ConstantA) + Float.toString(scaleModule.getCoefficientA()));
+                            Toast.makeText(context, R.string.preferences_yes, Toast.LENGTH_SHORT).show();
+                            return true;
+                        } catch (Exception e) {
                             Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
                             return false;
                         }
-                        scaleModule.setWeightMax(Integer.valueOf(o.toString()));
-                        scaleModule.setWeightMargin((int) (scaleModule.getWeightMax() * 1.2));
-                        preference.setTitle(context.getString(R.string.Max_weight) + scaleModule.getWeightMax() + context.getString(R.string.scales_kg));
-                        Toast.makeText(context, R.string.preferences_yes, Toast.LENGTH_SHORT).show();
-                        //flag_restore = true;
+                    }
+                });
+            }
+        },
+        CALL_BATTERY(R.string.KEY_CALL_BATTERY){
+            @Override
+            void setup(Preference name) throws Exception {
+                final Context context = name.getContext();
+                name.setTitle(context.getString(R.string.Battery) + scaleModule.getModuleBatteryCharge() + '%');
+                name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object o) {
+                        if (o.toString().isEmpty() || "0".equals(o.toString()) || Integer.valueOf(o.toString()) > context.getResources().getInteger(R.integer.default_max_battery)) {
+                            Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                        if (scaleModule.setModuleBatteryCharge(Integer.valueOf(o.toString()))) {
+                            preference.setTitle(context.getString(R.string.Battery) + o + '%');
+                            Toast.makeText(context, R.string.preferences_yes, Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+
+                        Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                });
+            }
+        },
+        SAVE_MAN(R.string.KEY_SAVE_MAN){
+            Context context;
+            @Override
+            void setup(Preference name) throws Exception {
+                context = name.getContext();
+                name.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+
+                        ((Activity)context).onBackPressed();
                         return true;
                     }
                 });
@@ -155,6 +118,50 @@ public class FragmentSettingsAdmin extends PreferenceFragment {
                             Toast.makeText(name.getContext(), R.string.error, Toast.LENGTH_SHORT).show();
                             return false;
                         }
+                    }
+                });
+            }
+        },
+        UPDATE(R.string.KEY_UPDATE){
+            @Override
+            void setup(Preference name) throws Exception {
+                final Context context = name.getContext();
+                try {
+                    if (scaleModule.getVersion() != null) {
+                        if (scaleModule.getNumVersion() < ScalesView.getInstance().getMicroSoftware()) {
+                            name.setSummary(context.getString(R.string.Is_new_version));
+                        } else {
+                            name.setSummary(context.getString(R.string.Scale_update));
+                            name.setEnabled(false);
+                        }
+                    }
+                }catch (Exception e){
+                    name.setSummary(context.getString(R.string.TEXT_MESSAGE14));
+                }
+                name.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    //@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        /*Intent intent = new Intent(context, ActivityBootloader.class);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        else
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        try{
+                            intent.putExtra(context.getString(R.string.KEY_ADDRESS), scaleModule.isAttach()? scaleModule.getAddressBluetoothDevice():"");
+                            intent.putExtra(Commands.HRW.getName(), scaleModule.getModuleHardware());
+                            intent.putExtra(Commands.VRS.getName(), scaleModule.getNumVersion());
+                            if (scaleModule.isAttach()){
+                                if(scaleModule.powerOff())
+                                    intent.putExtra("com.konst.simple_scale.POWER", true);
+                            }
+                            scaleModule.dettach();
+                        }catch (Exception e){ }
+                        context.startActivity(intent);*/
+                        ((Activity)context).onBackPressed();
+                        context.sendBroadcast(new Intent(InterfaceModule.ACTION_BOOT_MODULE));
+                        return false;
                     }
                 });
             }
@@ -189,6 +196,11 @@ public class FragmentSettingsAdmin extends PreferenceFragment {
         initPreferences();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     public void initPreferences(){
         for (EnumSettings enumPreference : EnumSettings.values()){
             Preference preference = findPreference(getString(enumPreference.getResId()));
@@ -201,4 +213,6 @@ public class FragmentSettingsAdmin extends PreferenceFragment {
             }
         }
     }
+
+
 }

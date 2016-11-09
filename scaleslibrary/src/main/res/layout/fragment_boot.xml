@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:orientation="vertical"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/material_deep_teal_500">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="bottom"
+            android:clickable="true">
+        <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/layoutIndicator" >
+
+            <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+                <ScrollView
+                        android:layout_width="fill_parent"
+                        android:layout_height="@dimen/text_search_log"
+                        android:paddingLeft="1dp"
+                        >
+                    <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textLog" android:maxLines="100" android:minLines="3"
+                            android:textColor="@color/white" android:padding="@dimen/padding"
+                            android:textSize="@dimen/text_micro"/>
+                </ScrollView>
+
+            </FrameLayout>
+
+            <ProgressBar
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/height_progress_weight"
+                    android:id="@+id/progressBarJob"
+                    android:layout_gravity="left|center_vertical"
+                    android:progressDrawable="@drawable/progress_weight"
+                    android:focusableInTouchMode="false"
+                    android:layout_marginBottom="@dimen/padding"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" android:id="@+id/layoutControl">
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/buttonBack" android:textSize="@dimen/text_medium"
+                    style="@style/CustomButtonSettings" android:src="@drawable/ic_back" android:layout_weight="1"/>
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/start_load"
+                    android:id="@+id/buttonBoot"
+                    android:textSize="@dimen/text_medium"
+                    style="@style/CustomButtonSettings" android:src="@drawable/ic_file_bootloader" android:layout_weight="1"/>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

@@ -8,16 +8,22 @@
             android:title="Настройки">
     </header><!--android:fragment="com.konst.scaleslibrary.settings.ActivitySettings$FragmentSettings"-->
     <header android:id="@+id/settingsHeaderAdmin"
-            android:icon="@drawable/ic_build_admin"
+            android:icon="@drawable/ic_settings_admin"
             android:summary="Настройки для опытного пользователя. Требуется пароль."
             android:title="Настройки Админ">
+    </header>
+    <header android:id="@+id/calibrator"
+            android:icon="@drawable/ic_build_admin"
+            android:summary="Калибровка для опытного пользователя. Требуется пароль."
+            android:title="Калибровка">
     </header>
     <header
             android:icon="@drawable/ic_help"
             android:summary="Справка"
             android:title="Справка">
     </header>
-    <header android:id="@+id/closedHeader"
+    <header android:icon="@drawable/ic_back"
+            android:id="@+id/closedHeader"
             android:title="Закрыть Окно">
 
     </header>

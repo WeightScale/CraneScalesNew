@@ -18,6 +18,7 @@ import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.*;
 import com.konst.scaleslibrary.module.ErrorDeviceException;
@@ -45,6 +46,8 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     private BaseReceiver baseReceiver;
     private String version;
     private String addressDevice;
+    /** Версия пограммы весового модуля. */
+    private final int microSoftware = 5;
     private InterfaceCallbackScales interfaceCallbackScales;
     private static final String TAG_FRAGMENT = ScalesView.class.getName() + "TAG_FRAGMENT";
 
@@ -77,8 +80,13 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         baseReceiver.register();
 
         LayoutInflater.from(context).inflate(R.layout.indicator, this);
-        ImageButton buttonSearch = (ImageButton)findViewById(R.id.buttonSearch);
-        buttonSearch.setOnClickListener(new OnClickListener() {
+        findViewById(R.id.buttonSearch).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openSearchDialog("Выбор устройства для соединения");
+            }
+        });
+        findViewById(R.id.buttonSettings).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 openSearchDialog("Выбор устройства для соединения");
@@ -140,6 +148,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
             scaleModule.dettach();
     }
 
+    public int getMicroSoftware() { return microSoftware; }
 
     public ScaleModule getScaleModule() {
         return scaleModule;
@@ -259,6 +268,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
             intentFilter.addAction(InterfaceModule.ACTION_ATTACH_START);
             intentFilter.addAction(InterfaceModule.ACTION_ATTACH_FINISH);
             intentFilter.addAction(InterfaceModule.ACTION_CONNECT_ERROR);
+            intentFilter.addAction(InterfaceModule.ACTION_BOOT_MODULE);
         }
 
         @Override
@@ -297,6 +307,10 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                             message = "";
                         openSearchDialog(message);
                         break;
+                    case InterfaceModule.ACTION_BOOT_MODULE:
+                        //test();
+                        fragmentManager.beginTransaction().replace(R.id.fragment, BootFragment.newInstance("BOOT", addressDevice), BootFragment.class.getName()).commitAllowingStateLoss();
+                        break;
                     default:
                 }
             }
@@ -315,6 +329,13 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                 isRegistered = false;
             }
         }
+    }
+
+    void test(){
+        LinearLayout linearLayout = this;
+        LayoutInflater ltInflater = LayoutInflater.from(getContext());
+        //ltInflater.inflate(R.layout.fragment_boot, (ViewGroup) getParent());
+        addView(ltInflater.inflate(R.layout.fragment_boot, null));
     }
 
 }

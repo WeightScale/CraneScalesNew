@@ -50,19 +50,10 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
     private boolean weightViewIsSwipe;
     protected boolean isStable;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private static OnInteractionListener onInteractionListener;
 
     public ScalesFragment(){
-        // Required empty public constructor
+
     }
 
     protected void loadModule(ScaleModule scaleModule) {
@@ -88,11 +79,6 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -247,7 +233,8 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         int i = view.getId();
         if (i == R.id.buttonSettings) {
-            startActivity(new Intent(getActivity(), ActivityProperties.class));
+            if (!ActivityProperties.isActive())
+                startActivity(new Intent(getActivity(), ActivityProperties.class));
         }
     }
 

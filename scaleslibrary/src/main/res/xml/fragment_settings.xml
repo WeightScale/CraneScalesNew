@@ -38,5 +38,5 @@
                 android:summary="@string/sum_filter_adc"
                 android:key="@string/KEY_FILTER"/>
     </PreferenceCategory>
-    <Preference android:title="Закрыть Окно" android:key="@string/KEY_CLOSED"/>
+    <Preference android:icon="@drawable/ic_back" android:title="Закрыть Окно" android:key="@string/KEY_CLOSED"/>
 </PreferenceScreen>

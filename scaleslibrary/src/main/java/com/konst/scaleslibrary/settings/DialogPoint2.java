@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.konst.scaleslibrary.R;
+import com.konst.scaleslibrary.ScalesView;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 
@@ -15,7 +16,7 @@ import com.konst.scaleslibrary.module.scale.ScaleModule;
  * @author Kostya
  */
 public class DialogPoint2 extends DialogPreference /*implements ScaleModule.WeightCallback*/ {
-    TextView textViewSensor;
+    //TextView textViewSensor;
     EditText editTextPoint2;
     ScaleModule scaleModule;
     final Context mContext;
@@ -24,8 +25,8 @@ public class DialogPoint2 extends DialogPreference /*implements ScaleModule.Weig
         super(context, attrs);
         mContext = context;
         setPersistent(false);
-        setDialogLayoutResource(R.layout.dialog_point2);
-        //scaleModule = Globals.getInstance().getScaleModule();
+        setDialogLayoutResource(R.layout.point2_dialog);
+        scaleModule = ScalesView.getInstance().getScaleModule();
         //scaleModule.setWeightCallback(this);
     }
 
@@ -37,7 +38,7 @@ public class DialogPoint2 extends DialogPreference /*implements ScaleModule.Weig
 
     @Override
     protected void onBindDialogView(View view) {
-        textViewSensor = (TextView)view.findViewById(R.id.textViewTitle);
+        //textViewSensor = (TextView)view.findViewById(R.id.textViewTitle);
         editTextPoint2 = (EditText)view.findViewById(R.id.editTextPoint2);
         super.onBindDialogView(view);
     }
@@ -51,14 +52,16 @@ public class DialogPoint2 extends DialogPreference /*implements ScaleModule.Weig
         scaleModule.scalesProcessEnable(true);
     }
 
-    public void weight(ScaleModule.ResultWeight what, int weight, final int sensor) {
+
+
+    /*public void weight(ScaleModule.ResultWeight what, int weight, final int sensor) {
         ((Activity)mContext).runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 textViewSensor.setText("датчик:"+ sensor);
             }
         });
-    }
+    }*/
 
     public void setValue(String value) {
         notifyChanged();
