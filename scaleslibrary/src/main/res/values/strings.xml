@@ -56,4 +56,13 @@
     <string name="Is_new_version">Есть новая версия микропрограммы</string>
     <string name="Scale_update">"Весы обновлены до последней версии "</string>
     <string name="start_load">Начать загрузку</string>
+    <string name="Not_programmer">Не программатор</string>
+    <string name="Programmer_defined">Программатор определен</string>
+    <string name="TEXT_MESSAGE3">"Ищем фаил HEX для этого устройства "</string>
+    <string name="Warning_Loading_settings">Внимание! Загрузка настроек</string>
+    <string name="TEXT_MESSAGE1">На весах нажмине кнопку и отпустите ждите пока индикатор равномерно начнет мигать.
+        После этого нажмите ОК
+    </string>
+    <string name="Warning_Error">Внимание! Ошибка</string>
+    <string name="TEXT_MESSAGE2">Произошла ошибка программирования смотрите текст лога</string>
 </resources>

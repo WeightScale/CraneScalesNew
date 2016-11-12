@@ -52,6 +52,24 @@
                             android:singleLine="true"
                             />
                 </LinearLayout>
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/material_deep_teal_500"
+                        android:id="@+id/layoutSearch">
+
+                    <ImageButton
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:id="@+id/buttonSearch"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_search"
+                            android:clickable="true"
+                            style="@style/CustomButtonSettings"/>
+                </LinearLayout>
+
             </FrameLayout>
 
             <ProgressBar

@@ -369,12 +369,12 @@ public abstract class Module implements InterfaceModule{
                             load();
                             if (!isAttach){
                                 isAttach = true;
-                                mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_LOAD_OK).putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales()));
+                                mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_LOAD_OK)/*.putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales())*/);
                             }else {
-                                mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_RECONNECT_OK).putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales()));
+                                mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_RECONNECT_OK)/*.putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales())*/);
                             }
                         }else {
-                            dettach();
+                            throw new Exception("Ошибка проверки версии.");
                         }
                     } catch (Exception e) {
                         dettach();

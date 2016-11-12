@@ -104,7 +104,7 @@ public class BootModule extends Module {
 
     @Override
     protected void load() {
-
+        resultCallback.onCallback(instance);
     }
 
     /**

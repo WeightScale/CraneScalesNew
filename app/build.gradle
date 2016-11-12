@@ -10,12 +10,20 @@ android {
         versionCode 17
         //versionName 'CraneScales'
         versionName 'WeightScales'
+        multiDexEnabled true
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
     productFlavors {
     }
@@ -34,6 +42,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.google.android.gms:play-services-ads:9.4.0'
     compile 'com.android.support:design:24.1.1'
+    compile 'com.android.support:multidex:1.0.1'
     //compile 'com.konst.weightmodule:weightmodule-release@aar'
     //compile(name: 'scaleslibrary-release', ext: 'aar')
     compile project(':scaleslibrary')

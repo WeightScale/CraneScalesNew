@@ -159,8 +159,15 @@ public class FragmentSettingsAdmin extends PreferenceFragment {
                             scaleModule.dettach();
                         }catch (Exception e){ }
                         context.startActivity(intent);*/
+                        boolean power = false;
+                        try {
+                            if (scaleModule.isAttach()){
+                                if(scaleModule.powerOff())
+                                    power = true;
+                            }
+                        }catch (Exception e){}
                         ((Activity)context).onBackPressed();
-                        context.sendBroadcast(new Intent(InterfaceModule.ACTION_BOOT_MODULE));
+                        context.sendBroadcast(new Intent(InterfaceModule.ACTION_BOOT_MODULE).putExtra("com.konst.simple_scale.POWER", power));
                         return false;
                     }
                 });

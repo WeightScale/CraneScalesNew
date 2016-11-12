@@ -1,8 +1,6 @@
 package com.konst.scaleslibrary;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.ProgressDialog;
+import android.app.*;
 import android.bluetooth.BluetoothAdapter;
 import android.content.*;
 import android.graphics.Color;
@@ -20,7 +18,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.konst.scaleslibrary.module.ErrorDeviceException;
 import com.konst.scaleslibrary.module.InterfaceModule;
+import com.konst.scaleslibrary.module.Module;
+import com.konst.scaleslibrary.module.boot.BootModule;
+import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ObjectScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.konst.scaleslibrary.settings.ActivityProperties;
@@ -34,17 +36,24 @@ import com.konst.scaleslibrary.settings.ActivityProperties;
  * create an instance of this fragment.
  */
 public class ScalesFragment extends Fragment implements View.OnClickListener {
-    //private Context mContext;
+    /** Настройки для весов. */
+    public Settings settings;
     private ScaleModule scaleModule;
     private SpannableStringBuilder textKg;
     private ProgressBar progressBarStable;
     private ProgressBar progressBarWeight;
     private TextView weightTextView, textViewBattery, textViewTemperature;
     private ImageView imageViewWait, imageViewBluetooth;
+    private LinearLayout layoutSearch;
     private Drawable dProgressWeight, dWeightDanger;
     private SimpleGestureFilter detectorWeightView;
     private Vibrator vibrator; //вибратор
     private BaseReceiver baseReceiver; //приёмник намерений
+    private static final String ARG_VERSION = BootFragment.class.getSimpleName()+"VERSION";
+    private static final String ARG_DEVICE = BootFragment.class.getSimpleName()+"DEVICE";
+    private static final int REQUEST_DEVICE = 1;
+    private String version;
+    private String device;
     private int moduleWeight;
     private boolean touchWeightView;
     private boolean weightViewIsSwipe;
@@ -52,9 +61,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
 
     private static OnInteractionListener onInteractionListener;
 
-    public ScalesFragment(){
-
-    }
+    public ScalesFragment(){}
 
     protected void loadModule(ScaleModule scaleModule) {
         this.scaleModule = scaleModule;
@@ -64,21 +71,30 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
         onInteractionListener = listener;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.     *
-     * @return A new instance of fragment ScalesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ScalesFragment newInstance(OnInteractionListener listener) {
+    public static ScalesFragment newInstance(String version, String device, OnInteractionListener listener) {
         onInteractionListener = listener;
         ScalesFragment fragment = new ScalesFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_VERSION, version);
+        args.putString(ARG_DEVICE, device);
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            version = getArguments().getString(ARG_VERSION);
+            device = getArguments().getString(ARG_DEVICE);
+        }
+        settings = new Settings(getActivity(), Settings.SETTINGS);
+        vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        textKg = new SpannableStringBuilder(getResources().getString(R.string.scales_kg));
+        textKg.setSpan(new TextAppearanceSpan(getActivity(), R.style.SpanTextKg),0,textKg.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        baseReceiver = new BaseReceiver(getActivity());
+        baseReceiver.register();
+        createScalesModule(device);
     }
 
     @Override
@@ -93,37 +109,18 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
         imageViewWait = (ImageView)view.findViewById(R.id.imageViewWait);
 
         view.findViewById(R.id.buttonSettings).setOnClickListener(this);
+        view.findViewById(R.id.buttonSearch).setOnClickListener(this);
+        layoutSearch = (LinearLayout) view.findViewById(R.id.layoutSearch);
 
         textViewBattery = (TextView)view.findViewById(R.id.textBattery);
         textViewTemperature = (TextView)view.findViewById(R.id.textTemperature);
 
-        setupWeightView();
-
         return view;
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    /*public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }*/
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        /*if (activity instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) activity;
-        } else {
-            throw new RuntimeException(activity.toString() + " must implement OnFragmentInteractionListener");
-        }*/
-        //mContext = activity;
-        vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-
-        textKg = new SpannableStringBuilder(getResources().getString(R.string.scales_kg));
-        textKg.setSpan(new TextAppearanceSpan(getActivity(), R.style.SpanTextKg),0,textKg.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        baseReceiver = new BaseReceiver(getActivity());
-        baseReceiver.register();
     }
 
     @Override
@@ -144,7 +141,83 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
         super.onDetach();
         baseReceiver.unregister();
         onInteractionListener.detachScales();
-        //onInteractionListener = null;
+        onInteractionListener = null;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_DEVICE:
+                    String device = data.getStringExtra(SearchDialogFragment.ARG_DEVICE);
+                    if (scaleModule != null)
+                        scaleModule.dettach();
+                    createScalesModule(device);
+                    break;
+                default:
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+        if (i == R.id.buttonSettings) {
+            if (!ActivityProperties.isActive())
+                startActivity(new Intent(getActivity(), ActivityProperties.class));
+        }else if (i == R.id.buttonSearch){
+            openSearchDialog("");
+        }
+    }
+
+    public void updateSettings(Settings settings){
+
+        for (Settings.KEY key : Settings.KEY.values()){
+            switch (key){
+                case KEY_DISCRETE:
+                    scaleModule.setStepScale(settings.read(key, 5));
+                    break;
+                case KEY_STABLE:
+                    scaleModule.stableActionEnable(settings.read(key, false));
+                    break;
+                case KEY_TIMER_ZERO:
+                    scaleModule.setTimerZero(settings.read(key, 120));
+                    break;
+                case KEY_MAX_ZERO:
+                    scaleModule.setTimerZero(settings.read(key, 50));
+                    break;
+                default:
+            }
+        }
+    }
+
+    private void createScalesModule(String device){
+        try {
+            ScaleModule.create(getActivity(), version, device, new InterfaceCallbackScales() {
+                /** Сообщение о результате соединения.
+                 * @param module Модуль с которым соединились. */
+                @Override
+                public void onCallback(Module module) {
+                    if (module instanceof ScaleModule){
+                        scaleModule = (ScaleModule)module;
+                        updateSettings(settings);
+                        scaleModule.scalesProcessEnable(true);
+                    }
+                    settings.write(Settings.KEY.KEY_ADDRESS, module.getAddressBluetoothDevice());
+                    onInteractionListener.onScaleModuleCallback((ScaleModule) module);
+                }
+            });
+        }catch (Exception | ErrorDeviceException e) {
+            openSearchDialog(e.getMessage());
+        }
+    }
+
+    public void openSearchDialog(String msg) {
+        //layoutSearch.setVisibility(View.VISIBLE);
+        DialogFragment fragment = SearchDialogFragment.newInstance(msg);
+        fragment.setTargetFragment(this, REQUEST_DEVICE);
+        fragment.show(getFragmentManager(), fragment.getClass().getName());
     }
 
     private void setupWeightView() {
@@ -171,7 +244,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
                         getActivity().sendBroadcast(new Intent(InterfaceModule.ACTION_WEIGHT_STABLE));
                         break;
                     case SimpleGestureFilter.SWIPE_DOWN:
-                        openSearch();
+                        openSearchDialog("Выбор устройства для соединения");
                         break;
                     default:
                 }
@@ -220,24 +293,6 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
         });*/
     }
 
-    private void openSearch(){
-        onInteractionListener.openSearchDialog("Выбор устройства для соединения");
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onClick(View view) {
-        int i = view.getId();
-        if (i == R.id.buttonSettings) {
-            if (!ActivityProperties.isActive())
-                startActivity(new Intent(getActivity(), ActivityProperties.class));
-        }
-    }
-
     /**
      * Обработка обнуления весов.
      */
@@ -279,6 +334,9 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
             intentFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
             intentFilter.addAction(InterfaceModule.ACTION_SCALES_RESULT);
             intentFilter.addAction(InterfaceModule.ACTION_WEIGHT_STABLE);
+            intentFilter.addAction(InterfaceModule.ACTION_LOAD_OK);
+            intentFilter.addAction(InterfaceModule.ACTION_RECONNECT_OK);
+            intentFilter.addAction(InterfaceModule.ACTION_CONNECT_ERROR);
         }
 
         @Override
@@ -286,6 +344,21 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
             String action = intent.getAction();
             if (action != null) {
                 switch (action) {
+                    case InterfaceModule.ACTION_LOAD_OK:
+                        setupWeightView();
+                        layoutSearch.setVisibility(View.GONE);
+
+                        break;
+                    case InterfaceModule.ACTION_RECONNECT_OK:
+                        /*scalesFragment.loadModule(scaleModule);
+                        fragmentManager.beginTransaction().show(scalesFragment).commit();*/
+                        break;
+                    case InterfaceModule.ACTION_CONNECT_ERROR:
+                        String message = intent.getStringExtra(InterfaceModule.EXTRA_MESSAGE);
+                        if (message == null)
+                            message = "";
+                        openSearchDialog(message);
+                        break;
                     case BluetoothAdapter.ACTION_STATE_CHANGED:
                         switch (BluetoothAdapter.getDefaultAdapter().getState()) {
                             case BluetoothAdapter.STATE_OFF:
@@ -400,5 +473,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
     protected interface OnInteractionListener {
         void openSearchDialog(String msg);
         void detachScales();
+        void onScaleModuleCallback(ScaleModule obj);
     }
+
 }

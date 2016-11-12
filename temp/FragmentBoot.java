@@ -16,8 +16,6 @@ import android.view.*;
 import android.widget.*;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.konst.bootloader.AVRProgrammer;
-import com.konst.bootloader.HandlerBootloader;
 import com.konst.module.InterfaceModule;
 import com.konst.module.Module;
 import com.konst.module.scale.ObjectScales;

@@ -1,7 +1,6 @@
 package com.konst.scaleslibrary;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
+import android.app.*;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.*;
@@ -10,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.*;
@@ -19,82 +19,94 @@ import java.util.ArrayList;
 /**
  * @author Kostya on 04.10.2016.
  */
-public class SearchDialog extends Dialog implements View.OnClickListener{
-    private final BaseReceiver broadcastReceiver;                   //приёмник намерений
-    private final ArrayList<BluetoothDevice> foundDevice;           //чужие устройства
-    private ArrayAdapter<BluetoothDevice> bluetoothAdapter;         //адаптер имён
-    private ListView listView;                                      //список весов
-    private TextView textViewLog;                                   //лог событий
-    private final Settings settings;
-    private final String message;
-    private final ScalesView.OnCreateScalesListener callbackScales;
+public class SearchDialogFragment extends DialogFragment implements View.OnClickListener{
+    private BaseReceiver broadcastReceiver;                   //приёмник намерений
+    private ArrayList<BluetoothDevice> foundDevice;           //чужие устройства
+    private ArrayAdapter<BluetoothDevice> bluetoothAdapter;   //адаптер имён
+    private ListView listView;                                //список весов
+    private TextView textViewLog;                             //лог событий
+    private Settings settings;
+    private String message;
+    private static final String ARG_MESSAGE = SearchDialogFragment.class.getSimpleName()+"MESSAGE";
+    public static final String ARG_DEVICE = SearchDialogFragment.class.getSimpleName()+"DEVICE";
 
-    public SearchDialog(Context context, String text, ScalesView.OnCreateScalesListener callbackScales) {
-        super(context);
-        message = text;
-        this.callbackScales = callbackScales;
-        settings = new Settings(context, Settings.SETTINGS);
-        //settings = new Settings(context);
+
+    public static SearchDialogFragment newInstance(String text) {
+        SearchDialogFragment fragment = new SearchDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_MESSAGE, text);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            message = getArguments().getString(ARG_MESSAGE);
+        }
+        settings = new Settings(getActivity(), Settings.SETTINGS);
         foundDevice = new ArrayList<>();
-        broadcastReceiver = new BaseReceiver(getContext());
+        broadcastReceiver = new BaseReceiver(getActivity());
         broadcastReceiver.register();
     }
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        setContentView(R.layout.search_device);
-        setCancelable(false);
-
-        findViewById(R.id.buttonSearchBluetooth).setOnClickListener(this);
-        findViewById(R.id.buttonBack).setOnClickListener(this);
-
-        textViewLog = (TextView)findViewById(R.id.textLog);
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        View view = getActivity().getLayoutInflater().inflate(R.layout.search_device, null);
+        view.findViewById(R.id.buttonSearchBluetooth).setOnClickListener(this);
+        view.findViewById(R.id.buttonBack).setOnClickListener(this);
+        textViewLog = (TextView)view.findViewById(R.id.textLog);
         log(message);
-        listView = (ListView)findViewById(R.id.listViewDevices);  //список весов
+        listView = (ListView)view.findViewById(R.id.listViewDevices);  //список весов
         listView.setOnItemClickListener(onItemClickListener);
 
-        for (int i = 0; settings.contains(getContext().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i); i++) { //заполнение списка
-            foundDevice.add(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(settings.read(getContext().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i, "")));
+        for (int i = 0; settings.contains(getActivity().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i); i++) { //заполнение списка
+            foundDevice.add(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(settings.read(getActivity().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i, "")));
         }
 
-        bluetoothAdapter = new BluetoothListAdapter(getContext(), foundDevice);
+        bluetoothAdapter = new BluetoothListAdapter(getActivity(), foundDevice);
         listView.setAdapter(bluetoothAdapter);
 
         if (foundDevice.isEmpty()) {
             BluetoothAdapter.getDefaultAdapter().startDiscovery();
         }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setView(view);
+        AlertDialog dialog = builder.create();
+        setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        return dialog;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
     @Override
     public void onClick(View view) {
-        int i = view.getId();
-        if (i == R.id.buttonSearchBluetooth) {
+        if (view.getId() == R.id.buttonSearchBluetooth) {
             searchDevice();
-        } else if (i == R.id.buttonBack) {
-            dismiss();
         } else {
             dismiss();
         }
     }
 
     @Override
-    public void dismiss() {
+    public void onDetach() {
+        super.onDetach();
         if (BluetoothAdapter.getDefaultAdapter().isDiscovering()) {
             BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
         }
         broadcastReceiver.unregister();
 
-        for (int i = 0; settings.contains(getContext().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i); i++) { //стереть прошлый список
-            settings.remove(getContext().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i);
+        for (int i = 0; settings.contains(getActivity().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i); i++) { //стереть прошлый список
+            settings.remove(getActivity().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i);
         }
         for (int i = 0; i < foundDevice.size(); i++) { //сохранить новый список
-            settings.write(getContext().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i, ((BluetoothDevice) foundDevice.toArray()[i]).getAddress());
+            settings.write(getActivity().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i, ((BluetoothDevice) foundDevice.toArray()[i]).getAddress());
         }
-        super.dismiss();
     }
 
     void searchDevice(){
@@ -109,14 +121,15 @@ public class SearchDialog extends Dialog implements View.OnClickListener{
             if (BluetoothAdapter.getDefaultAdapter().isDiscovering()) {
                 BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
             }
-            callbackScales.onCreate(((BluetoothDevice) foundDevice.toArray()[i]).getAddress());
+            Intent intent = new Intent().putExtra(ARG_DEVICE, ((BluetoothDevice) foundDevice.toArray()[i]).getAddress());
+            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
             dismiss();
         }
     };
 
     //==================================================================================================================
     void log(int resource) { //для ресурсов
-        textViewLog.setText(getContext().getString(resource) + '\n' + textViewLog.getText());
+        textViewLog.setText(getActivity().getString(resource) + '\n' + textViewLog.getText());
     }
 
     //==================================================================================================================
@@ -126,15 +139,15 @@ public class SearchDialog extends Dialog implements View.OnClickListener{
 
     //==================================================================================================================
     void log(int resource, boolean toast) { //для текста
-        textViewLog.setText(getContext().getString(resource) + '\n' + textViewLog.getText());
+        textViewLog.setText(getActivity().getString(resource) + '\n' + textViewLog.getText());
         if (toast) {
-            Toast.makeText(getContext(), resource, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), resource, Toast.LENGTH_SHORT).show();
         }
     }
 
     //==================================================================================================================
     void log(int resource, String str) { //для ресурсов с текстовым дополнением
-        textViewLog.setText(getContext().getString(resource) + ' ' + str + '\n' + textViewLog.getText());
+        textViewLog.setText(getActivity().getString(resource) + ' ' + str + '\n' + textViewLog.getText());
     }
 
     class BaseReceiver extends BroadcastReceiver {

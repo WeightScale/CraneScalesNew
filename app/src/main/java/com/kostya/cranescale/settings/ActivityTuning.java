@@ -18,7 +18,6 @@ import com.konst.module.Commands;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.kostya.cranescale.Globals;
 import com.kostya.cranescale.R;
-import com.kostya.cranescale.bootloader.ActivityBootloader;
 
 //import android.preference.PreferenceManager;
 
@@ -229,7 +228,7 @@ public class ActivityTuning extends PreferenceActivity {
                     //@TargetApi(Build.VERSION_CODES.HONEYCOMB)
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        Intent intent = new Intent(context, ActivityBootloader.class);
+                        /*Intent intent = new Intent(context, ActivityBootloader.class);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         else
@@ -245,7 +244,7 @@ public class ActivityTuning extends PreferenceActivity {
                             }
                             scaleModule.dettach();
                         }catch (Exception e){ }
-                        context.startActivity(intent);
+                        context.startActivity(intent);*/
                         return false;
                     }
                 });

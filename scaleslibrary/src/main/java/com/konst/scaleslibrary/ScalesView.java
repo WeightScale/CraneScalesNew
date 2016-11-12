@@ -73,7 +73,6 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
 
         fragmentManager = ((AppCompatActivity)getContext()).getFragmentManager();
 
-        scalesFragment = ScalesFragment.newInstance(this);
         searchFragment = SearchFragment.newInstance("", this);
 
         baseReceiver = new BaseReceiver(context);
@@ -110,12 +109,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
 
     @Override
     public void onLinkBroken() {
-        //fragmentTransaction = ((AppCompatActivity)getContext()).getFragmentManager().beginTransaction();
-        fragmentManager.beginTransaction().remove(scalesFragment).commit();
         fragmentManager.beginTransaction().remove(searchFragment).commit();
-        //fragmentTransaction.commit();
-        //searchFragment.dismiss();
-        openSearchDialog("Выбор устройства для соединения");
     }
 
     /** Процедура обратного вызова {@link ScalesFragment.OnInteractionListener}.
@@ -124,7 +118,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
      */
     @Override
     public void openSearchDialog(String msg) {
-        SearchDialog dialog = new SearchDialog(getContext(), msg, new OnCreateScalesListener() {
+        /*SearchDialog dialog = new SearchDialog(getContext(), msg, new OnCreateScalesListener() {
             @Override
             public void onCreate(String device) {
                 Fragment fragment = fragmentManager.findFragmentByTag(scalesFragment.getClass().getName());
@@ -134,8 +128,10 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                 createScalesModule(device);
             }
         });
-        dialog.show();
+        dialog.show();*/
     }
+
+
 
     /**
      * Процедура обратного вызова интерфейса {@link ScalesFragment.OnInteractionListener}.
@@ -146,6 +142,11 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
 
         if (scaleModule != null)
             scaleModule.dettach();
+    }
+
+    @Override
+    public void onScaleModuleCallback(ScaleModule obj) {
+        scaleModule = obj;
     }
 
     public int getMicroSoftware() { return microSoftware; }
@@ -171,15 +172,15 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     public void create(String version, InterfaceCallbackScales listener) {
         this.version = version;
         interfaceCallbackScales = listener;
-        createScalesModule(addressDevice);
+        scalesFragment = ScalesFragment.newInstance(version, addressDevice, this);
+        fragmentManager.beginTransaction().replace(R.id.fragment, scalesFragment, scalesFragment.getClass().getName()).commit();
     }
 
-    private void createScalesModule(String device){
+    /*private void createScalesModule(String device){
         try {
             ScaleModule.create(getContext(), version, device, new InterfaceCallbackScales() {
-
-                /** Сообщение о результате соединения.
-                 * @param module Модуль с которым соединились. */
+                *//** Сообщение о результате соединения.
+                 * @param module Модуль с которым соединились. *//*
                 @Override
                 public void onCallback(Module module) {
                     if (module instanceof ScaleModule){
@@ -197,7 +198,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         }catch (Exception | ErrorDeviceException e) {
             openSearchDialog(e.getMessage());
         }
-    }
+    }*/
 
     /** Устанавливаем необходимую дискретность отображения значения веса.
      * @param discrete Значение дискретности (1/2/5/10/20/50).
@@ -236,15 +237,6 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                 default:
             }
         }
-/*
-        if (settings != null){
-            Map<String,?> map = settings.getSharedPreferences().getAll();
-            for (Map.Entry<String, ?> entry : map.entrySet()) {
-                if (getContext().getString(R.string.KEY_DISCRETE).equals(entry.getKey())){
-
-                }
-            }
-        }*/
     }
 
     /** Приемник сообщений. */
@@ -263,11 +255,11 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
          */
         BaseReceiver(Context context){
             mContext = context;
-            intentFilter = new IntentFilter(InterfaceModule.ACTION_LOAD_OK);
-            intentFilter.addAction(InterfaceModule.ACTION_RECONNECT_OK);
+            intentFilter = new IntentFilter(/*InterfaceModule.ACTION_LOAD_OK*/);
+            //intentFilter.addAction(InterfaceModule.ACTION_RECONNECT_OK);
             intentFilter.addAction(InterfaceModule.ACTION_ATTACH_START);
             intentFilter.addAction(InterfaceModule.ACTION_ATTACH_FINISH);
-            intentFilter.addAction(InterfaceModule.ACTION_CONNECT_ERROR);
+            //intentFilter.addAction(InterfaceModule.ACTION_CONNECT_ERROR);
             intentFilter.addAction(InterfaceModule.ACTION_BOOT_MODULE);
         }
 
@@ -276,17 +268,14 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
             String action = intent.getAction();
             if (action != null) {
                 switch (action) {
-                    case InterfaceModule.ACTION_LOAD_OK:
+                    /*case InterfaceModule.ACTION_LOAD_OK:
                         //unlockOrientation();
                         scalesFragment = ScalesFragment.newInstance(ScalesView.this);
                         scalesFragment.loadModule(scaleModule);
                         scalesFragment.setOnInteractionListener(ScalesView.this);
                         fragmentManager.beginTransaction().replace(R.id.fragment, scalesFragment, scalesFragment.getClass().getName()).commit();
-                        break;
-                    case InterfaceModule.ACTION_RECONNECT_OK:
-                        scalesFragment.loadModule(scaleModule);
-                        fragmentManager.beginTransaction().show(scalesFragment).commit();
-                        break;
+                        break;*/
+
                     case InterfaceModule.ACTION_ATTACH_START:
                         String msg = intent.getStringExtra(InterfaceModule.EXTRA_DEVICE_NAME);
                         if (msg!=null){
@@ -295,18 +284,18 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                         }
                         searchFragment = SearchFragment.newInstance(msg, ScalesView.this);
                         searchFragment.setCancelable(false);
-                        fragmentManager.beginTransaction().hide(scalesFragment).commit();
+                        //fragmentManager.beginTransaction().hide(scalesFragment).commit();
                         fragmentManager.beginTransaction().add(R.id.fragment, searchFragment, searchFragment.getClass().getName()).commit();
                         break;
                     case InterfaceModule.ACTION_ATTACH_FINISH:
                         fragmentManager.beginTransaction().remove(searchFragment).commit();
                         break;
-                    case InterfaceModule.ACTION_CONNECT_ERROR:
+                    /*case InterfaceModule.ACTION_CONNECT_ERROR:
                         String message = intent.getStringExtra(InterfaceModule.EXTRA_MESSAGE);
                         if (message == null)
                             message = "";
                         openSearchDialog(message);
-                        break;
+                        break;*/
                     case InterfaceModule.ACTION_BOOT_MODULE:
                         //test();
                         fragmentManager.beginTransaction().replace(R.id.fragment, BootFragment.newInstance("BOOT", addressDevice), BootFragment.class.getName()).commitAllowingStateLoss();
