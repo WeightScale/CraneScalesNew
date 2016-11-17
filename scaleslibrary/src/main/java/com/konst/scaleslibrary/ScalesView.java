@@ -131,19 +131,6 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         dialog.show();*/
     }
 
-
-
-    /**
-     * Процедура обратного вызова интерфейса {@link ScalesFragment.OnInteractionListener}.
-     * Разрывает соединение с весовым модулем.
-     */
-    @Override
-    public void detachScales() {
-
-        if (scaleModule != null)
-            scaleModule.dettach();
-    }
-
     @Override
     public void onScaleModuleCallback(ScaleModule obj) {
         scaleModule = obj;

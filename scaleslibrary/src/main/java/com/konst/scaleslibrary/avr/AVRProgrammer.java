@@ -1,19 +1,26 @@
 package com.konst.scaleslibrary.avr;
 
+import android.os.Handler;
+import android.os.Message;
+
 import java.io.InputStream;
 
 /**
  * Класс программатора микроконтролера
  */
 public abstract class AVRProgrammer {
-    private final HandlerBootloader handler;                        // для сообщений
+    private HandlerBootloader handler = null;                        // для сообщений
+    private Handler h;
     private AVRDevice avrDevice;                                    // микроконтроллер
     private HEXFile hexFile;                                        // фаил прошивки
-    private long pagesize;                                          // Flash page size.
+    private long pageSize;                                          // Flash page size.
     private int flashStartAddress;                                  // Limit Flash operations, -1 if not.
     private int flashEndAddress = -1;                               // ...to this address, inclusive, -1 if not.
     private int eepromEndAddress = -1;
 
+    /*public AVRProgrammer(){
+        h = new Handler();
+    }*/
 
     /**
      * Конструктор программатора.
@@ -35,8 +42,10 @@ public abstract class AVRProgrammer {
      */
     public abstract int getByte();
 
-    private void setPagesize(long _pagesize) {
-        pagesize = _pagesize;
+    public abstract void sendMessage(Message message);
+
+    private void setPageSize(long _pageSize) {
+        pageSize = _pageSize;
     }
 
     private boolean chipErase() throws Exception {
@@ -74,9 +83,9 @@ public abstract class AVRProgrammer {
 
     private boolean writeFlash(HEXFile data) throws Exception {
 
-	    /* Check that pagesize is set */
-        if (pagesize == -1) {
-            throw new Exception("Programmer pagesize is not set!");
+	    /* Check that pageSize is set */
+        if (pageSize == -1) {
+            throw new Exception("Programmer pageSize is not set!");
         }
 
 	    /* Check block write support */
@@ -84,6 +93,7 @@ public abstract class AVRProgrammer {
 
         if (getByte() == 'Y') {
             handler.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Using block mode...").sendToTarget();
+            //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Using block mode..."));
             return writeFlashBlock(data); // Finished writing.
         }
 
@@ -108,7 +118,7 @@ public abstract class AVRProgrammer {
             address++;
 
 		    /* Need to write page? */
-            if (address % pagesize == 0 || address > end) {// Just passed page limit or no more bytes to write?
+            if (address % pageSize == 0 || address > end) {// Just passed page limit or no more bytes to write?
 
                 setAddress(address - 2 >> 1); // Set to an address inside the page.
                 writeFlashPage();
@@ -133,7 +143,7 @@ public abstract class AVRProgrammer {
                 handler.sendMessage(handler.obtainMessage(ActivityBootloader.MSG_LOG,"#"));*/
 
 		    /* Need to write page? */
-            if (address % pagesize == 0 || address > end) {// Just passed a page limit or no more bytes to write?
+            if (address % pageSize == 0 || address > end) {// Just passed a page limit or no more bytes to write?
 
                 setAddress(address - 2 >> 1); // Set to an address inside the page.
                 writeFlashPage();
@@ -154,6 +164,7 @@ public abstract class AVRProgrammer {
         }
 
         handler.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "").sendToTarget();
+        //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), ""));
         return true; // Indicate supported command.
     }
 
@@ -195,7 +206,7 @@ public abstract class AVRProgrammer {
             address++;
 
 		    /* Need to write page? */
-            if (address % pagesize == 0 || address > end) {// Just passed page limit or no more bytes to write?
+            if (address % pageSize == 0 || address > end) {// Just passed page limit or no more bytes to write?
 
                 setAddress(address - 2 >> 1); // Set to an address inside the page.
                 writeFlashPage();
@@ -262,6 +273,7 @@ public abstract class AVRProgrammer {
             }
 
             handler.obtainMessage(HandlerBootloader.Result.MSG_UPDATE_DIALOG.ordinal(), address, 0).sendToTarget();
+            //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_UPDATE_DIALOG.ordinal(), address, 0));
         }
 
 	    /* Any bytes left in last block */
@@ -303,7 +315,7 @@ public abstract class AVRProgrammer {
 
     private boolean readFlash(HEXFile data) throws Exception {
 
-        if (pagesize == -1) {
+        if (pageSize == -1) {
             throw new Exception("Programmer pagesize is not set!");
         }
 
@@ -312,6 +324,7 @@ public abstract class AVRProgrammer {
 
         if (getByte() == 'Y') {
             handler.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Using block mode...").sendToTarget();
+            //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Using block mode..."));
             return readFlashBlock(data); // Finished writing.
         }
 
@@ -442,6 +455,7 @@ public abstract class AVRProgrammer {
                 byteCount--;
             }
             handler.obtainMessage(HandlerBootloader.Result.MSG_UPDATE_DIALOG.ordinal(), address, 0).sendToTarget();
+            //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_UPDATE_DIALOG.ordinal(), address, 0));
         }
 
 	    /* Any bytes left in last block */
@@ -537,7 +551,6 @@ public abstract class AVRProgrammer {
 
     /**
      * Подготавливаем файлы для прошивки микроконтролера.
-     *
      * @param isDevice фаил микроконтроллера
      * @param isHex    фаил прошивки
      * @throws Exception Подготовка не прошла есть ошибки.
@@ -551,13 +564,12 @@ public abstract class AVRProgrammer {
 
     /**
      * Выполнить программирование.
-     *
      * @throws Exception Программирование не выполнено, есть ошибки.
      */
     public void doDeviceDependent() throws Exception {
 
-	    /* Set programmer pagesize */
-        pagesize = avrDevice.getPageSize();
+	    /* Set programmer pageSize */
+        pageSize = avrDevice.getPageSize();
         /* Check if specified address limits are within device range */
         if (flashEndAddress == -1) {
             flashStartAddress = 0;
@@ -591,52 +603,69 @@ public abstract class AVRProgrammer {
         hexFile.setUsedRange(flashStartAddress, 15 - flashEndAddress % 16 + flashEndAddress);
         /* Erase chip before programming anything? */
         handler.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Erasing chip contents...").sendToTarget();
+        //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Erasing chip contents..."));
         if (!chipErase()) {
             throw new Exception("Chip erase is not supported by this programmer!");
         }
 
 		/* Program data */
         handler.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Programming Flash contents...").sendToTarget();
+        //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Programming Flash contents..."));
         handler.obtainMessage(HandlerBootloader.Result.MSG_SHOW_DIALOG.ordinal(), flashEndAddress, 0, "Programming Flash...").sendToTarget();
+        //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_SHOW_DIALOG.ordinal(), flashEndAddress, 0, "Programming Flash..."));
         if (!writeFlash(hexFile)) {
             handler.obtainMessage(HandlerBootloader.Result.MSG_CLOSE_DIALOG.ordinal()).sendToTarget();
+            //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_CLOSE_DIALOG.ordinal()));
             throw new Exception("Flash programming is not supported by this programmer!");
         }
         handler.obtainMessage(HandlerBootloader.Result.MSG_CLOSE_DIALOG.ordinal()).sendToTarget();
+        //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_CLOSE_DIALOG.ordinal()));
 
 		/* Prepare HEX file for comparision */
         HEXFile hexFileVerifying = new HEXFile(avrDevice.getFlashSize(), (byte) 0xff, /*getApplicationContext(),*/ handler); // Used for verifying memory contents.
 
 		/* Compare to Flash */
         handler.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Reading Flash contents...").sendToTarget();
+        //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Reading Flash contents..."));
         handler.obtainMessage(HandlerBootloader.Result.MSG_SHOW_DIALOG.ordinal(), flashEndAddress, 0, "Reading Flash...").sendToTarget();
+        //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_SHOW_DIALOG.ordinal(), flashEndAddress, 0, "Reading Flash..."));
         hexFileVerifying.setUsedRange(hexFile.getRangeStart(), hexFile.getRangeEnd());
         if (!readFlash(hexFileVerifying)) {
             handler.obtainMessage(HandlerBootloader.Result.MSG_CLOSE_DIALOG.ordinal()).sendToTarget();
+            //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_CLOSE_DIALOG.ordinal()));
             throw new Exception("Flash readout is not supported by this programmer!");
         }
         handler.obtainMessage(HandlerBootloader.Result.MSG_CLOSE_DIALOG.ordinal()).sendToTarget();
+        //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_CLOSE_DIALOG.ordinal()));
 
 		/* Compare data */
         handler.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Comparing Flash data...").sendToTarget();
+        //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Comparing Flash data..."));
         handler.obtainMessage(HandlerBootloader.Result.MSG_SHOW_DIALOG.ordinal(), flashEndAddress, 0, "Comparing Flash data...").sendToTarget();
+        //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_SHOW_DIALOG.ordinal(), flashEndAddress, 0, "Comparing Flash data..."));
         int pos; // Used when comparing data.
         for (pos = hexFile.getRangeStart(); pos <= hexFile.getRangeEnd(); pos++) {
             handler.obtainMessage(HandlerBootloader.Result.MSG_UPDATE_DIALOG.ordinal(), pos, 0).sendToTarget();
+            //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_UPDATE_DIALOG.ordinal(), pos, 0));
             if (hexFile.getData(pos) != hexFileVerifying.getData(pos)) {
                 handler.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Unequal at address 0x" + hexFile.getData(pos) + '!').sendToTarget();
+                //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Unequal at address 0x" + hexFile.getData(pos) + '!'));
                 handler.obtainMessage(HandlerBootloader.Result.MSG_CLOSE_DIALOG.ordinal()).sendToTarget();
+                //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_CLOSE_DIALOG.ordinal()));
                 break;
             }
         }
         handler.obtainMessage(HandlerBootloader.Result.MSG_CLOSE_DIALOG.ordinal()).sendToTarget();
+        //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_CLOSE_DIALOG.ordinal()));
 
         if (pos > hexFile.getRangeEnd()) {// All equal?
 
             handler.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Equal!").sendToTarget();
+            //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Equal!"));
         }
-        sendByte((byte) 'E');   //Exit bootloader
+        //sendByte((byte) 'E');   //Exit bootloader
         handler.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Exit bootloader").sendToTarget();
+        //sendMessage(h.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), "Exit bootloader"));
     }
 
     /**

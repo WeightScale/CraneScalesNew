@@ -65,4 +65,7 @@
     </string>
     <string name="Warning_Error">Внимание! Ошибка</string>
     <string name="TEXT_MESSAGE2">Произошла ошибка программирования смотрите текст лога</string>
+    <string name="Warning_update">Внимание! Обновление</string>
+    <string name="TEXT_MESSAGE5">На весах нажмите кнопку и отпустите индикатор прекратит мигать. После этого нажмитеОК
+    </string>
 </resources>

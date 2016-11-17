@@ -9,16 +9,19 @@
 package com.konst.scaleslibrary.module.boot;
 
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
-import com.konst.scaleslibrary.module.Commands;
-import com.konst.scaleslibrary.module.ErrorDeviceException;
-import com.konst.scaleslibrary.module.Module;
-import com.konst.scaleslibrary.module.ObjectCommand;
+import com.konst.scaleslibrary.module.*;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 
-import java.io.IOException;
+import java.io.*;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Класс для самопрограммирования весового модуля.
@@ -26,8 +29,9 @@ import java.io.IOException;
  */
 public class BootModule extends Module {
     private static BootModule instance;
-    private Thread threadAttach;
+    private ThreadBootAttach threadAttach;
     private String versionName = "";
+    private int versionNumber;
 
     /** Конструктор модуля бутлодера.
      * @param version Верситя бутлодера.
@@ -73,7 +77,7 @@ public class BootModule extends Module {
             threadAttach.interrupt();
         }
         try {
-            threadAttach = new Thread(new RunnableAttach());
+            threadAttach = new ThreadBootAttach();
             threadAttach.start();
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
@@ -94,7 +98,15 @@ public class BootModule extends Module {
     @Override
     public boolean isVersion() {
         String vrs = getModuleVersion(); //Получаем версию модуля.
-        return vrs.startsWith(versionName);
+        if(vrs.startsWith(versionName)) {
+            try {
+                versionNumber = Integer.valueOf(vrs.replace(versionName, ""));
+            } catch (Exception var3) {
+                versionNumber = 0;
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -120,44 +132,11 @@ public class BootModule extends Module {
         //stopMeasuringWeight();
         //stopMeasuringBatteryTemperature();
         //disconnect();
-        if (bluetoothProcessManager != null){
-            bluetoothProcessManager.stopProcess();
+        bluetoothConnectReceiver.unregister();
+        if (threadAttach != null){
+            threadAttach.cancel();
         }
     }
-
-    /**
-     * Получаем соединение с bluetooth весовым модулем.
-     * @throws IOException Ошибка соединения.
-     */
-    //@Override
-    /*public synchronized void connect() throws IOException, NullPointerException {
-        disconnect();
-        // Get a BluetoothSocket for a connection with the given BluetoothDevice
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
-            socket = device.createInsecureRfcommSocketToServiceRecord(getUuid());
-        else
-            socket = device.createRfcommSocketToServiceRecord(getUuid());
-        bluetoothAdapter.cancelDiscovery();
-        socket.connect();
-        inputStream = socket.getInputStream();
-        //inputStreamReader = new InputStreamReader(inputStream);
-        //bufferedReader = new BufferedReader(inputStreamReader);
-        outputStream = socket.getOutputStream();
-        //bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-    }*/
-    /*public synchronized void connect() throws IOException, NullPointerException {
-        disconnect();
-        // Get a BluetoothSocket for a connection with the given BluetoothDevice
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
-            socket = device.createInsecureRfcommSocketToServiceRecord(getUuid());
-        else
-            socket = device.createRfcommSocketToServiceRecord(getUuid());
-        bluetoothAdapter.cancelDiscovery();
-        socket.connect();
-        bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-        //bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
-        printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8")), true);
-    }*/
 
     @Override
     protected void connectWiFi() throws IOException, NullPointerException {
@@ -171,108 +150,109 @@ public class BootModule extends Module {
 
     @Override
     public ObjectCommand sendCommand(Commands commands) {
-        return bluetoothProcessManager.sendCommand(commands);
+        return threadAttach.sendCommand(commands);
     }
 
-    /**
-     * Получаем разьединение с bluetooth весовым модулем
-     */
-    /*@Override
-    public void disconnect() {
-        try {
-            *//*if(inputStreamReader != null)
-                inputStreamReader.close();*//*
-            if(inputStream != null)
-                inputStream.close();
-            *//*if (bufferedWriter != null)
-                bufferedWriter.close();*//*
-            if (outputStream != null)
-                outputStream.close();
-            if (socket != null)
-                socket.close();
-        } catch (IOException ioe) {
-            socket = null;
-        }
-        inputStream = null;
-        //inputStreamReader =  null;
-        outputStream = null;
-        //bufferedWriter = null;
-        socket = null;
-    }*/
-
-    /** Обработчик для процесса соединения
-     */
-    /*private class ThreadBootAttach extends Thread {
+    /** Обработчик для процесса соединения*/
+    private class ThreadBootAttach extends Thread {
         private final BluetoothSocket mmSocket;
+        protected OutputStream outputStream;
+        protected InputStream inputStream;
         protected BufferedReader bufferedReader;
-        protected PrintWriter printWriter;
+        //protected PrintWriter printWriter;
         private final UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
-        private ThreadBootAttach() {
-            BluetoothSocket tmp = null;
+        private ThreadBootAttach() throws IOException {
+            BluetoothSocket tmp;
             //mmDevice = device;
-            try {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
-                    tmp = device.createInsecureRfcommSocketToServiceRecord(uuid);
-                else
-                    tmp = device.createRfcommSocketToServiceRecord(uuid);
-            } catch (IOException e) { }
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
+                tmp = device.createInsecureRfcommSocketToServiceRecord(uuid);
+            else
+                tmp = device.createRfcommSocketToServiceRecord(uuid);
             mmSocket = tmp;
         }
 
 
         @Override
         public void run() {
+            getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_ATTACH_START).putExtra(InterfaceModule.EXTRA_DEVICE_NAME,getNameBluetoothDevice()));
             BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
             try {
-                //connect();
                 mmSocket.connect();
-                bufferedReader = new BufferedReader(new InputStreamReader(mmSocket.getInputStream(), "UTF-8"));
-                printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(mmSocket.getOutputStream(), "UTF-8")), true);
+                outputStream = mmSocket.getOutputStream();
+                inputStream = mmSocket.getInputStream();
+                //printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8")), false);
+                //printWriter.flush();
+                bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-                bluetoothHandler.obtainMessage(BluetoothHandler.MSG.CONNECT.ordinal()).sendToTarget();
+                //bluetoothHandler.obtainMessage(BluetoothHandler.MSG.CONNECT.ordinal()).sendToTarget();
 
-                *//*if(isVersion()){
-                    connectResultCallback.resultConnect(ResultConnect.STATUS_LOAD_OK, "", instance);
-
+                if(isVersion()){
+                    isAttach = true;
+                    resultCallback.onCallback(instance);
+                    getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_LOAD_OK));
                 }else {
-                    disconnect();
-                    connectResultCallback.resultConnect(ResultConnect.STATUS_VERSION_UNKNOWN, "", null);
-                }*//*
+                    throw new Exception("Ошибка проверки версии.");
+                }
 
-            } catch (IOException e) {
-                //connectResultCallback.connectError(ResultError.CONNECT_ERROR, e.getMessage());
-
-                resultCallback.resultConnect(ResultConnect.CONNECT_ERROR, e.getMessage(), null);
-                //disconnect();
+            } catch (Exception e) {
+                dettach();
+                getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_CONNECT_ERROR).putExtra(InterfaceModule.EXTRA_MESSAGE, e.getMessage()));
                 cancel();
+            }finally {
+                getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_ATTACH_FINISH));
             }
-            //connectResultCallback.resultConnect(ResultConnect.STATUS_ATTACH_FINISH, "");
-            resultCallback.resultConnect(ResultConnect.STATUS_ATTACH_FINISH, "", null);
+            Log.i(TAG, "thread done");
         }
 
         public void cancel() {
             try {mmSocket.close();} catch (IOException e) { }
         }
 
-        public synchronized boolean sendByte(byte ch) {
+        public void writeStr(String data) throws IOException {
+            outputStream.write(data.getBytes());
+            outputStream.write('\r');
+            outputStream.write('\n');
+            outputStream.flush();
+            //printWriter.println(data);
+        }
+
+        public String readStr() throws IOException {
+            return bufferedReader.readLine();
+        }
+
+        public synchronized void sendByte(byte ch) {
             try {
-                printWriter.write(ch);
-                printWriter.flush();
-                return true;
+                outputStream.write(ch);
+                //outputStream.flush();
             } catch (Exception ioe) {}
-            return false;
         }
 
         public synchronized int getByte() {
 
             try {
-                int b = bufferedReader.read();
-                return b;
+                return inputStream.read();
             } catch (Exception ioe) {}
             return 0;
         }
-    }*/
+
+        public ObjectCommand sendCommand(Commands commands) {
+            ObjectCommand response = new ObjectCommand(commands, "");
+            try {
+                writeStr(commands.toString());
+                try {TimeUnit.MILLISECONDS.sleep(100);} catch (InterruptedException e) {}
+                String substring = readStr();
+                Commands cmd = Commands.valueOf(substring.substring(0, 3));
+                if (cmd == response.getCommand()){
+                    response.setValue(substring.replace(cmd.name(),""));
+                    return response;
+                }
+            } catch (IOException e) {
+                Log.i(TAG, e.getMessage());
+            }
+            return null;
+        }
+    }
 
     /**
      * Комманда старт программирования.
@@ -280,7 +260,7 @@ public class BootModule extends Module {
      * @return true - Запущено программирование.
      */
     public boolean startProgramming() {
-        return Commands.STR.getParam().equals(Commands.STR.getName());
+        return Commands.STR.setParam("");
 
     }
 
@@ -310,6 +290,11 @@ public class BootModule extends Module {
         return 0;
     }
 
+    public int getVersionNumber() {
+        return versionNumber;
+    }
+
+
     /*private BluetoothHandler bluetoothHandler = new BluetoothHandler(){
 
         @Override
@@ -333,12 +318,12 @@ public class BootModule extends Module {
         }
     };*/
 
-    public synchronized boolean sendByte(byte ch) {
-        return bluetoothProcessManager.sendByte(ch);
+    public void sendByte(byte ch) {
+        threadAttach.sendByte(ch);
     }
 
-    public synchronized int getByte() {
-        return bluetoothProcessManager.getByte();
+    public int getByte() {
+        return threadAttach.getByte();
     }
 
 }

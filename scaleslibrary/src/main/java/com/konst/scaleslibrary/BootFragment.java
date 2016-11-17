@@ -4,6 +4,7 @@ import android.app.*;
 import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Kostya 08.11.2016.
@@ -44,9 +46,10 @@ public class BootFragment extends Fragment implements View.OnClickListener {
     private static final String ARG_VERSION = BootFragment.class.getSimpleName()+"VERSION";
     private static final String ARG_DEVICE = BootFragment.class.getSimpleName()+"DEVICE";
     private static final int REQUEST_DEVICE = 1;
+    boolean flagAutoPrograming;
 
     enum CodeDevice{
-        ATMEGA88("atmega88.xml",0x930a),    /* 37642 */
+        ATMEGA88("atmega88.xml", 0x930a),   /* 37642 */
         ATMEGA168("atmega168.xml", 0x9406), /* 37894 */
         ATMEGA328("atmega328.xml", 0x9514); /* 38164 */
 
@@ -59,9 +62,8 @@ public class BootFragment extends Fragment implements View.OnClickListener {
         }
 
         public String getDevice() {return device;}
-        //public int getCode() {return code;}
 
-        public static CodeDevice contains(int c){
+        public static CodeDevice isContains(int c){
             for(CodeDevice choice : values())
                 if (choice.code == c)
                     return choice;
@@ -110,6 +112,8 @@ public class BootFragment extends Fragment implements View.OnClickListener {
     public void onDestroy() {
         super.onDestroy();
         baseReceiver.unregister();
+        if(bootModule != null)
+            bootModule.dettach();
     }
 
     @Override
@@ -133,9 +137,7 @@ public class BootFragment extends Fragment implements View.OnClickListener {
         if (v.getId() == R.id.buttonBack) {
             getActivity().finish();
         } else if (v.getId() == R.id.buttonBoot){
-            if (!startProgramed()) {
-                flagProgramsFinish = true;
-            }
+            startBoot();
         }
     }
 
@@ -160,6 +162,57 @@ public class BootFragment extends Fragment implements View.OnClickListener {
         }catch (Exception | ErrorDeviceException e) {
             openSearchDialog(e.getMessage());
         }
+    }
+
+    private void startBoot(){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setTitle(getString(R.string.Warning_update));
+        dialog.setCancelable(false);
+        int numVersion = bootModule.getVersionNumber();
+        if(numVersion > 1){
+            hardware = bootModule.getModuleHardware();
+            dialog.setMessage("После нажатия кнопки ОК начнется программирование");
+            flagAutoPrograming = true;
+        }else {
+            dialog.setMessage(getString(R.string.TEXT_MESSAGE5));
+        }
+        dialog.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch (i) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        if(flagAutoPrograming){
+                            //if (bootModule.startProgramming())
+                                /*try {
+                                    if (new ThreadDoDeviceDependent().execute().get()){
+                                        flagProgramsFinish = true;
+                                    }
+
+                                } catch (InterruptedException | ExecutionException e) {
+                                    log(e.getMessage());
+                                } finally {
+                                    flagProgramsFinish = true;
+                                }*/
+                                //new ThreadDoDeviceDependent().execute();
+                                new ThreadTest().start();
+                                /*if (!onProgramed()) {
+                                    flagProgramsFinish = true;
+                                }*/
+                        }
+                        break;
+                    default:
+                }
+            }
+        });
+        dialog.setNegativeButton(getString(R.string.Close), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                //finish();
+            }
+        });
+
+        dialog.show();
     }
 
     /** Приемник сообщений. */
@@ -189,7 +242,9 @@ public class BootFragment extends Fragment implements View.OnClickListener {
             if (action != null) {
                 switch (action) {
                     case InterfaceModule.ACTION_LOAD_OK:
-                        //unlockOrientation();
+                        imageViewBoot.setEnabled(true);
+                        imageViewBoot.setAlpha(255);
+                        startBoot();
                         textLog.append("Есе готово для обновления.");
                     break;
                     case InterfaceModule.ACTION_RECONNECT_OK:
@@ -221,74 +276,7 @@ public class BootFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    boolean startProgramed() {
 
-        if (!programmer.isProgrammerId()) {
-            log(getString(R.string.Not_programmer));
-            return false;
-        }
-        flagProgramsFinish = false;
-        log(getString(R.string.Programmer_defined));
-        try {
-
-            int descriptor = programmer.getDescriptor();
-
-            CodeDevice codeDevice = CodeDevice.contains(descriptor);
-
-            if(codeDevice == null){
-                throw new Exception("Фаил с дескриптором " + descriptor + " не найден! ");
-            }
-
-            /*if (mapCodeDevice.get(desc) == null) {
-                throw new Exception("Фаил с дескриптором " + desc + " не найден! ");
-            }*/
-
-            //String deviceFileName = mapCodeDevice.get(desc);
-            String deviceFileName = codeDevice.getDevice();
-            if (deviceFileName.isEmpty()) {
-                throw new Exception("Device name not specified!");
-            }
-
-            log("Device " + deviceFileName);
-
-            /*37894_mbc04.36.2_4.hex пример имени файла прошивки
-            |desc||hardware ||version     desc- это сигнатура 1 и сигнатура 2     микроконтролера 0x94 ## 0x06
-                                        hardware- это версия платы              mbc04.36.2
-                                        version- этоверсия программы платы      4                   */
-            String constructBootFile = new StringBuilder()
-                    .append(descriptor).append('_')               //дескриптор сигнатура 1 и сигнатура 2
-                    .append(hardware.toLowerCase())         //hardware- это версия платы
-                    .append('_')
-                    .append(microSoftware)             //version- этоверсия программы платы
-                    .append(".hex").toString();
-            log(getString(R.string.TEXT_MESSAGE3) + constructBootFile);
-            String[] bootFiles = getActivity().getAssets().list(dirBootFiles);
-            String bootFileName = "";
-            if (Arrays.asList(bootFiles).contains(constructBootFile)) {
-                bootFileName = constructBootFile;
-            }
-
-            if (bootFileName.isEmpty()) {
-                throw new Exception("Boot фаил отсутствует для этого устройства!\r\n");
-            }
-
-            InputStream inputDeviceFile = getActivity().getAssets().open(dirDeviceFiles + '/' + deviceFileName);
-            InputStream inputHexFile = getActivity().getAssets().open(dirBootFiles + '/' + bootFileName);
-
-
-            imageViewBoot.setEnabled(false);
-            imageViewBoot.setAlpha(128);
-            programmer.doJob(inputDeviceFile, inputHexFile);
-            new ThreadDoDeviceDependent().execute();
-        } catch (IOException e) {
-            handlerProgrammed.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), e.getMessage()).sendToTarget();
-            return false;
-        } catch (Exception e) {
-            handlerProgrammed.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), e.getMessage()).sendToTarget();
-            return false;
-        }
-        return true;
-    }
 
     final HandlerBootloader handlerProgrammed = new HandlerBootloader() {
 
@@ -317,40 +305,51 @@ public class BootFragment extends Fragment implements View.OnClickListener {
         }
     };
 
-    private final AVRProgrammer programmer = new AVRProgrammer(handlerProgrammed) {
-        @Override
-        public void sendByte(byte b) {
-            bootModule.sendByte(b);
-        }
 
-        @Override
-        public int getByte() {
-            return bootModule.getByte();
-        }
-    };
 
     void log(String string) { //для текста
         textLog.setText(string + '\n' + textLog.getText());
     }
 
-    class ThreadDoDeviceDependent extends AsyncTask<Void, Void, Boolean> {
+    class ThreadDoDeviceDependent extends AsyncTask<Void, Message, Boolean> {
         protected AlertDialog.Builder dialog;
+        protected AVRProgrammer programmer;
+        private ThreadDoDeviceDependent task;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            task = this;
             imageViewBack.setEnabled(false);
+            programmer = new AVRProgrammer(handlerProgrammed) {
+                @Override
+                public void sendByte(byte b) {
+                    bootModule.sendByte(b);
+                }
+
+                @Override
+                public int getByte() {
+                    return bootModule.getByte();
+                }
+
+                @Override
+                public void sendMessage(Message message) {
+                    task.publishProgress(message);
+                }
+            };
         }
 
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
-                programmer.doDeviceDependent();
+                return onProgramed();
+                //programmer.doDeviceDependent();
             } catch (Exception e) {
-                handlerProgrammed.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), e.getMessage() + " \r\n").sendToTarget();
+                showMessage(e.getMessage() + " \r\n");
+                //publishProgress(new Handler().obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), e.getMessage() + " \r\n"));
+                //handlerProgrammed.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), e.getMessage() + " \r\n").sendToTarget();
                 return false;
             }
-            return true;
         }
 
         @Override
@@ -397,6 +396,217 @@ public class BootFragment extends Fragment implements View.OnClickListener {
             }
             dialog.show();
         }
+
+        @Override
+        protected void onProgressUpdate(Message... value) {
+            super.onProgressUpdate(value);
+            Message msg = value[0];
+            switch (HandlerBootloader.Result.values()[msg.what]) {
+                case MSG_LOG:
+                    log(msg.obj.toString());// обновляем TextView
+                    break;
+                case MSG_SHOW_DIALOG:
+                    //progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    //progressDialog.setMessage(msg.obj.toString());
+                    progressBarJob.setMax(msg.arg1);
+                    progressBarJob.setProgress(0);
+                    //progressDialog.setCanceledOnTouchOutside(false);
+                    //progressDialog.show();
+                    break;
+                case MSG_UPDATE_DIALOG:
+                    progressBarJob.setProgress(msg.arg1);
+                    break;
+                case MSG_CLOSE_DIALOG:
+                    //progressDialog.dismiss();
+                    break;
+                default:
+            }
+        }
+
+        protected void showMessage(String text){
+            Message message= new Message();
+            message.what = HandlerBootloader.Result.MSG_LOG.ordinal();
+            message.obj = text + " \r\n";
+            task.publishProgress(message);
+        }
+
+        boolean onProgramed() throws Exception {
+            if (!bootModule.startProgramming())
+                throw new Exception("Программатор не запустился");
+
+            if (!programmer.isProgrammerId()) {
+                throw new Exception(getString(R.string.Not_programmer));
+                //log(getString(R.string.Not_programmer));
+                //return false;
+            }
+            flagProgramsFinish = false;
+            showMessage(getString(R.string.Programmer_defined));
+            //log(getString(R.string.Programmer_defined));
+            //try {
+
+                int descriptor = programmer.getDescriptor();
+                CodeDevice codeDevice = CodeDevice.isContains(descriptor);
+                if(codeDevice == null){
+                    throw new Exception("Фаил с дескриптором " + descriptor + " не найден! ");
+                }
+
+                String deviceFileName = codeDevice.getDevice();
+                if (deviceFileName.isEmpty()) {
+                    throw new Exception("Device name not specified!");
+                }
+                showMessage("Device " + deviceFileName);
+                //log("Device " + deviceFileName);
+
+            /*37894_mbc04.36.2_4.hex пример имени файла прошивки
+            |desc||hardware ||version     desc- это сигнатура 1 и сигнатура 2     микроконтролера 0x94 ## 0x06
+                                        hardware- это версия платы              mbc04.36.2
+                                        version- этоверсия программы платы      4                   */
+                String constructBootFile = new StringBuilder()
+                        .append(descriptor).append('_')               //дескриптор сигнатура 1 и сигнатура 2
+                        .append(hardware.toLowerCase())         //hardware- это версия платы
+                        .append('_')
+                        .append(microSoftware)             //version- этоверсия программы платы
+                        .append(".hex").toString();
+                showMessage(getString(R.string.TEXT_MESSAGE3) + constructBootFile);
+                //log(getString(R.string.TEXT_MESSAGE3) + constructBootFile);
+                String[] bootFiles = getActivity().getAssets().list(dirBootFiles);
+                String bootFileName = "";
+                if (Arrays.asList(bootFiles).contains(constructBootFile)) {
+                    bootFileName = constructBootFile;
+                }
+
+                if (bootFileName.isEmpty()) {
+                    throw new Exception("Boot фаил отсутствует для этого устройства!\r\n");
+                }
+
+                InputStream inputDeviceFile = getActivity().getAssets().open(dirDeviceFiles + '/' + deviceFileName);
+                InputStream inputHexFile = getActivity().getAssets().open(dirBootFiles + '/' + bootFileName);
+
+
+                //imageViewBoot.setEnabled(false);
+                //imageViewBoot.setAlpha(128);
+                programmer.doJob(inputDeviceFile, inputHexFile);
+                programmer.doDeviceDependent();
+                //new ThreadDoDeviceDependent().execute();
+            /*} catch (IOException e) {
+                handlerProgrammed.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), e.getMessage()).sendToTarget();
+                return false;
+            } catch (Exception e) {
+                handlerProgrammed.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), e.getMessage()).sendToTarget();
+                return false;
+            }*/
+            return true;
+        }
+    }
+
+    class ThreadTest extends Thread{
+        protected AlertDialog.Builder dialog;
+        protected AVRProgrammer programmer;
+
+        ThreadTest(){
+            imageViewBack.setEnabled(false);
+            programmer = new AVRProgrammer(handlerProgrammed) {
+                @Override
+                public void sendByte(byte b) {
+                    bootModule.sendByte(b);
+                }
+
+                @Override
+                public int getByte() {
+                    return bootModule.getByte();
+                }
+
+                @Override
+                public void sendMessage(Message message) {
+                    //task.publishProgress(message);
+                }
+            };
+            setPriority(MAX_PRIORITY);
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            try {
+                onProgramed();
+                //programmer.doDeviceDependent();
+            } catch (Exception e) {
+                //showMessage(e.getMessage() + " \r\n");
+                //publishProgress(new Handler().obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), e.getMessage() + " \r\n"));
+                //handlerProgrammed.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), e.getMessage() + " \r\n").sendToTarget();
+
+            }
+        }
+
+        boolean onProgramed() throws Exception {
+            if (!bootModule.startProgramming())
+                throw new Exception("Программатор не запустился");
+
+            if (!programmer.isProgrammerId()) {
+                throw new Exception(getString(R.string.Not_programmer));
+                //log(getString(R.string.Not_programmer));
+                //return false;
+            }
+            flagProgramsFinish = false;
+            //showMessage(getString(R.string.Programmer_defined));
+            //log(getString(R.string.Programmer_defined));
+            //try {
+
+            int descriptor = programmer.getDescriptor();
+            CodeDevice codeDevice = CodeDevice.isContains(descriptor);
+            if(codeDevice == null){
+                throw new Exception("Фаил с дескриптором " + descriptor + " не найден! ");
+            }
+
+            String deviceFileName = codeDevice.getDevice();
+            if (deviceFileName.isEmpty()) {
+                throw new Exception("Device name not specified!");
+            }
+            //showMessage("Device " + deviceFileName);
+            //log("Device " + deviceFileName);
+
+            /*37894_mbc04.36.2_4.hex пример имени файла прошивки
+            |desc||hardware ||version     desc- это сигнатура 1 и сигнатура 2     микроконтролера 0x94 ## 0x06
+                                        hardware- это версия платы              mbc04.36.2
+                                        version- этоверсия программы платы      4                   */
+            String constructBootFile = new StringBuilder()
+                    .append(descriptor).append('_')               //дескриптор сигнатура 1 и сигнатура 2
+                    .append(hardware.toLowerCase())         //hardware- это версия платы
+                    .append('_')
+                    .append(microSoftware)             //version- этоверсия программы платы
+                    .append(".hex").toString();
+            //showMessage(getString(R.string.TEXT_MESSAGE3) + constructBootFile);
+            //log(getString(R.string.TEXT_MESSAGE3) + constructBootFile);
+            String[] bootFiles = getActivity().getAssets().list(dirBootFiles);
+            String bootFileName = "";
+            if (Arrays.asList(bootFiles).contains(constructBootFile)) {
+                bootFileName = constructBootFile;
+            }
+
+            if (bootFileName.isEmpty()) {
+                throw new Exception("Boot фаил отсутствует для этого устройства!\r\n");
+            }
+
+            InputStream inputDeviceFile = getActivity().getAssets().open(dirDeviceFiles + '/' + deviceFileName);
+            InputStream inputHexFile = getActivity().getAssets().open(dirBootFiles + '/' + bootFileName);
+
+
+            //imageViewBoot.setEnabled(false);
+            //imageViewBoot.setAlpha(128);
+            programmer.doJob(inputDeviceFile, inputHexFile);
+            programmer.doDeviceDependent();
+            //new ThreadDoDeviceDependent().execute();
+            /*} catch (IOException e) {
+                handlerProgrammed.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), e.getMessage()).sendToTarget();
+                return false;
+            } catch (Exception e) {
+                handlerProgrammed.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), e.getMessage()).sendToTarget();
+                return false;
+            }*/
+            return true;
+        }
+
+
     }
 
 }

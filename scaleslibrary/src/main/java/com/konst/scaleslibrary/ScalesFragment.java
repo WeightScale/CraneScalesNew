@@ -27,6 +27,8 @@ import com.konst.scaleslibrary.module.scale.ObjectScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.konst.scaleslibrary.settings.ActivityProperties;
 
+import java.io.IOException;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -94,8 +96,9 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
         textKg.setSpan(new TextAppearanceSpan(getActivity(), R.style.SpanTextKg),0,textKg.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         baseReceiver = new BaseReceiver(getActivity());
         baseReceiver.register();
+
         createScalesModule(device);
-    }
+            }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -140,8 +143,8 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
     public void onDetach() {
         super.onDetach();
         baseReceiver.unregister();
-        onInteractionListener.detachScales();
-        onInteractionListener = null;
+        if (scaleModule != null)
+            scaleModule.dettach();
     }
 
     @Override
@@ -472,7 +475,6 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
      */
     protected interface OnInteractionListener {
         void openSearchDialog(String msg);
-        void detachScales();
         void onScaleModuleCallback(ScaleModule obj);
     }
 
