@@ -54,6 +54,8 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
     private static final String ARG_VERSION = BootFragment.class.getSimpleName()+"VERSION";
     private static final String ARG_DEVICE = BootFragment.class.getSimpleName()+"DEVICE";
     private static final int REQUEST_DEVICE = 1;
+    private static final int REQUEST_ATTACH = 2;
+    public static final int REQUEST_BROKEN = 3;
     private String version;
     private String device;
     private int moduleWeight;
@@ -158,6 +160,12 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
                         scaleModule.dettach();
                     createScalesModule(device);
                     break;
+                case REQUEST_BROKEN:
+                    /*if (scaleModule != null)
+                        scaleModule.dettach();*/
+                    ScaleModule.getInstance().dettach();
+                    //openSearchDialog("");
+                    break;
                 default:
             }
         }
@@ -217,9 +225,14 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
     }
 
     public void openSearchDialog(String msg) {
-        //layoutSearch.setVisibility(View.VISIBLE);
         DialogFragment fragment = SearchDialogFragment.newInstance(msg);
         fragment.setTargetFragment(this, REQUEST_DEVICE);
+        fragment.show(getFragmentManager(), fragment.getClass().getName());
+    }
+
+    public void openSearchProgress(String msg){
+        DialogFragment fragment = SearchProgressFragment.newInstance(msg);
+        fragment.setTargetFragment(this, REQUEST_ATTACH);
         fragment.show(getFragmentManager(), fragment.getClass().getName());
     }
 
@@ -335,6 +348,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
         BaseReceiver(Context context){
             mContext = context;
             intentFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+            intentFilter.addAction(InterfaceModule.ACTION_ATTACH_START);
             intentFilter.addAction(InterfaceModule.ACTION_SCALES_RESULT);
             intentFilter.addAction(InterfaceModule.ACTION_WEIGHT_STABLE);
             intentFilter.addAction(InterfaceModule.ACTION_LOAD_OK);
@@ -355,6 +369,14 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
                     case InterfaceModule.ACTION_RECONNECT_OK:
                         /*scalesFragment.loadModule(scaleModule);
                         fragmentManager.beginTransaction().show(scalesFragment).commit();*/
+                        break;
+                    case InterfaceModule.ACTION_ATTACH_START:
+                        String msg = intent.getStringExtra(InterfaceModule.EXTRA_DEVICE_NAME);
+                        if (msg!=null){
+                            Bundle bundle = new Bundle();
+                            bundle.putString(SearchProgressFragment.ARG_MESSAGE, msg);
+                        }
+                        openSearchProgress(msg);
                         break;
                     case InterfaceModule.ACTION_CONNECT_ERROR:
                         String message = intent.getStringExtra(InterfaceModule.EXTRA_MESSAGE);
@@ -474,7 +496,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
      * Интерфейс обратного вызова.
      */
     protected interface OnInteractionListener {
-        void openSearchDialog(String msg);
+        //void openSearchDialog(String msg);
         void onScaleModuleCallback(ScaleModule obj);
     }
 

@@ -124,7 +124,7 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.search_scales) {
-            scalesView.openSearchDialog("Выбор устройства для соединения");
+            //scalesView.openSearchDialog("Выбор устройства для соединения");
         } else if (id == R.id.settings) {
             startActivity(new Intent(getApplicationContext(), ActivityPreferences.class));
         }
@@ -142,9 +142,6 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
 
     class BaseReceiver extends BroadcastReceiver {
         private final Context mContext;
-        private SpannableStringBuilder w;
-        private Rect bounds;
-        private ProgressDialog dialogSearch;
         private final IntentFilter intentFilter;
         protected boolean isRegistered;
 

@@ -80,11 +80,6 @@ public class SearchDialogFragment extends DialogFragment implements View.OnClick
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
     public void onClick(View view) {
         if (view.getId() == R.id.buttonSearchBluetooth) {
             searchDevice();

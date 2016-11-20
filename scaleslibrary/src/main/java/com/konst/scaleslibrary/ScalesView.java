@@ -34,14 +34,14 @@ import java.util.Set;
 /** Класс индикатора весового модуля.
  * @author Kostya on 26.09.2016.
  */
-public class ScalesView extends LinearLayout implements ScalesFragment.OnInteractionListener, SearchFragment.OnFragmentInteractionListener {
+public class ScalesView extends LinearLayout implements ScalesFragment.OnInteractionListener/*, SearchFragment.OnFragmentInteractionListener */{
     private static ScalesView instance;
     /** Настройки для весов. */
     public Settings settings;
     private ScaleModule scaleModule;
     private BootModule bootModule;
     private ScalesFragment scalesFragment;
-    private SearchFragment searchFragment;
+    //private SearchFragment searchFragment;
     private FragmentManager fragmentManager;
     private BaseReceiver baseReceiver;
     private String version;
@@ -73,8 +73,6 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
 
         fragmentManager = ((AppCompatActivity)getContext()).getFragmentManager();
 
-        searchFragment = SearchFragment.newInstance("", this);
-
         baseReceiver = new BaseReceiver(context);
         baseReceiver.register();
 
@@ -82,13 +80,13 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         findViewById(R.id.buttonSearch).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                openSearchDialog("Выбор устройства для соединения");
+
             }
         });
         findViewById(R.id.buttonSettings).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                openSearchDialog("Выбор устройства для соединения");
+
             }
         });
     }
@@ -105,30 +103,6 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
          * @param device Адресс bluetooth весового модуля.
          */
         void onCreate(String device);
-    }
-
-    @Override
-    public void onLinkBroken() {
-        fragmentManager.beginTransaction().remove(searchFragment).commit();
-    }
-
-    /** Процедура обратного вызова {@link ScalesFragment.OnInteractionListener}.
-     * Открыть диалог для поиска весов.
-     * @param msg Текст в поле сообщение формы диалога.
-     */
-    @Override
-    public void openSearchDialog(String msg) {
-        /*SearchDialog dialog = new SearchDialog(getContext(), msg, new OnCreateScalesListener() {
-            @Override
-            public void onCreate(String device) {
-                Fragment fragment = fragmentManager.findFragmentByTag(scalesFragment.getClass().getName());
-                if (fragment != null) {
-                    fragmentManager.beginTransaction().remove(fragment).commit();
-                }
-                createScalesModule(device);
-            }
-        });
-        dialog.show();*/
     }
 
     @Override
@@ -162,30 +136,6 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         scalesFragment = ScalesFragment.newInstance(version, addressDevice, this);
         fragmentManager.beginTransaction().replace(R.id.fragment, scalesFragment, scalesFragment.getClass().getName()).commit();
     }
-
-    /*private void createScalesModule(String device){
-        try {
-            ScaleModule.create(getContext(), version, device, new InterfaceCallbackScales() {
-                *//** Сообщение о результате соединения.
-                 * @param module Модуль с которым соединились. *//*
-                @Override
-                public void onCallback(Module module) {
-                    if (module instanceof ScaleModule){
-                        scaleModule = (ScaleModule)module;
-                        updateSettings(settings);
-                        scaleModule.scalesProcessEnable(true);
-                    }else if (module instanceof BootModule){
-                        bootModule = (BootModule)module;
-                    }
-                    addressDevice = module.getAddressBluetoothDevice();
-                    settings.write(Settings.KEY.KEY_ADDRESS, module.getAddressBluetoothDevice());
-                    interfaceCallbackScales.onCallback(module);
-                }
-            });
-        }catch (Exception | ErrorDeviceException e) {
-            openSearchDialog(e.getMessage());
-        }
-    }*/
 
     /** Устанавливаем необходимую дискретность отображения значения веса.
      * @param discrete Значение дискретности (1/2/5/10/20/50).
@@ -242,12 +192,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
          */
         BaseReceiver(Context context){
             mContext = context;
-            intentFilter = new IntentFilter(/*InterfaceModule.ACTION_LOAD_OK*/);
-            //intentFilter.addAction(InterfaceModule.ACTION_RECONNECT_OK);
-            intentFilter.addAction(InterfaceModule.ACTION_ATTACH_START);
-            intentFilter.addAction(InterfaceModule.ACTION_ATTACH_FINISH);
-            //intentFilter.addAction(InterfaceModule.ACTION_CONNECT_ERROR);
-            intentFilter.addAction(InterfaceModule.ACTION_BOOT_MODULE);
+            intentFilter = new IntentFilter(InterfaceModule.ACTION_BOOT_MODULE);
         }
 
         @Override
@@ -255,36 +200,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
             String action = intent.getAction();
             if (action != null) {
                 switch (action) {
-                    /*case InterfaceModule.ACTION_LOAD_OK:
-                        //unlockOrientation();
-                        scalesFragment = ScalesFragment.newInstance(ScalesView.this);
-                        scalesFragment.loadModule(scaleModule);
-                        scalesFragment.setOnInteractionListener(ScalesView.this);
-                        fragmentManager.beginTransaction().replace(R.id.fragment, scalesFragment, scalesFragment.getClass().getName()).commit();
-                        break;*/
-
-                    case InterfaceModule.ACTION_ATTACH_START:
-                        String msg = intent.getStringExtra(InterfaceModule.EXTRA_DEVICE_NAME);
-                        if (msg!=null){
-                            Bundle bundle = new Bundle();
-                            bundle.putString(SearchFragment.ARG_MESSAGE, msg);
-                        }
-                        searchFragment = SearchFragment.newInstance(msg, ScalesView.this);
-                        searchFragment.setCancelable(false);
-                        //fragmentManager.beginTransaction().hide(scalesFragment).commit();
-                        fragmentManager.beginTransaction().add(R.id.fragment, searchFragment, searchFragment.getClass().getName()).commit();
-                        break;
-                    case InterfaceModule.ACTION_ATTACH_FINISH:
-                        fragmentManager.beginTransaction().remove(searchFragment).commit();
-                        break;
-                    /*case InterfaceModule.ACTION_CONNECT_ERROR:
-                        String message = intent.getStringExtra(InterfaceModule.EXTRA_MESSAGE);
-                        if (message == null)
-                            message = "";
-                        openSearchDialog(message);
-                        break;*/
                     case InterfaceModule.ACTION_BOOT_MODULE:
-                        //test();
                         fragmentManager.beginTransaction().replace(R.id.fragment, BootFragment.newInstance("BOOT", addressDevice), BootFragment.class.getName()).commitAllowingStateLoss();
                         break;
                     default:
@@ -305,13 +221,6 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                 isRegistered = false;
             }
         }
-    }
-
-    void test(){
-        LinearLayout linearLayout = this;
-        LayoutInflater ltInflater = LayoutInflater.from(getContext());
-        //ltInflater.inflate(R.layout.fragment_boot, (ViewGroup) getParent());
-        addView(ltInflater.inflate(R.layout.fragment_boot, null));
     }
 
 }

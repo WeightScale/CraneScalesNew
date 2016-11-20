@@ -8,8 +8,8 @@ android {
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 17
-        //versionName 'CraneScales'
-        versionName 'WeightScales'
+        versionName 'CraneScales'
+        //versionName 'WeightScales'
         multiDexEnabled true
     }
     buildTypes {
