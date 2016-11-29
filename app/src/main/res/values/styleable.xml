@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="numberPickerStyle" format="reference" />
-    <attr name="dialogFilterADCStyle" format="reference"/>
+    <!--<attr name="dialogFilterADCStyle" format="reference"/>-->
 
-    <declare-styleable name="dialogFilterADC">
+    <!--<declare-styleable name="dialogFilterADC">
         <attr name="minFilterADC" format="integer"/>
         <attr name="maxFilterADC" format="integer"/>
-    </declare-styleable>
+    </declare-styleable>-->
 
     <declare-styleable name="NumberPicker">
         <!-- @hide Color for the solid color background if such for optimized rendering. -->

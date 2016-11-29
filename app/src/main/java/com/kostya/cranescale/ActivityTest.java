@@ -79,11 +79,11 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         globals = Globals.getInstance();
         globals.initialize(this);
 
-        listView = (ListView)findViewById(R.id.listView);
-        listView.setCacheColorHint(getResources().getColor(R.color.transparent));
-        listView.setVerticalFadingEdgeEnabled(false);
+        //listView = (ListView)findViewById(R.id.listView);
+        //listView.setCacheColorHint(getResources().getColor(R.color.transparent));
+        //listView.setVerticalFadingEdgeEnabled(false);
         customListAdapter = new FragmentScales.CustomListAdapter(this, R.layout.list_item_weight, arrayList);
-        listView.setAdapter(customListAdapter);
+        //listView.setAdapter(customListAdapter);
         customListAdapter.notifyDataSetChanged();
 
         scalesView = (ScalesView)findViewById(R.id.scalesView);

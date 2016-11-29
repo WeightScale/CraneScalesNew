@@ -12,7 +12,7 @@ import com.konst.scaleslibrary.R;
  */
 class DialogFilterADC extends DialogPreference /*implements ActivityPreferences.InterfacePreference*/ {
     private int mNumber;
-    private com.konst.scaleslibrary.settings.NumberPicker numberPicker;
+    private NumberPicker numberPicker;
     final int minValue;
     final int maxValue;
 

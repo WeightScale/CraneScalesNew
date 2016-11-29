@@ -2,10 +2,16 @@
 <resources>
     <attr name="numberPickerStyle" format="reference" />
     <attr name="dialogFilterADCStyle" format="reference"/>
+    <attr name="textProgressBarStyle" format="reference"/>
 
     <declare-styleable name="dialogFilterADC">
         <attr name="minFilterADC" format="integer"/>
         <attr name="maxFilterADC" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="texProgressBar">
+        <attr name="textSizeProgressBar" format="dimension"/>
+        <attr name="textColorProgressBar" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="NumberPicker">

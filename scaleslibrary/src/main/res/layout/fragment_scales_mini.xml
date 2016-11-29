@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/material_deep_teal_500">
+
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="bottom">
+        <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/layoutIndicator">
+
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right">
+
+
+
+                    <TextView
+                            style="@style/shadowEffect2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/weightTextView"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/text_large_xx"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:textStyle="italic"
+                            android:singleLine="true"
+                            android:layout_gravity="bottom"
+                            android:layout_weight="1"/>
+
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:id="@+id/layoutSub"
+                            >
+
+                        <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="fill_parent"
+                                >
+
+                            <TextView
+                                    android:id="@+id/textBattery"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="fill_parent"
+                                    android:textAppearance="?android:attr/textAppearanceMedium"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/white"
+                                    android:drawableLeft="@drawable/ic_battery_full"
+                                    android:textSize="@dimen/text_large"
+                                    android:text="28"
+                                    android:gravity="left|center_vertical"/>
+
+                            <TextView
+                                    android:id="@+id/textTemperature"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="fill_parent"
+                                    android:textAppearance="?android:attr/textAppearanceMedium"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/white"
+                                    android:drawableLeft="@drawable/ic_temperature"
+                                    android:textSize="@dimen/text_large"
+                                    android:layout_weight="1"
+                                    android:gravity="left|center_vertical"/>
+
+                            <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="fill_parent"
+                                    android:id="@+id/imageViewWait"
+                                    android:src="@drawable/ic_stable"/>
+                        </LinearLayout>
+
+                        <ImageButton
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:id="@+id/buttonSettings"
+                                android:src="@drawable/ic_properties"
+                                style="@style/CustomButtonSettings"
+                                android:clickable="true"
+                                android:padding="5dp"
+                                />
+                    </LinearLayout>
+
+                <!--<LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/material_deep_teal_500"
+                        android:id="@+id/layoutSearch"
+                        >
+
+                    <ImageButton
+                            style="@style/CustomButtonSettings"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/buttonSearch"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_search"
+                            android:clickable="true"/>
+                </LinearLayout>-->
+
+            </LinearLayout>
+
+            <ProgressBar
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/corners"
+                    android:id="@+id/progressBarStable"
+                    android:focusableInTouchMode="false"
+                    android:progressDrawable="@drawable/progress_stable"
+                    android:layout_marginTop="@dimen/padding"
+                    android:layout_gravity="bottom"/>
+
+            <ProgressBar
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/height_progress_weight"
+                    android:id="@+id/progressBarWeight"
+                    android:layout_gravity="left|center_vertical"
+                    android:progressDrawable="@drawable/progress_weight"
+                    android:focusableInTouchMode="false"
+                    android:layout_marginBottom="@dimen/padding"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</FrameLayout>

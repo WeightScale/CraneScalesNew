@@ -13,6 +13,9 @@ import com.konst.scaleslibrary.R;
 import com.konst.scaleslibrary.ScalesView;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 
+import java.util.Date;
+import java.util.Random;
+
 /**
  * @author Kostya  06.11.2016.
  */
@@ -238,6 +241,7 @@ public class FragmentCalibrator extends PreferenceFragment {
         }
 
         void doSealing(){
+            scaleModule.setSeal(new Random(new Date().getTime()).nextInt(10000));
             if (point1.x != Integer.MIN_VALUE && point2.x != Integer.MIN_VALUE) {
                 scaleModule.setCoefficientA((float) (point1.y - point2.y) / (point1.x - point2.x));
                 scaleModule.setCoefficientB(point1.y - scaleModule.getCoefficientA() * point1.x);

@@ -29,8 +29,8 @@ import com.konst.scaleslibrary.module.InterfaceModule;
  */
 public class SearchProgressFragment extends DialogFragment {
     private BaseReceiver broadcastReceiver;                   //приёмник намерений
-    public static final String ARG_MESSAGE = SearchProgressFragment.class.getName() +".ARG_MESSAGE";
     private String message;
+    public static final String ARG_MESSAGE = SearchProgressFragment.class.getName() +".ARG_MESSAGE";
 
     public SearchProgressFragment() {
         // Required empty public constructor
@@ -107,7 +107,7 @@ public class SearchProgressFragment extends DialogFragment {
     }
 
     public void onButtonPressed() {
-        getTargetFragment().onActivityResult(ScalesFragment.REQUEST_BROKEN, Activity.RESULT_OK, new Intent());
+        getTargetFragment().onActivityResult(ScalesView.REQUEST_BROKEN, Activity.RESULT_OK, new Intent());
         dismiss();
     }
 

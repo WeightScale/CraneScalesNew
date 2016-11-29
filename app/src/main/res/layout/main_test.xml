@@ -14,15 +14,12 @@
 
     </com.konst.scaleslibrary.ScalesView>
 
-    <LinearLayout android:orientation="horizontal"
-                  android:layout_width="fill_parent"
-                  android:layout_height="0dp"
-                  android:background="@color/background_light"
-                  android:layout_weight="1">
-        <ListView android:layout_width="fill_parent"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/listView"
-                />
-    </LinearLayout>
+    <FrameLayout android:orientation="vertical"
+                 android:layout_width="fill_parent"
+                 android:layout_height="fill_parent"
+                 android:background="@color/background_light"
+                 android:layout_below="@+id/scalesView">
+        <include layout="@layout/invoice"/>
+    </FrameLayout>
 
 </RelativeLayout>

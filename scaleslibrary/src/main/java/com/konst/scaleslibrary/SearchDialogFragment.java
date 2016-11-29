@@ -29,6 +29,7 @@ public class SearchDialogFragment extends DialogFragment implements View.OnClick
     private String message;
     private static final String ARG_MESSAGE = SearchDialogFragment.class.getSimpleName()+"MESSAGE";
     public static final String ARG_DEVICE = SearchDialogFragment.class.getSimpleName()+"DEVICE";
+    private static final int REQUEST_DEVICE = 1;
 
 
     public static SearchDialogFragment newInstance(String text) {

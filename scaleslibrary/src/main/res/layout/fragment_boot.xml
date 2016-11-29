@@ -20,25 +20,43 @@
             <FrameLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent">
-                <ScrollView
-                        android:layout_width="fill_parent"
-                        android:layout_height="@dimen/text_search_log"
-                        android:paddingLeft="1dp"
-                        >
+
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    <ScrollView
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/text_search_log"
+                            android:paddingLeft="1dp"
+                            >
+                        <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/textLog" android:maxLines="100" android:minLines="3"
+                                android:textColor="@color/white" android:padding="@dimen/padding"
+                                android:textSize="@dimen/text_micro"/>
+                    </ScrollView>
+
                     <TextView
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/textLog" android:maxLines="100" android:minLines="3"
-                            android:textColor="@color/white" android:padding="@dimen/padding"
-                            android:textSize="@dimen/text_micro"/>
-                </ScrollView>
+                            android:layout_height="26dp"
+                            android:id="@+id/statusProgress"
+                            android:maxLines="100"
+                            android:minLines="3"
+                            android:textColor="@color/white"
+                            android:padding="@dimen/padding"
+                            android:textSize="@dimen/text_medium"
+                            android:textStyle="bold"/>
+                </LinearLayout>
 
             </FrameLayout>
 
-            <ProgressBar
-                    style="@android:style/Widget.ProgressBar.Horizontal"
+            <com.konst.scaleslibrary.TextProgressBar
+                    style="@style/TextProgressBar"
                     android:layout_width="fill_parent"
-                    android:layout_height="@dimen/height_progress_weight"
+                    android:layout_height="@dimen/text_medium"
                     android:id="@+id/progressBarJob"
                     android:layout_gravity="left|center_vertical"
                     android:progressDrawable="@drawable/progress_weight"

@@ -65,6 +65,8 @@ public class ScaleModule extends Module /*implements Serializable*/{
     private int limitTenzo;
     /** Предельный вес взвешивания. */
     private int weightMargin;
+    /** Номер пломбы*/
+    private int seal;
     /** Делитель для авто ноль. */
     private static final int DIVIDER_AUTO_NULL = 3;
     /** Количество стабильных показаний веса для авто сохранения. */
@@ -425,6 +427,10 @@ public class ScaleModule extends Module /*implements Serializable*/{
     public int getWeightMargin() {
         return weightMargin;
     }
+
+    public int getSeal(){return seal;}
+
+    public void setSeal(int seal){this.seal = seal;}
 
     public void setWeightMargin(int weightMargin) {
         this.weightMargin = weightMargin;

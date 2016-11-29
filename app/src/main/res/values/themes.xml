@@ -32,10 +32,10 @@
         <item name="virtualButtonPressedDrawable">@drawable/item_background_holo_light</item>
     </style>
 
-    <style name="WeightScaleDialogFilter">
+    <!--<style name="WeightScaleDialogFilter">
         <item name="minFilterADC">0</item>
         <item name="maxFilterADC">15</item>
-    </style>
+    </style>-->
 
     <style name="MyTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -46,7 +46,7 @@
         <item name="android:windowTitleStyle">@style/titleTextStyle</item>
         <item name="android:windowTitleSize">@dimen/title_size</item>
         <item name="numberPickerStyle">@style/NPWidget.Holo.Light.NumberPicker</item>
-        <item name="dialogFilterADCStyle">@style/WeightScaleDialogFilter</item>
+        <!--<item name="dialogFilterADCStyle">@style/WeightScaleDialogFilter</item>-->
     </style>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">

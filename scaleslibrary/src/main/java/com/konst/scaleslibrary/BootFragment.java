@@ -33,7 +33,8 @@ public class BootFragment extends Fragment implements View.OnClickListener {
     BootModule bootModule;
     BaseReceiver baseReceiver;
     TextView textLog;
-    ProgressBar progressBarJob;
+    TextView textStatus;
+    TextProgressBar progressBarJob;
     ImageView imageViewBack, imageViewBoot;
     private String version;
     private String device;
@@ -45,7 +46,6 @@ public class BootFragment extends Fragment implements View.OnClickListener {
     private static final String dirBootFiles = "bootfiles";
     private static final String ARG_VERSION = BootFragment.class.getSimpleName()+"VERSION";
     private static final String ARG_DEVICE = BootFragment.class.getSimpleName()+"DEVICE";
-    private static final int REQUEST_DEVICE = 1;
     boolean flagAutoPrograming;
 
     enum CodeDevice{
@@ -99,7 +99,8 @@ public class BootFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_boot, null);
         textLog = (TextView)view.findViewById(R.id.textLog);
-        progressBarJob = (ProgressBar)view.findViewById(R.id.progressBarJob);
+        textStatus = (TextView)view.findViewById(R.id.statusProgress);
+        progressBarJob = (TextProgressBar) view.findViewById(R.id.progressBarJob);
         imageViewBack = (ImageView)view.findViewById(R.id.buttonBack);
         imageViewBack.setOnClickListener(this);
         imageViewBoot = (ImageView)view.findViewById(R.id.buttonBoot);
@@ -121,7 +122,7 @@ public class BootFragment extends Fragment implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_DEVICE:
+                case ScalesView.REQUEST_DEVICE:
                     String device = data.getStringExtra(SearchDialogFragment.ARG_DEVICE);
                     if (bootModule != null)
                         bootModule.dettach();
@@ -143,7 +144,13 @@ public class BootFragment extends Fragment implements View.OnClickListener {
 
     public void openSearchDialog(String msg) {
         DialogFragment fragment = SearchDialogFragment.newInstance(msg);
-        fragment.setTargetFragment(this, REQUEST_DEVICE);
+        fragment.setTargetFragment(this, ScalesView.REQUEST_DEVICE);
+        fragment.show(getFragmentManager(), fragment.getClass().getName());
+    }
+
+    public void openSearchProgress(String msg){
+        DialogFragment fragment = SearchProgressFragment.newInstance(msg);
+        fragment.setTargetFragment(this, ScalesView.REQUEST_ATTACH);
         fragment.show(getFragmentManager(), fragment.getClass().getName());
     }
 
@@ -233,6 +240,7 @@ public class BootFragment extends Fragment implements View.OnClickListener {
             mContext = context;
             intentFilter = new IntentFilter(InterfaceModule.ACTION_LOAD_OK);
             intentFilter.addAction(InterfaceModule.ACTION_RECONNECT_OK);
+            intentFilter.addAction(InterfaceModule.ACTION_ATTACH_START);
             intentFilter.addAction(InterfaceModule.ACTION_CONNECT_ERROR);
         }
 
@@ -250,6 +258,10 @@ public class BootFragment extends Fragment implements View.OnClickListener {
                     case InterfaceModule.ACTION_RECONNECT_OK:
 
                     break;
+                    case InterfaceModule.ACTION_ATTACH_START:
+                        String msg = intent.getStringExtra(InterfaceModule.EXTRA_DEVICE_NAME);
+                        openSearchProgress(msg);
+                        break;
                     case InterfaceModule.ACTION_CONNECT_ERROR:
                         String message = intent.getStringExtra(InterfaceModule.EXTRA_MESSAGE);
                         if (message == null)
@@ -289,13 +301,15 @@ public class BootFragment extends Fragment implements View.OnClickListener {
                 case MSG_SHOW_DIALOG:
                     //progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                     //progressDialog.setMessage(msg.obj.toString());
+                    textStatus.setText(msg.obj.toString());
                     progressBarJob.setMax(msg.arg1);
                     progressBarJob.setProgress(0);
                     //progressDialog.setCanceledOnTouchOutside(false);
                     //progressDialog.show();
                     break;
                 case MSG_UPDATE_DIALOG:
-                    progressBarJob.setProgress(msg.arg1);
+                    progressBarJob.setHpBar(msg.arg1);
+                    //progressBarJob.setProgress(msg.arg1);
                     break;
                 case MSG_CLOSE_DIALOG:
                     //progressDialog.dismiss();
@@ -304,8 +318,6 @@ public class BootFragment extends Fragment implements View.OnClickListener {
             }
         }
     };
-
-
 
     void log(String string) { //для текста
         textLog.setText(string + '\n' + textLog.getText());

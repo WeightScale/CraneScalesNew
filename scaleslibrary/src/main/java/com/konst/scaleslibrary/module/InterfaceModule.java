@@ -42,6 +42,11 @@ public interface InterfaceModule {
      * @see Commands#DAT
      */
     String CMD_DATA_LMT = "lmt";
+    /** Значение номера пломбы при калибровке.
+     * Используется как параметр комманды {@link Commands#DAT}
+     * @see Commands#DAT
+     */
+    String CMD_DATA_SEL = "sel";
 
     //String command(Commands commands);
     void write(String command);

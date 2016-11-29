@@ -3,10 +3,7 @@ package com.konst.scaleslibrary;
 import android.app.*;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -50,6 +47,9 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     private final int microSoftware = 5;
     private InterfaceCallbackScales interfaceCallbackScales;
     private static final String TAG_FRAGMENT = ScalesView.class.getName() + "TAG_FRAGMENT";
+    public static final int REQUEST_DEVICE = 1;
+    public static final int REQUEST_ATTACH = 2;
+    public static final int REQUEST_BROKEN = 3;
 
     /** Создаем новый обьект индикатора весового модуля.
      * @param context the context
@@ -201,7 +201,34 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
             if (action != null) {
                 switch (action) {
                     case InterfaceModule.ACTION_BOOT_MODULE:
-                        fragmentManager.beginTransaction().replace(R.id.fragment, BootFragment.newInstance("BOOT", addressDevice), BootFragment.class.getName()).commitAllowingStateLoss();
+                        boolean powerOff = intent.getBooleanExtra("com.konst.simple_scale.POWER", false);
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                        dialog.setTitle(getContext().getString(R.string.Warning_Connect));
+                        dialog.setCancelable(false);
+                        dialog.setPositiveButton(getContext().getString(R.string.OK), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                switch (i) {
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        fragmentManager.beginTransaction().replace(R.id.fragment, BootFragment.newInstance("BOOT", addressDevice), BootFragment.class.getName()).commitAllowingStateLoss();
+                                        break;
+                                    default:
+                                }
+                            }
+                        });
+                        dialog.setNegativeButton(getContext().getString(R.string.Close), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                //finish();
+                            }
+                        });
+                        if (powerOff)
+                            dialog.setMessage("На весах нажмите кнопку включения и не отпускайте пока индикатор не погаснет. После этого нажмите ОК");
+                        else
+                            dialog.setMessage(getContext().getString(R.string.TEXT_MESSAGE));
+                        dialog.show();
+
                         break;
                     default:
                 }

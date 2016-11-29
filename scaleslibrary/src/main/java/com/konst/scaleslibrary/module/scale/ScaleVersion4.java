@@ -115,9 +115,11 @@ public class ScaleVersion4 extends ScaleVersion {
      * @see Commands#DAT */
     @Override
     public boolean writeData() {
-        return Commands.DAT.setParam(InterfaceModule.CMD_DATA_CFA + '=' + scaleModule.getCoefficientA() + ' ' +
+        return Commands.DAT.setParam(
+                InterfaceModule.CMD_DATA_CFA + '=' + scaleModule.getCoefficientA() + ' ' +
                 InterfaceModule.CMD_DATA_WGM + '=' + weightMax + ' ' +
-                InterfaceModule.CMD_DATA_LMT + '=' + scaleModule.getLimitTenzo());
+                InterfaceModule.CMD_DATA_LMT + '=' + scaleModule.getLimitTenzo()+ ' '+
+                InterfaceModule.CMD_DATA_SEL+ '='+ scaleModule.getSeal());
     }
 
     @Override
@@ -144,20 +146,23 @@ public class ScaleVersion4 extends ScaleVersion {
         while (iteratorData.hasNext()) {
             switch (iteratorData.next()) {
                 case InterfaceModule.CMD_DATA_CFA:
-                    scaleModule.setCoefficientA(Float.valueOf(data.getValue(InterfaceModule.CMD_DATA_CFA)));//получаем коэфициент
+                    scaleModule.setCoefficientA(Float.valueOf(data.getValue(InterfaceModule.CMD_DATA_CFA)));//получаем коэфициент.
                     if (scaleModule.getCoefficientA() == 0.0f)
                         throw new ErrorModuleException("Коэффициент А=" + scaleModule.getCoefficientA());
                     break;
                 case InterfaceModule.CMD_DATA_CFB:
-                    scaleModule.setCoefficientB(Float.valueOf(data.getValue(InterfaceModule.CMD_DATA_CFB)));//получить offset
+                    scaleModule.setCoefficientB(Float.valueOf(data.getValue(InterfaceModule.CMD_DATA_CFB)));//получить offset.
                     break;
                 case InterfaceModule.CMD_DATA_WGM:
-                    weightMax = Integer.parseInt(data.getValue(InterfaceModule.CMD_DATA_WGM));//получаем макимальнай вес
+                    weightMax = Integer.parseInt(data.getValue(InterfaceModule.CMD_DATA_WGM));//получаем макимальнай вес.
                     if (weightMax <= 0)
                         throw new ErrorModuleException("Предельный вес =" + weightMax);
                     break;
                 case InterfaceModule.CMD_DATA_LMT:
-                    scaleModule.setLimitTenzo(Integer.parseInt(data.getValue(InterfaceModule.CMD_DATA_LMT))); //получаем макимальнай показание перегруза
+                    scaleModule.setLimitTenzo(Integer.parseInt(data.getValue(InterfaceModule.CMD_DATA_LMT))); //получаем макимальнай показание перегруза.
+                    break;
+                case InterfaceModule.CMD_DATA_SEL:
+                    scaleModule.setSeal(Integer.parseInt(data.getValue(InterfaceModule.CMD_DATA_SEL))); //получаем номер пломбы.
                     break;
                 default:
             }

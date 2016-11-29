@@ -53,9 +53,6 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
     private BaseReceiver baseReceiver; //приёмник намерений
     private static final String ARG_VERSION = BootFragment.class.getSimpleName()+"VERSION";
     private static final String ARG_DEVICE = BootFragment.class.getSimpleName()+"DEVICE";
-    private static final int REQUEST_DEVICE = 1;
-    private static final int REQUEST_ATTACH = 2;
-    public static final int REQUEST_BROKEN = 3;
     private String version;
     private String device;
     private int moduleWeight;
@@ -104,7 +101,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_scales, null);
+        View view = inflater.inflate(R.layout.fragment_scales_mini, null);
         progressBarWeight = (ProgressBar)view.findViewById(R.id.progressBarWeight);
         progressBarStable = (ProgressBar)view.findViewById(R.id.progressBarStable);
         weightTextView = (TextView)view.findViewById(R.id.weightTextView);
@@ -114,7 +111,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
         imageViewWait = (ImageView)view.findViewById(R.id.imageViewWait);
 
         view.findViewById(R.id.buttonSettings).setOnClickListener(this);
-        view.findViewById(R.id.buttonSearch).setOnClickListener(this);
+        //view.findViewById(R.id.buttonSearch).setOnClickListener(this);
         layoutSearch = (LinearLayout) view.findViewById(R.id.layoutSearch);
 
         textViewBattery = (TextView)view.findViewById(R.id.textBattery);
@@ -154,13 +151,13 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_DEVICE:
+                case ScalesView.REQUEST_DEVICE:
                     String device = data.getStringExtra(SearchDialogFragment.ARG_DEVICE);
                     if (scaleModule != null)
                         scaleModule.dettach();
                     createScalesModule(device);
                     break;
-                case REQUEST_BROKEN:
+                case ScalesView.REQUEST_BROKEN:
                     /*if (scaleModule != null)
                         scaleModule.dettach();*/
                     ScaleModule.getInstance().dettach();
@@ -226,13 +223,13 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
 
     public void openSearchDialog(String msg) {
         DialogFragment fragment = SearchDialogFragment.newInstance(msg);
-        fragment.setTargetFragment(this, REQUEST_DEVICE);
+        fragment.setTargetFragment(this, ScalesView.REQUEST_DEVICE);
         fragment.show(getFragmentManager(), fragment.getClass().getName());
     }
 
     public void openSearchProgress(String msg){
         DialogFragment fragment = SearchProgressFragment.newInstance(msg);
-        fragment.setTargetFragment(this, REQUEST_ATTACH);
+        fragment.setTargetFragment(this, ScalesView.REQUEST_ATTACH);
         fragment.show(getFragmentManager(), fragment.getClass().getName());
     }
 
@@ -363,7 +360,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
                 switch (action) {
                     case InterfaceModule.ACTION_LOAD_OK:
                         setupWeightView();
-                        layoutSearch.setVisibility(View.GONE);
+                        //layoutSearch.setVisibility(View.GONE);
 
                         break;
                     case InterfaceModule.ACTION_RECONNECT_OK:
@@ -372,10 +369,6 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
                         break;
                     case InterfaceModule.ACTION_ATTACH_START:
                         String msg = intent.getStringExtra(InterfaceModule.EXTRA_DEVICE_NAME);
-                        if (msg!=null){
-                            Bundle bundle = new Bundle();
-                            bundle.putString(SearchProgressFragment.ARG_MESSAGE, msg);
-                        }
                         openSearchProgress(msg);
                         break;
                     case InterfaceModule.ACTION_CONNECT_ERROR:

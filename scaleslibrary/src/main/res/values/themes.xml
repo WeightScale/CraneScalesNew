@@ -6,6 +6,11 @@
         <item name="maxFilterADC">15</item>
     </style>
 
+    <style name="TextProgressBar" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="textSizeProgressBar">@dimen/text_medium</item>
+        <item name="textColorProgressBar">@color/white</item>
+    </style>
+
     <style name="SettingsTheme" parent="@android:style/Theme.Holo.Dialog.NoActionBar.MinWidth">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -17,6 +22,10 @@
         <item name="android:windowTitleSize">@dimen/title_size</item>-->
         <item name="numberPickerStyle">@style/NPWidget.Holo.Light.NumberPicker</item>
         <item name="dialogFilterADCStyle">@style/WeightScaleDialogFilter</item>
+    </style>
+
+    <style name="MainTheme" >
+        <item name="textProgressBarStyle">@style/TextProgressBar</item>
     </style>
 
 </resources>

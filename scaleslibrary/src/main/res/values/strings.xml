@@ -15,8 +15,7 @@
     <string name="device_found">Найдено устройство</string>
     <string name="Settings">Настройки</string>
     <string name="Set_values">Установки значений</string>
-    <string name="TEXT_MESSAGES13">Ограничения, лимиты, прочее</string>
-    <string name="TEXT_MESSAGE14">Обновление весов до последней версии</string>
+
     <string name="setting_auto_zero">Настройки авто ноль</string>
     <string name="sum_setting_auto_zero">Настройки авто ноль время, вес …</string>
     <string name="Auto_zero">Авто ноль</string>
@@ -58,14 +57,20 @@
     <string name="start_load">Начать загрузку</string>
     <string name="Not_programmer">Не программатор</string>
     <string name="Programmer_defined">Программатор определен</string>
-    <string name="TEXT_MESSAGE3">"Ищем фаил HEX для этого устройства "</string>
     <string name="Warning_Loading_settings">Внимание! Загрузка настроек</string>
+    <string name="Warning_Error">Внимание! Ошибка</string>
+    <string name="TEXT_MESSAGE">Выключите весы. На весах нажмите кнопку включения и не отпускайте пока индикатор не
+        погаснет. После этого нажмите ОК
+    </string>
     <string name="TEXT_MESSAGE1">На весах нажмине кнопку и отпустите ждите пока индикатор равномерно начнет мигать.
         После этого нажмите ОК
     </string>
-    <string name="Warning_Error">Внимание! Ошибка</string>
     <string name="TEXT_MESSAGE2">Произошла ошибка программирования смотрите текст лога</string>
-    <string name="Warning_update">Внимание! Обновление</string>
+    <string name="TEXT_MESSAGE3">"Ищем фаил HEX для этого устройства "</string>
     <string name="TEXT_MESSAGE5">На весах нажмите кнопку и отпустите индикатор прекратит мигать. После этого нажмитеОК
     </string>
+    <string name="TEXT_MESSAGES13">Ограничения, лимиты, прочее</string>
+    <string name="TEXT_MESSAGE14">Обновление весов до последней версии</string>
+    <string name="Warning_update">Внимание! Обновление</string>
+    <string name="Warning_Connect">Внимание! Соединение</string>
 </resources>
