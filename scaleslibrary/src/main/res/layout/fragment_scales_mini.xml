@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
-              android:background="@color/material_deep_teal_500">
+              android:background="@color/background1">
 
     <LinearLayout
             android:layout_width="fill_parent"
@@ -59,7 +59,6 @@
                                     android:textColor="@color/white"
                                     android:drawableLeft="@drawable/ic_battery_full"
                                     android:textSize="@dimen/text_large"
-                                    android:text="28"
                                     android:gravity="left|center_vertical"/>
 
                             <TextView
@@ -69,16 +68,11 @@
                                     android:textAppearance="?android:attr/textAppearanceMedium"
                                     android:textStyle="bold"
                                     android:textColor="@color/white"
-                                    android:drawableLeft="@drawable/ic_temperature"
+                                    android:drawableLeft="@drawable/ic_temperature1"
                                     android:textSize="@dimen/text_large"
                                     android:layout_weight="1"
                                     android:gravity="left|center_vertical"/>
 
-                            <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="fill_parent"
-                                    android:id="@+id/imageViewWait"
-                                    android:src="@drawable/ic_stable"/>
                         </LinearLayout>
 
                         <ImageButton

@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 import com.konst.scaleslibrary.module.ErrorDeviceException;
@@ -22,7 +21,8 @@ import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.boot.BootModule;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
-import com.kostya.cranescale.ActivityMain;
+//import com.kostya.cranescale.ActivityMain;
+import com.kostya.cranescale.ActivityTest;
 import com.kostya.cranescale.Globals;
 import com.kostya.cranescale.Internet;
 import com.kostya.cranescale.R;
@@ -361,7 +361,7 @@ public class ServiceScales extends Service {
     public void sendNotification(String Ticker, String Title, String Text) {
 
         //These three lines makes Notification to open main activity after clicking on it
-        Intent notificationIntent = new Intent(this, ActivityMain.class);
+        Intent notificationIntent = new Intent(this, ActivityTest.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

@@ -9,7 +9,7 @@
     <color name="background_light">#ffefefef</color>
     <color name="background_item_list">#ffcccccc</color>
     <color name="background_item_press">#ff9a9a9a</color>
-    <color name="background1">#ff898989</color>
+    <color name="background1">#898989</color>
     <color name="background2">#ff4e4e4e</color>
     <color name="text">#000000</color>
     <color name="white">#FFFFFF</color>
@@ -22,7 +22,7 @@
     <color name="redMid">#ffdd151c</color>
     <color name="redEnd">#ffff5f57</color>
     <color name="orange">#ff8800</color>
-    <color name="blue">#00AEEF</color>
+    <color name="blue">#00aeef</color>
     <color name="holo_blue_dark">#ff0099cc</color>
     <color name="holo_orange_dark">#ffff8800</color>
 </resources>

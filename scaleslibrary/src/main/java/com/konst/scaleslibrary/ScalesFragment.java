@@ -45,7 +45,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
     private ProgressBar progressBarStable;
     private ProgressBar progressBarWeight;
     private TextView weightTextView, textViewBattery, textViewTemperature;
-    private ImageView imageViewWait, imageViewBluetooth;
+    private ImageView imageViewBluetooth;
     private LinearLayout layoutSearch;
     private Drawable dProgressWeight, dWeightDanger;
     private SimpleGestureFilter detectorWeightView;
@@ -97,7 +97,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
         baseReceiver.register();
 
         createScalesModule(device);
-            }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -108,7 +108,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
         //weightTextView.setCompoundDrawablesWithIntrinsicBounds( R.drawable.stroke, 0, 0, 0);
         //weightTextView.setShadowLayer(10, 0, 0,   getResources().getColor(R.color.text));
 
-        imageViewWait = (ImageView)view.findViewById(R.id.imageViewWait);
+        //imageViewWait = (ImageView)view.findViewById(R.id.imageViewWait);
 
         view.findViewById(R.id.buttonSettings).setOnClickListener(this);
         //view.findViewById(R.id.buttonSearch).setOnClickListener(this);

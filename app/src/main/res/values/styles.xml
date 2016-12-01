@@ -64,5 +64,8 @@
         <item name="android:shadowRadius">5</item>
     </style>
 
+    <style name="CustomAlertDialogInvoice" parent="android:Theme.Holo.Dialog">
+
+    </style>
 
 </resources>

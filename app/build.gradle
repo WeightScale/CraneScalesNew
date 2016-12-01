@@ -29,7 +29,7 @@ android {
     }
 }
 
-repositories{
+repositories {
     flatDir {
         dirs 'libs'
     }
@@ -39,11 +39,13 @@ dependencies {
     provided fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     //compile files('libs/scalesmodule.jar')
-    compile 'com.android.support:appcompat-v7:24.1.1'
-    compile 'com.google.android.gms:play-services-ads:9.4.0'
-    compile 'com.android.support:design:24.1.1'
-    compile 'com.android.support:multidex:1.0.1'
     //compile 'com.konst.weightmodule:weightmodule-release@aar'
     //compile(name: 'scaleslibrary-release', ext: 'aar')
     compile project(':scaleslibrary')
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.google.android.gms:play-services-ads:9.6.1'
+    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.android.support:support-v4:24.2.1'
+    compile 'com.android.support:recyclerview-v7:24.2.1'
 }

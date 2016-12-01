@@ -18,8 +18,9 @@
                  android:layout_width="fill_parent"
                  android:layout_height="fill_parent"
                  android:background="@color/background_light"
-                 android:layout_below="@+id/scalesView">
-        <include layout="@layout/invoice"/>
+                 android:layout_below="@+id/scalesView"
+                 android:id="@+id/fragmentInvoice">
+        <!--<include layout="@layout/fragment_invoice"/>-->
     </FrameLayout>
 
 </RelativeLayout>
