@@ -31,11 +31,12 @@
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_large_xx"
                             android:gravity="center"
-                            android:clickable="true"
                             android:textStyle="italic"
                             android:singleLine="true"
                             android:layout_gravity="bottom"
-                            android:layout_weight="1"/>
+                            android:layout_weight="1"
+                            android:longClickable="true"
+                            android:clickable="true"/>
 
                     <LinearLayout
                             android:orientation="horizontal"

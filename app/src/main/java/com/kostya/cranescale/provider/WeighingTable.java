@@ -40,6 +40,9 @@ public class WeighingTable {
             + KEY_DATA0 + " text,"
             + KEY_DATA1 + " text );";
 
+    public static final String[] COLUMN_FOR_INVOICE = {
+            KEY_DATE_TIME_CREATE,
+            KEY_WEIGHT};
 
     private static final Uri CONTENT_URI = Uri.parse("content://" + CraneScalesBaseProvider.AUTHORITY + '/' + TABLE);
 
@@ -62,6 +65,10 @@ public class WeighingTable {
     public void removeEntry(int _rowIndex) {
         Uri uri = ContentUris.withAppendedId(CONTENT_URI, _rowIndex);
         contentResolver.delete(uri, null, null);
+    }
+
+    public Cursor getEntryInvoice(int invoiceId) {
+        return mContext.getContentResolver().query(CONTENT_URI, null, KEY_ID_INVOICE + " = " + invoiceId, null, null);
     }
 
     public Cursor getEntryItem(int _rowIndex) {

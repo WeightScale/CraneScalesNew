@@ -34,7 +34,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/imageButton"
                 android:src="@drawable/ic_action_light_delete" android:clickable="true"
-                android:onClick="removeWeightOnClick"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/corners2"/>
     </LinearLayout>

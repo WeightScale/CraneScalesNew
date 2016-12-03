@@ -37,7 +37,7 @@ import java.util.Locale;
  * @author Kostya on 02.10.2016.
  */
 public class ActivityTest extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        FragmentInvoice.OnFragmentInvoiceListener {
+        FragmentInvoice.OnFragmentInvoiceListener, ScalesFragment.OnInteractionListener {
     private DrawerLayout drawer;
     FloatingActionButton fab;
     private ScalesView scalesView;
@@ -196,6 +196,17 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
             fragmentManager.beginTransaction().replace(R.id.fragmentInvoice, fragmentInvoice, FragmentInvoice.class.getSimpleName()).commit();
             fab.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public void onScaleModuleCallback(ScaleModule obj) {
+
+    }
+
+    @Override
+    public void onSaveWeight(int weight) {
+        if (fragmentInvoice != null)
+            fragmentInvoice.addRowWeight(weight);
     }
 
     class BaseReceiver extends BroadcastReceiver {

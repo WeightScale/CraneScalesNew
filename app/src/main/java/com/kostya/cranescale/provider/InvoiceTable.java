@@ -77,6 +77,28 @@ public class InvoiceTable {
         contentResolver = mContext.getContentResolver();
     }
 
+    public Uri insertNewEntry(ContentValues value) {
+        return contentResolver.insert(CONTENT_URI, value);
+    }
+
+    public Uri insertNewEntry(String key, String value) {
+        ContentValues newTaskValues = new ContentValues();
+        newTaskValues.put(key, value);
+        return contentResolver.insert(CONTENT_URI, newTaskValues);
+    }
+
+    public Uri insertNewEntry() {
+        ContentValues newTaskValues = new ContentValues();
+        Date date = new Date();
+        newTaskValues.put(KEY_DATE_TIME_CREATE, new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).format(date));
+        newTaskValues.put(KEY_NAME_AUTO, "");
+        newTaskValues.put(KEY_TOTAL_WEIGHT, 0);
+        newTaskValues.put(KEY_IS_READY, 0);
+        newTaskValues.put(KEY_DATA0, "");
+        newTaskValues.put(KEY_DATA1, "");
+        return contentResolver.insert(CONTENT_URI, newTaskValues);
+    }
+
     public Uri insertNewEntry(String nameAuto) {
         ContentValues newTaskValues = new ContentValues();
         Date date = new Date();

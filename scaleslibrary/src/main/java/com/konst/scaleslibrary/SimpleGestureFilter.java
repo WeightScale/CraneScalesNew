@@ -103,6 +103,11 @@ public class SimpleGestureFilter extends SimpleOnGestureListener {
     }
 
     @Override
+    public void onLongPress(MotionEvent e) {
+        listener.onLongClick();
+    }
+
+    @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
         final float xDistance = Math.abs(e1.getX() - e2.getX());
@@ -169,8 +174,8 @@ public class SimpleGestureFilter extends SimpleOnGestureListener {
 
     public interface SimpleGestureListener {
         void onSwipe(int direction);
-
         void onDoubleTap();
+        void onLongClick();
     }
 
 }

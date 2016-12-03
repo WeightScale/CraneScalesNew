@@ -37,7 +37,7 @@ import java.io.IOException;
  * Use the {@link ScalesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ScalesFragment extends Fragment implements View.OnClickListener {
+public class ScalesFragment extends Fragment implements View.OnClickListener/*, View.OnLongClickListener*/ {
     /** Настройки для весов. */
     public Settings settings;
     private ScaleModule scaleModule;
@@ -60,7 +60,8 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
     private boolean weightViewIsSwipe;
     protected boolean isStable;
 
-    private static OnInteractionListener onInteractionListener;
+    private OnInteractionListener onInteractionListener;
+    private static OnInteractionListener onListener;
 
     public ScalesFragment(){}
 
@@ -73,7 +74,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
     }
 
     public static ScalesFragment newInstance(String version, String device, OnInteractionListener listener) {
-        onInteractionListener = listener;
+        onListener = listener;
         ScalesFragment fragment = new ScalesFragment();
         Bundle args = new Bundle();
         args.putString(ARG_VERSION, version);
@@ -105,6 +106,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
         progressBarWeight = (ProgressBar)view.findViewById(R.id.progressBarWeight);
         progressBarStable = (ProgressBar)view.findViewById(R.id.progressBarStable);
         weightTextView = (TextView)view.findViewById(R.id.weightTextView);
+        //weightTextView.setOnLongClickListener(this);
         //weightTextView.setCompoundDrawablesWithIntrinsicBounds( R.drawable.stroke, 0, 0, 0);
         //weightTextView.setShadowLayer(10, 0, 0,   getResources().getColor(R.color.text));
 
@@ -123,6 +125,11 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        if (activity instanceof OnInteractionListener) {
+            onInteractionListener = (OnInteractionListener) activity;
+        } else {
+            throw new RuntimeException(activity.toString() + " must implement OnInteractionListener");
+        }
     }
 
     @Override
@@ -179,6 +186,15 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /*@Override
+    public boolean onLongClick(View view) {
+        int i = view.getId();
+        if (i == R.id.weightTextView){
+            onInteractionListener.onSaveWeight(moduleWeight);
+        }
+        return false;
+    }*/
+
     public void updateSettings(Settings settings){
 
         for (Settings.KEY key : Settings.KEY.values()){
@@ -214,6 +230,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
                     }
                     settings.write(Settings.KEY.KEY_ADDRESS, module.getAddressBluetoothDevice());
                     onInteractionListener.onScaleModuleCallback((ScaleModule) module);
+                    onListener.onScaleModuleCallback((ScaleModule) module);
                 }
             });
         }catch (Exception | ErrorDeviceException e) {
@@ -269,6 +286,13 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
                 vibrator.vibrate(100);
                 new ZeroThread(getActivity()).start();
             }
+
+            @Override
+            public void onLongClick() {
+                onInteractionListener.onSaveWeight(moduleWeight);
+            }
+
+
         };
 
         detectorWeightView = new SimpleGestureFilter(getActivity(), weightViewGestureListener);
@@ -294,14 +318,14 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
                         break;
                     default:
                 }
-                return false;
+                return true;
             }
         });
         /*weightTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                openSearch();
-                return false;
+                onInteractionListener.onSaveWeight(moduleWeight);
+                return true;
             }
         });*/
     }
@@ -488,9 +512,10 @@ public class ScalesFragment extends Fragment implements View.OnClickListener {
     /**
      * Интерфейс обратного вызова.
      */
-    protected interface OnInteractionListener {
+    public interface OnInteractionListener {
         //void openSearchDialog(String msg);
         void onScaleModuleCallback(ScaleModule obj);
+        void onSaveWeight(int weight);
     }
 
 }

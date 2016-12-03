@@ -4,25 +4,31 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.*;
 import com.kostya.cranescale.provider.InvoiceTable;
+import com.kostya.cranescale.provider.WeighingTable;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  *
  */
 public class FragmentInvoice extends Fragment implements View.OnClickListener {
+    private SimpleCursorAdapter adapterWeightingList;
     private InvoiceTable invoiceTable;
+    private WeighingTable weighingTable;
     protected ContentValues values = new ContentValues();
-    private EditText invoiceDate, invoiceName, invoiceLoading, invoiceTotal;
-    private ListView invoiceList;
+    private EditText dateInvoice, nameInvoice, loadingInvoice, totalInvoice;
+    private ListView listInvoice;
+    String entryID;
     private static final String ARG_DATE = "date";
     private static final String ARG_PARAM2 = "param2";
 
@@ -55,26 +61,33 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
             values.put(InvoiceTable.KEY_DATE_TIME_CREATE, getArguments().getString(ARG_DATE));
             //mParam1 = getArguments().getString(ARG_DATE);
             mParam2 = getArguments().getString(ARG_PARAM2);
+        }else {
+            values.put(InvoiceTable.KEY_DATE_TIME_CREATE, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
         }
+
+        invoiceTable = new InvoiceTable(getActivity());
+        entryID = invoiceTable.insertNewEntry(values).getLastPathSegment();
+        weighingTable = new WeighingTable(getActivity());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_invoice, null);
 
-        invoiceDate = (EditText)view.findViewById(R.id.invoiceDate);
-        invoiceDate.setText(values.getAsString(InvoiceTable.KEY_DATE_TIME_CREATE));
+        dateInvoice = (EditText)view.findViewById(R.id.invoiceDate);
+        dateInvoice.setText(values.getAsString(InvoiceTable.KEY_DATE_TIME_CREATE));
 
-        invoiceName = (EditText)view.findViewById(R.id.invoiceName);
-        invoiceLoading = (EditText)view.findViewById(R.id.invoiceLoading);
-        invoiceList = (ListView) view.findViewById(R.id.invoiceList);
-        invoiceTotal = (EditText)view.findViewById(R.id.invoiceTotal);
+        nameInvoice = (EditText)view.findViewById(R.id.invoiceName);
+        loadingInvoice = (EditText)view.findViewById(R.id.invoiceLoading);
+        listInvoice = (ListView) view.findViewById(R.id.invoiceList);
+        updateListWeight();
+        totalInvoice = (EditText)view.findViewById(R.id.invoiceTotal);
         view.findViewById(R.id.buttonCloseInvoice).setOnClickListener(this);
 
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    /** Кнопка закрыть накладную. */
     public void onClosePressedButton() {
         if (mListener != null) {
             mListener.onInvoiceClosePressedButton();
@@ -114,10 +127,44 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
         }
     }
 
-    /**
-     */
-    public interface OnFragmentInvoiceListener {
+    public void removeWeightOnClick(View view) {
 
+        //ListView list = getListView();
+        int position = listInvoice.getPositionForView(view);
+        //arrayList.remove(position);
+        //vibrator.vibrate(50);
+        adapterWeightingList.notifyDataSetChanged();
+    }
+
+    public void addRowWeight(int weight){
+        weighingTable.insertNewEntry(Integer.valueOf(entryID), weight);
+        //adapterWeightingList.notifyDataSetChanged();
+    }
+
+    /** Обновляем данные листа загрузок. */
+    private void updateListWeight() {
+        Cursor cursor = weighingTable.getEntryInvoice(Integer.valueOf(entryID));
+        if (cursor == null) {
+            return;
+        }
+
+        int[] to = {R.id.bottomText, R.id.topText};
+
+        adapterWeightingList = new SimpleCursorAdapter(getActivity(), R.layout.list_item_weight, cursor, WeighingTable.COLUMN_FOR_INVOICE, to, CursorAdapter.FLAG_AUTO_REQUERY);
+        //namesAdapter = new MyCursorAdapter(this, R.layout.item_check, cursor, columns, to);
+        //adapterWeightingList.setViewBinder(new ListCheckViewBinder());
+        listInvoice.setAdapter(adapterWeightingList);
+        listInvoice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                weighingTable.removeEntry((int) l);
+            }
+        });
+    }
+
+    /** Интерфейс обратного вызова. */
+    public interface OnFragmentInvoiceListener {
         void onInvoiceClosePressedButton();
     }
 }

@@ -110,6 +110,11 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         scaleModule = obj;
     }
 
+    @Override
+    public void onSaveWeight(int weight) {
+
+    }
+
     public int getMicroSoftware() { return microSoftware; }
 
     public ScaleModule getScaleModule() {

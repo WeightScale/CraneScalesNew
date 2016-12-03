@@ -33,6 +33,6 @@
                 android:layout_height="fill_parent"
                 android:id="@+id/imageButton"
                 android:src="@drawable/ic_action_light_delete" android:clickable="true"
-                android:onClick="removeWeightOnClick"/>
+                />
     </LinearLayout>
 </LinearLayout>
