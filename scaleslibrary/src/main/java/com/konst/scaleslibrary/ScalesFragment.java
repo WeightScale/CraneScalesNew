@@ -26,6 +26,7 @@ import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ObjectScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.konst.scaleslibrary.settings.ActivityProperties;
+import com.konst.scaleslibrary.settings.FragmentSettings;
 
 import java.io.IOException;
 
@@ -90,10 +91,10 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
             version = getArguments().getString(ARG_VERSION);
             device = getArguments().getString(ARG_DEVICE);
         }
-        settings = new Settings(getActivity(), Settings.SETTINGS);
+        settings = new Settings(getActivity(), ScalesView.SETTINGS);
         vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         textKg = new SpannableStringBuilder(getResources().getString(R.string.scales_kg));
-        textKg.setSpan(new TextAppearanceSpan(getActivity(), R.style.SpanTextKg),0,textKg.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        textKg.setSpan(new TextAppearanceSpan(getActivity(), R.style.SpanTextKgMini),0,textKg.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         baseReceiver = new BaseReceiver(getActivity());
         baseReceiver.register();
 
@@ -195,26 +196,53 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
         return false;
     }*/
 
-    public void updateSettings(Settings settings){
+    /*public void updateSettings(Settings settings){
 
-        for (Settings.KEY key : Settings.KEY.values()){
+        for(FragmentSettings.EnumSettings key : FragmentSettings.EnumSettings.values()){
             switch (key){
+                case STEP:
+                    scaleModule.setStepScale(settings.read(key.getResId(), 5));
+                    break;
+                case STABLE:
+                    scaleModule.stableActionEnable(settings.read(key.getResId(), false));
+                    break;
+                case SWITCH_ZERO:
+                    scaleModule.setEnableAutoNull(settings.read(key.getResId(), false));
+                    break;
+                case TIMER_ZERO:
+                    scaleModule.setTimerZero(settings.read(key.getResId(), 120));
+                    break;
+                case MAX_ZERO:
+                    scaleModule.setWeightError(settings.read(key.getResId(), 50));
+                    break;
+                default:
+            }
+        }
+
+        *//*for (Settings.KEY key : Settings.KEY.values()){
+            switch (key){
+                *//**//*case KEY_FILTER:
+                    scaleModule.setFilterADC(settings.read(key, 5));
+                    break;*//**//*
                 case KEY_DISCRETE:
                     scaleModule.setStepScale(settings.read(key, 5));
                     break;
                 case KEY_STABLE:
                     scaleModule.stableActionEnable(settings.read(key, false));
                     break;
+                case KEY_SWITCH_ZERO:
+                    scaleModule.setEnableAutoNull(settings.read(key, false));
+                    break;
                 case KEY_TIMER_ZERO:
                     scaleModule.setTimerZero(settings.read(key, 120));
                     break;
                 case KEY_MAX_ZERO:
-                    scaleModule.setTimerZero(settings.read(key, 50));
+                    scaleModule.setWeightError(settings.read(key, 50));
                     break;
                 default:
             }
-        }
-    }
+        }*//*
+    }*/
 
     private void createScalesModule(String device){
         try {
@@ -225,12 +253,13 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
                 public void onCallback(Module module) {
                     if (module instanceof ScaleModule){
                         scaleModule = (ScaleModule)module;
-                        updateSettings(settings);
+                        onInteractionListener.onScaleModuleCallback(scaleModule);
+                        onListener.onScaleModuleCallback(scaleModule);
+                        onListener.onUpdateSettings(settings);
                         scaleModule.scalesProcessEnable(true);
+
                     }
-                    settings.write(Settings.KEY.KEY_ADDRESS, module.getAddressBluetoothDevice());
-                    onInteractionListener.onScaleModuleCallback((ScaleModule) module);
-                    onListener.onScaleModuleCallback((ScaleModule) module);
+                    settings.write(R.string.KEY_ADDRESS, module.getAddressBluetoothDevice());
                 }
             });
         }catch (Exception | ErrorDeviceException e) {
@@ -513,7 +542,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
      * Интерфейс обратного вызова.
      */
     public interface OnInteractionListener {
-        //void openSearchDialog(String msg);
+        void onUpdateSettings(Settings settings);
         void onScaleModuleCallback(ScaleModule obj);
         void onSaveWeight(int weight);
     }

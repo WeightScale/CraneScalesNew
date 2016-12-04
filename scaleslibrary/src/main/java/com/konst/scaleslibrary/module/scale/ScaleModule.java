@@ -67,8 +67,6 @@ public class ScaleModule extends Module /*implements Serializable*/{
     private int weightMargin;
     /** Номер пломбы*/
     private int seal;
-    /** Делитель для авто ноль. */
-    private static final int DIVIDER_AUTO_NULL = 3;
     /** Количество стабильных показаний веса для авто сохранения. */
     public static final int STABLE_NUM_MAX = 150;
     /** Флаг использования авто обнуленияю. */
@@ -678,9 +676,9 @@ public class ScaleModule extends Module /*implements Serializable*/{
     private class ThreadScalesProcess extends Thread{
         //private final ObjectScales objectScales;
         private int numTimeTemp = 101;
-
-
         private boolean cancel;
+        /** Делитель для авто ноль. */
+        private static final int DIVIDER_AUTO_NULL = 15;
         /** Время обновления значения веса в милисекундах. */
         private static final int PERIOD_UPDATE = 20;
 
@@ -692,6 +690,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
         public void run() {
             while (!interrupted() && !cancel){
                 try{
+                    /** Секция вес. */
                     int temp = version.updateWeight();
                     ResultWeight resultWeight;
                     if (temp == Integer.MIN_VALUE) {
@@ -706,25 +705,26 @@ public class ScaleModule extends Module /*implements Serializable*/{
                     objectScales.setWeight(getWeightToStepMeasuring(temp));
                     objectScales.setResultWeight(resultWeight);
                     objectScales.setTenzoSensor(version.getSensor());
-
+                    /** Секция авто ноль. */
+                    if (enableAutoNull){
+                        if (version.getWeight() != Integer.MIN_VALUE && Math.abs(version.getWeight()) < weightError) { //автоноль
+                            autoNull += 1;
+                            if (autoNull > timerZero * (DIVIDER_AUTO_NULL / (filterADC==0?1:filterADC))) {
+                                setOffsetScale();
+                                autoNull = 0;
+                            }
+                        } else {
+                            autoNull = 0;
+                        }
+                    }
+                    /** Секция батарея температура. */
                     if (numTimeTemp > 100){
                         numTimeTemp = 0;
                         objectScales.setBattery(getModuleBatteryCharge());
                         objectScales.setTemperature(getModuleTemperature());
-                        if (enableAutoNull){
-                            if (version.getWeight() != Integer.MIN_VALUE && Math.abs(version.getWeight()) < weightError) { //автоноль
-                                autoNull += 1;
-                                if (autoNull > timerZero / DIVIDER_AUTO_NULL) {
-                                    setOffsetScale();
-                                    autoNull = 0;
-                                }
-                            } else {
-                                autoNull = 0;
-                            }
-                        }
+
                     }
                     getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_SCALES_RESULT).putExtra(InterfaceModule.EXTRA_SCALES, objectScales));
-                    //resultCallback.eventData(resultWeight, objectScales);
                 }catch (Exception e){}
                 numTimeTemp++;
                 try { TimeUnit.MILLISECONDS.sleep(PERIOD_UPDATE); } catch (InterruptedException e) {}

@@ -23,6 +23,7 @@ import com.konst.module.InterfaceModule;
 import com.konst.module.scale.ObjectScales;
 import com.konst.scaleslibrary.ScalesFragment;
 import com.konst.scaleslibrary.ScalesView;
+import com.konst.scaleslibrary.Settings;
 import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
@@ -39,14 +40,17 @@ import java.util.Locale;
 public class ActivityTest extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         FragmentInvoice.OnFragmentInvoiceListener, ScalesFragment.OnInteractionListener {
     private DrawerLayout drawer;
-    FloatingActionButton fab;
+    private FloatingActionButton fab;
     private ScalesView scalesView;
+    private ScaleModule scaleModule;
     private FragmentManager fragmentManager;
     private FragmentInvoice fragmentInvoice;
     private Globals globals;
     private ListView listView;
     private final ArrayList<WeightObject> arrayList = new ArrayList<>();
     private ArrayAdapter<WeightObject> customListAdapter;
+    /** Настройки общии для модуля. */
+    public static final String SETTINGS = ActivityTest.class.getName() + ".SETTINGS"; //
     private static final int ALERT_DIALOG1 = 1;
     private static final int ALERT_DIALOG2 = 2;
 
@@ -199,8 +203,13 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onScaleModuleCallback(ScaleModule obj) {
+    public void onUpdateSettings(Settings settings) {
 
+    }
+
+    @Override
+    public void onScaleModuleCallback(ScaleModule obj) {
+        scaleModule = obj;
     }
 
     @Override

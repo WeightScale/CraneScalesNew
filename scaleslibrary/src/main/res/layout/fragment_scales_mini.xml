@@ -31,7 +31,7 @@
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_large_xx"
                             android:gravity="center"
-                            android:textStyle="italic"
+                            android:textStyle="bold|italic"
                             android:singleLine="true"
                             android:layout_gravity="bottom"
                             android:layout_weight="1"

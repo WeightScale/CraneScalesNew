@@ -32,11 +32,11 @@
 <group android:id="@+id/menu_top" android:checkableBehavior="single">
     <item android:id="@+id/new_invoice" android:icon="@drawable/ic_invoice" android:title="НАКЛАДНАЯ"/>
     <item android:id="@+id/search_scales" android:title="Поиск весов"/>
-    <item android:id="@+id/nav_slideshow" android:title="Slideshow"/>
-    <item android:id="@+id/nav_manage" android:title="Tools"/>
+    <!--<item android:id="@+id/nav_slideshow" android:title="Slideshow"/>-->
+    <!--<item android:id="@+id/nav_manage" android:title="Tools"/>-->
 </group>
 <group android:id="@+id/menu_bottom" android:checkableBehavior="none">
-    <item android:id="@+id/settings" android:icon="@drawable/ic_menu_settings" android:title="Настройки"/>
+    <item android:id="@+id/settings" android:icon="@drawable/ic_menu_settings" android:title="НАСТРОЙКИ"/>
     <item android:id="@+id/about" android:icon="@drawable/ic_about" android:title="@string/about" android:actionLayout="@layout/about"/>
 </group>
 </menu>

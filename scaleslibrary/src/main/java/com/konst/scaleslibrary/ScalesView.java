@@ -24,6 +24,7 @@ import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.boot.BootModule;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
+import com.konst.scaleslibrary.settings.FragmentSettings;
 
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +48,8 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     private final int microSoftware = 5;
     private InterfaceCallbackScales interfaceCallbackScales;
     private static final String TAG_FRAGMENT = ScalesView.class.getName() + "TAG_FRAGMENT";
+    /** Настройки общии для модуля. */
+    public static final String SETTINGS = ScalesView.class.getName() + ".SETTINGS"; //
     public static final int REQUEST_DEVICE = 1;
     public static final int REQUEST_ATTACH = 2;
     public static final int REQUEST_BROKEN = 3;
@@ -67,9 +70,9 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
 
         instance = this;
 
-        settings = new Settings(context, Settings.SETTINGS);
+        settings = new Settings(context, SETTINGS);
         //settings = new Settings(context);
-        addressDevice = settings.read(Settings.KEY.KEY_ADDRESS, "");
+        addressDevice = settings.read(R.string.KEY_ADDRESS, "");
 
         fragmentManager = ((AppCompatActivity)getContext()).getFragmentManager();
 
@@ -103,6 +106,11 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
          * @param device Адресс bluetooth весового модуля.
          */
         void onCreate(String device);
+    }
+
+    @Override
+    public void onUpdateSettings(Settings settings) {
+        updateSettings(settings);
     }
 
     @Override
@@ -148,7 +156,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     public void setDiscrete(int discrete){
         if (scaleModule != null)
             scaleModule.setStepScale(discrete);
-        settings.write(Settings.KEY.KEY_DISCRETE, discrete);
+        settings.write(FragmentSettings.Key.STEP.getResId(), discrete);
     }
 
     /** Устанавливаем флаг определять стабильный вес.
@@ -157,25 +165,28 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     public void setStable(boolean stable){
         if (scaleModule != null)
             scaleModule.stableActionEnable(stable);
-        settings.write(Settings.KEY.KEY_STABLE, stable);
+        settings.write(FragmentSettings.Key.STABLE.getResId(), stable);
     }
 
     public void updateSettings(Settings settings){
 
-        for (Settings.KEY key : Settings.KEY.values()){
+        for(FragmentSettings.Key key : FragmentSettings.Key.values()){
             switch (key){
-                case KEY_DISCRETE:
-                    scaleModule.setStepScale(settings.read(key, 5));
-                break;
-                case KEY_STABLE:
-                    scaleModule.stableActionEnable(settings.read(key, false));
-                break;
-                case KEY_TIMER_ZERO:
-                    scaleModule.setTimerZero(settings.read(key, 120));
-                break;
-                case KEY_MAX_ZERO:
-                    scaleModule.setTimerZero(settings.read(key, 50));
-                break;
+                case STEP:
+                    scaleModule.setStepScale(settings.read(key.getResId(), 5));
+                    break;
+                case STABLE:
+                    scaleModule.stableActionEnable(settings.read(key.getResId(), false));
+                    break;
+                case SWITCH_ZERO:
+                    scaleModule.setEnableAutoNull(settings.read(key.getResId(), false));
+                    break;
+                case TIMER_ZERO:
+                    scaleModule.setTimerZero(settings.read(key.getResId(), 120));
+                    break;
+                case MAX_ZERO:
+                    scaleModule.setWeightError(settings.read(key.getResId(), 50));
+                    break;
                 default:
             }
         }

@@ -27,11 +27,29 @@ public class FragmentSettings extends PreferenceFragment{
     private static Settings settings;
     public static ScalesView scalesView;
 
-    enum EnumSettings{
+    public enum Key{
+        SWITCH_ZERO(R.string.KEY_SWITCH_ZERO){
+            @Override
+            void setup(Preference name) throws Exception {
+                name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object o) {
+                        boolean flag_switch = (boolean)o;
+
+                        settings.write(preference.getKey(), flag_switch);
+                        preference.getPreferenceManager().findPreference(preference.getContext().getString(R.string.KEY_TIMER_ZERO)).setEnabled(flag_switch);
+                        preference.getPreferenceManager().findPreference(preference.getContext().getString(R.string.KEY_MAX_ZERO)).setEnabled(flag_switch);
+                        return true;
+                    }
+                });
+            }
+        },
         TIMER_ZERO(R.string.KEY_TIMER_ZERO){
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
+                boolean check = name.getSharedPreferences().getBoolean(name.getContext().getString(R.string.KEY_SWITCH_ZERO), false);
+                name.setEnabled(check);
                 name.setTitle(context.getString(R.string.Time) + ' ' + name.getSharedPreferences().getInt(name.getKey(), 120) + ' ' + context.getString(R.string.second));
                 name.setSummary(context.getString(R.string.sum_time_auto_zero) + ' ' + context.getResources().getInteger(R.integer.default_max_time_auto_null) + ' ' + context.getString(R.string.second));
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -53,6 +71,8 @@ public class FragmentSettings extends PreferenceFragment{
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
+                boolean check = name.getSharedPreferences().getBoolean(name.getContext().getString(R.string.KEY_SWITCH_ZERO), false);
+                name.setEnabled(check);
                 name.setTitle(context.getString(R.string.sum_weight) + ' ' + name.getSharedPreferences().getInt(name.getKey(), 50) + ' ' + context.getString(R.string.scales_kg));
                 name.setSummary(context.getString(R.string.sum_max_null) + ' ' + context.getResources().getInteger(R.integer.default_limit_auto_null) + ' ' + context.getString(R.string.scales_kg));
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -153,6 +173,17 @@ public class FragmentSettings extends PreferenceFragment{
                 });
             }
         },
+        STABLE(R.string.KEY_STABLE){
+            @Override
+            void setup(Preference name) throws Exception {
+                name.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        return false;
+                    }
+                });
+            }
+        },
         CLOSED(R.string.KEY_CLOSED){
             @Override
             void setup(Preference name) throws Exception {
@@ -177,7 +208,7 @@ public class FragmentSettings extends PreferenceFragment{
         private final int resId;
         abstract void setup(Preference name)throws Exception;
 
-        EnumSettings(int key){
+        Key(int key){
             resId = key;
         }
         public int getResId() { return resId; }
@@ -188,7 +219,7 @@ public class FragmentSettings extends PreferenceFragment{
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.fragment_settings);
         PreferenceManager.setDefaultValues(getActivity(), R.xml.fragment_settings, false);
-        settings = new Settings(getActivity(), Settings.SETTINGS);
+        settings = new Settings(getActivity(), ScalesView.SETTINGS);
         scalesView = ScalesView.getInstance();
         initPreferences();
     }
@@ -200,7 +231,7 @@ public class FragmentSettings extends PreferenceFragment{
     }
 
     public void initPreferences(){
-        for (EnumSettings enumPreference : EnumSettings.values()){
+        for (Key enumPreference : Key.values()){
             Preference preference = findPreference(getString(enumPreference.getResId()));
             if(preference != null){
                 try {

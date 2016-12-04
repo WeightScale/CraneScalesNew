@@ -15,12 +15,16 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.konst.scaleslibrary.ScalesView;
+import com.konst.scaleslibrary.Settings;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.kostya.cranescale.ActivityAbout;
+import com.kostya.cranescale.ActivityTest;
 import com.kostya.cranescale.Globals;
 import com.kostya.cranescale.R;
 
 public class ActivityPreferences extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private static Settings settings;
     private static Globals globals;
     private static ScaleModule scaleModule;
     private boolean flagChange;
@@ -46,28 +50,21 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
                 });
             }
         },
-        FILTER(R.string.KEY_FILTER){
+        DELTA_STAB(R.string.KEY_DELTA_STAB){
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
-                int f = scaleModule.getFilterADC();
-                name.setDefaultValue(Integer.valueOf(f));
-                name.setTitle(context.getString(R.string.filter_adc) + ' ' + String.valueOf(f));
-                name.setSummary(context.getString(R.string.sum_filter_adc) + ' ' + context.getString(R.string.The_range_is_from_0_to) + context.getResources().getInteger(R.integer.default_adc_filter));
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
                     public boolean onPreferenceChange(Preference preference, Object o) {
-                        if (o.toString().isEmpty() || Integer.valueOf(o.toString()) > context.getResources().getInteger(R.integer.default_adc_filter)) {
+                        if (o.toString().isEmpty() ) {
                             Toast.makeText(context, R.string.preferences_no, Toast.LENGTH_SHORT).show();
                             return false;
                         }
                         try {
-                            if (scaleModule.setModuleFilterADC(Integer.valueOf(o.toString()))) {
-                                scaleModule.setFilterADC(Integer.valueOf(o.toString()));
-                                preference.setTitle(context.getString(R.string.filter_adc) + ' ' + String.valueOf(scaleModule.getFilterADC()));
-                                Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o.toString(), Toast.LENGTH_SHORT).show();
-                                return true;
-                            }
+                            settings.write(preference.getKey(), Integer.valueOf(o.toString()));
+                            Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o.toString(), Toast.LENGTH_SHORT).show();
+                            return true;
                         } catch (Exception e) {
                             Toast.makeText(context, R.string.preferences_no, Toast.LENGTH_SHORT).show();
                         }
@@ -76,7 +73,30 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
                 });
             }
         },
-        TIMER(R.string.KEY_TIMER){
+        CAPTURE(R.string.KEY_AUTO_CAPTURE){
+            @Override
+            void setup(Preference name)throws Exception {
+                final Context context = name.getContext();
+                name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object o) {
+                        if (o.toString().isEmpty() ) {
+                            Toast.makeText(context, R.string.preferences_no, Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                        try {
+                            settings.write(preference.getKey(), Integer.valueOf(o.toString()));
+                            Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o.toString(), Toast.LENGTH_SHORT).show();
+                            return true;
+                        } catch (Exception e) {
+                            Toast.makeText(context, R.string.preferences_no, Toast.LENGTH_SHORT).show();
+                        }
+                        return false;
+                    }
+                });
+            }
+        },
+        /*TIMER(R.string.KEY_TIMER){
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
@@ -107,8 +127,8 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
                     }
                 });
             }
-        },
-        TIMER_NULL(R.string.KEY_TIMER_NULL){
+        },*/
+        /*TIMER_NULL(R.string.KEY_TIMER_NULL){
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
@@ -130,8 +150,8 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
                     }
                 });
             }
-        },
-        MAX_NULL(R.string.KEY_MAX_NULL){
+        },*/
+        /*MAX_NULL(R.string.KEY_MAX_NULL){
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
@@ -153,7 +173,7 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
                     }
                 });
             }
-        },
+        },*/
         /*STEP(R.string.KEY_STEP){
             @Override
             void setup(Preference name)throws Exception {
@@ -177,7 +197,7 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
                 });
             }
         },*/
-        AUTO_CAPTURE(R.string.KEY_AUTO_CAPTURE){
+        /*AUTO_CAPTURE(R.string.KEY_AUTO_CAPTURE){
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
@@ -201,14 +221,14 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
                             return false;
                         }
                         preference.setTitle(context.getString(R.string.auto_capture) + ' ' + globals.getAutoCapture() + ' ' + context.getString(R.string.scales_kg));
-                        //preference.getEditor().putInt(preference.getKey(), 123/*main.getAutoCapture()*/);
+                        //preference.getEditor().putInt(preference.getKey(), 123*//*main.getAutoCapture()*//*);
                         //Main.preferencesScale.write(preference.getKey(), main.getAutoCapture());
                         Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + globals.getAutoCapture() + ' ' + context.getString(R.string.scales_kg), Toast.LENGTH_SHORT).show();
                         return true;
                     }
                 });
             }
-        },
+        },*/
         ABOUT(R.string.KEY_ABOUT){
             @Override
             void setup(Preference name)throws Exception {
@@ -309,6 +329,7 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
         getWindow().setAttributes(layoutParams);
 
         globals = Globals.getInstance();
+        settings = new Settings(this, ActivityTest.SETTINGS);
         scaleModule = globals.getScaleModule();
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);

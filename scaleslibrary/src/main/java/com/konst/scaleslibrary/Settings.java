@@ -10,8 +10,6 @@ public class Settings {
     Context mContext;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
-    /** Настройки общии для весов. */
-    public static final String SETTINGS = ScalesView.class.getName() + ".SETTINGS"; //
     /** ключ адресс bluetooth. */
     //public static final String KEY_ADDRESS = ScalesView.class.getPackage() +".KEY_ADDRESS";
     /** Ключ значения дискретности веса. */
@@ -19,20 +17,25 @@ public class Settings {
     /** Ключь флага стабилизации веса. */
     /*public static final String KEY_STABLE = ScalesView.class.getPackage() +".KEY_STABLE";*/
 
-    enum KEY{
-        /** ключ адресс bluetooth. */
+    /*enum KEY{
+        KEY_FILTER(R.string.KEY_FILTER),
+        *//** ключ адресс bluetooth. *//*
         KEY_ADDRESS(R.string.KEY_ADDRESS),
-        /** Ключ значения дискретности веса. */
+        *//** Ключ значения дискретности веса. *//*
         KEY_DISCRETE(R.string.KEY_DISCRETE),
         KEY_STABLE(R.string.KEY_STABLE),
+        *//** Переключатель ато ноль *//*
+        KEY_SWITCH_ZERO(R.string.KEY_SWITCH_ZERO),
+        *//** Время через которое устанавливается ноль. *//*
         KEY_TIMER_ZERO(R.string.KEY_TIMER_ZERO),
+        *//** Значение веса которое считается нолем. *//*
         KEY_MAX_ZERO(R.string.KEY_MAX_ZERO);;
         private final int resId;
         KEY(int key){
             resId = key;
         }
         public int getResId() { return resId; }
-    }
+    }*/
 
     public Settings(Context context, String name) {
         mContext = context;
@@ -56,16 +59,16 @@ public class Settings {
         editor.putString(key, value).apply();
     }
 
-    public void write(KEY key, String value) {
-        editor.putString(mContext.getString(key.getResId()), value).apply();
+    public void write(int key, String value) {
+        editor.putString(mContext.getString(key), value).apply();
     }
 
-    public void write(KEY key, boolean value) {
-        editor.putBoolean(mContext.getString(key.getResId()), value).apply();
+    public void write(int key, boolean value) {
+        editor.putBoolean(mContext.getString(key), value).apply();
     }
 
-    public void write(KEY key, int value) {
-        editor.putInt(mContext.getString(key.getResId()), value).apply();
+    public void write(int key, int value) {
+        editor.putInt(mContext.getString(key), value).apply();
     }
 
     public void write(String key, int value) {
@@ -80,13 +83,18 @@ public class Settings {
         editor.putBoolean(key, value).apply();
     }
 
-    public String read(KEY key, String def) {
-        return sharedPreferences.getString(mContext.getString(key.getResId()), def);
+    public String read(int key, String def) {
+        return sharedPreferences.getString(mContext.getString(key), def);
     }
 
-    public boolean read(KEY key, boolean def) {
+    /*public boolean read(KEY key, boolean def) {
 
         return sharedPreferences.getBoolean(mContext.getString(key.getResId()), def);
+    }*/
+
+    public boolean read(int key, boolean def) {
+
+        return sharedPreferences.getBoolean(mContext.getString(key), def);
     }
 
     public String read(String key, String def) {
@@ -101,15 +109,19 @@ public class Settings {
         return sharedPreferences.getInt(key, in);
     }
 
-    public int read(KEY key, int in) {
-        return sharedPreferences.getInt(mContext.getString(key.getResId()), in);
+    public int read(int key, int in) {
+        return sharedPreferences.getInt(mContext.getString(key), in);
     }
+
+    /*public int read(KEY key, int in) {
+        return sharedPreferences.getInt(mContext.getString(key.getResId()), in);
+    }*/
 
     public float read(String key, float in) { return sharedPreferences.getFloat(key, in); }
 
-    boolean contains(KEY key) {
+    /*boolean contains(KEY key) {
         return sharedPreferences.contains(mContext.getString(key.getResId()));
-    }
+    }*/
 
     boolean contains(String key) {
         return sharedPreferences.contains(key);

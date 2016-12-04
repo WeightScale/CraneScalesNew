@@ -46,7 +46,7 @@ public class SearchDialogFragment extends DialogFragment implements View.OnClick
         if (getArguments() != null) {
             message = getArguments().getString(ARG_MESSAGE);
         }
-        settings = new Settings(getActivity(), Settings.SETTINGS);
+        settings = new Settings(getActivity(), ScalesView.SETTINGS);
         foundDevice = new ArrayList<>();
         broadcastReceiver = new BaseReceiver(getActivity());
         broadcastReceiver.register();
@@ -62,8 +62,8 @@ public class SearchDialogFragment extends DialogFragment implements View.OnClick
         listView = (ListView)view.findViewById(R.id.listViewDevices);  //список весов
         listView.setOnItemClickListener(onItemClickListener);
 
-        for (int i = 0; settings.contains(getActivity().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i); i++) { //заполнение списка
-            foundDevice.add(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(settings.read(getActivity().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i, "")));
+        for (int i = 0; settings.contains(getActivity().getString(R.string.KEY_ADDRESS) + i); i++) { //заполнение списка
+            foundDevice.add(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(settings.read(getActivity().getString(R.string.KEY_ADDRESS) + i, "")));
         }
 
         bluetoothAdapter = new BluetoothListAdapter(getActivity(), foundDevice);
@@ -97,11 +97,11 @@ public class SearchDialogFragment extends DialogFragment implements View.OnClick
         }
         broadcastReceiver.unregister();
 
-        for (int i = 0; settings.contains(getActivity().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i); i++) { //стереть прошлый список
-            settings.remove(getActivity().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i);
+        for (int i = 0; settings.contains(getActivity().getString(R.string.KEY_ADDRESS) + i); i++) { //стереть прошлый список
+            settings.remove(getActivity().getString(R.string.KEY_ADDRESS) + i);
         }
         for (int i = 0; i < foundDevice.size(); i++) { //сохранить новый список
-            settings.write(getActivity().getString(Settings.KEY.KEY_ADDRESS.getResId()) + i, ((BluetoothDevice) foundDevice.toArray()[i]).getAddress());
+            settings.write(getActivity().getString(R.string.KEY_ADDRESS) + i, ((BluetoothDevice) foundDevice.toArray()[i]).getAddress());
         }
     }
 
