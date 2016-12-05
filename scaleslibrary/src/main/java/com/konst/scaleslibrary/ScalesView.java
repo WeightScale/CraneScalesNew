@@ -164,8 +164,8 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
      */
     public void setStable(boolean stable){
         if (scaleModule != null)
-            scaleModule.stableActionEnable(stable);
-        settings.write(FragmentSettings.Key.STABLE.getResId(), stable);
+            scaleModule.setEnableProcessStable(stable);
+        settings.write(FragmentSettings.Key.SWITCH_STABLE.getResId(), stable);
     }
 
     public void updateSettings(Settings settings){
@@ -175,8 +175,8 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                 case STEP:
                     scaleModule.setStepScale(settings.read(key.getResId(), 5));
                     break;
-                case STABLE:
-                    scaleModule.stableActionEnable(settings.read(key.getResId(), false));
+                case SWITCH_STABLE:
+                    scaleModule.setEnableProcessStable(settings.read(key.getResId(), false));
                     break;
                 case SWITCH_ZERO:
                     scaleModule.setEnableAutoNull(settings.read(key.getResId(), false));

@@ -20,6 +20,8 @@ public class ObjectScales implements Serializable {
     private int limitTenzo;
     /** Сколько уже стабильно показание веса. */
     protected int stableNum;
+    /** Флаг вес стабильный. */
+    protected boolean flagStab;
 
     public ScaleModule.ResultWeight getResultWeight() {
         return resultWeight;
@@ -41,5 +43,6 @@ public class ObjectScales implements Serializable {
     public void setTemperature(int temperature) {this.temperature = temperature;}
     public int getStableNum() {return stableNum;}
     public int setStableNum(int stableNum) {return this.stableNum = stableNum;}
-
+    public boolean isFlagStab() {return flagStab;}
+    public void setFlagStab(boolean flagStab) {this.flagStab = flagStab;}
 }

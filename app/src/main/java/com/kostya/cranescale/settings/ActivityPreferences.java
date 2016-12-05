@@ -28,8 +28,8 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
     private static Globals globals;
     private static ScaleModule scaleModule;
     private boolean flagChange;
-    enum EnumPreference{
-        NULL(R.string.KEY_NULL){
+    public enum Key{
+        /*NULL(R.string.KEY_NULL){
             @Override
             void setup(Preference name)throws Exception {
                 name.setSummary( name.getContext().getString(R.string.sum_zeroing));
@@ -49,11 +49,13 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
                     }
                 });
             }
-        },
+        },*/
         DELTA_STAB(R.string.KEY_DELTA_STAB){
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
+                final CharSequence title = name.getTitle();
+                name.setTitle(title + " " + settings.read(name.getKey(), 20)+ "кг");
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
                     public boolean onPreferenceChange(Preference preference, Object o) {
@@ -63,6 +65,7 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
                         }
                         try {
                             settings.write(preference.getKey(), Integer.valueOf(o.toString()));
+                            preference.setTitle(title + " " + Integer.valueOf(o.toString())+ "кг");
                             Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o.toString(), Toast.LENGTH_SHORT).show();
                             return true;
                         } catch (Exception e) {
@@ -77,6 +80,8 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
+                final CharSequence title = name.getTitle();
+                name.setTitle(name.getTitle() + " " + settings.read(name.getKey(), 200)+ "кг");
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
                     public boolean onPreferenceChange(Preference preference, Object o) {
@@ -86,6 +91,7 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
                         }
                         try {
                             settings.write(preference.getKey(), Integer.valueOf(o.toString()));
+                            preference.setTitle(title + " " + Integer.valueOf(o.toString())+ "кг");
                             Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o.toString(), Toast.LENGTH_SHORT).show();
                             return true;
                         } catch (Exception e) {
@@ -301,7 +307,7 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
         private final int resId;
         abstract void setup(Preference name)throws Exception;
 
-        EnumPreference(int key){
+        Key(int key){
             resId = key;
         }
 
@@ -309,7 +315,7 @@ public class ActivityPreferences extends PreferenceActivity implements SharedPre
     }
 
     public void process(){
-        for (EnumPreference enumPreference : EnumPreference.values()){
+        for (Key enumPreference : Key.values()){
             Preference preference = findPreference(getString(enumPreference.getResId()));
             try {
                 enumPreference.setup(preference);

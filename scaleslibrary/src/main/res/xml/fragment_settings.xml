@@ -12,10 +12,15 @@
                         android:key="@string/KEY_TIMER_ZERO" android:numeric="integer"
                         android:inputType="number" android:defaultValue="120"/>
                 <com.konst.scaleslibrary.settings.IntegerEditPreference
-                        android:title="@string/weight" android:summary="@string/sum_weight"
+                        android:title="@string/sum_weight" android:summary="@string/sum_max_null"
                         android:key="@string/KEY_MAX_ZERO"
                         android:numeric="integer" android:inputType="number" android:defaultValue="50"/>
                 <!--<Preference android:title="Закрыть Окно" android:key="@string/KEY_CLOSED"/>-->
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen android:title="Стабилизация веса" android:summary="Индикация события вес стабильный.">
+            <PreferenceCategory android:title="@string/Auto_zero" android:summary="@string/sum_auto_zero">
+                <SwitchPreference android:key="@string/KEY_SWITCH_STABLE" android:title="Стабилизация" android:defaultValue="false"/>
             </PreferenceCategory>
         </PreferenceScreen>
         <com.konst.scaleslibrary.settings.DialogTimerOff

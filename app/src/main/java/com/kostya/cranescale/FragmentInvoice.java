@@ -2,17 +2,23 @@ package com.kostya.cranescale;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ContentValues;
-import android.content.Context;
+import android.app.ProgressDialog;
+import android.content.*;
 import android.database.Cursor;
+import android.graphics.Rect;
 import android.os.Bundle;
 
+import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.konst.scaleslibrary.*;
+import com.konst.scaleslibrary.module.InterfaceModule;
+import com.konst.scaleslibrary.module.scale.ObjectScales;
 import com.kostya.cranescale.provider.InvoiceTable;
 import com.kostya.cranescale.provider.WeighingTable;
+import com.kostya.cranescale.settings.ActivityPreferences;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,13 +34,23 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
     protected ContentValues values = new ContentValues();
     private EditText dateInvoice, nameInvoice, loadingInvoice, totalInvoice;
     private ListView listInvoice;
-    String entryID;
+    private BaseReceiver baseReceiver; //приёмник намерений
+    private Settings settings;
+    private String entryID;
+    private int deltaStab, capture;
     private static final String ARG_DATE = "date";
     private static final String ARG_PARAM2 = "param2";
 
     private String mParam2;
 
     private OnFragmentInvoiceListener mListener;
+
+    enum STAGE{
+        START,
+        LOADING,
+        STABLE,
+        UNLOADING
+    }
 
     public FragmentInvoice() {
         // Required empty public constructor
@@ -65,9 +81,20 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
             values.put(InvoiceTable.KEY_DATE_TIME_CREATE, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
         }
 
+        settings = new Settings(getActivity(), ActivityTest.SETTINGS);
+
         invoiceTable = new InvoiceTable(getActivity());
         entryID = invoiceTable.insertNewEntry(values).getLastPathSegment();
         weighingTable = new WeighingTable(getActivity());
+
+        baseReceiver = new BaseReceiver(getActivity());
+        baseReceiver.register();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateSettings(settings);
     }
 
     @Override
@@ -117,6 +144,7 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
     @Override
     public void onDetach() {
         super.onDetach();
+        baseReceiver.unregister();
         mListener = null;
     }
 
@@ -124,6 +152,21 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         if (view.getId() == R.id.buttonCloseInvoice){
             onClosePressedButton();
+        }
+    }
+
+    public void updateSettings(Settings settings){
+
+        for(ActivityPreferences.Key key : ActivityPreferences.Key.values()){
+            switch (key){
+                case DELTA_STAB:
+                    deltaStab = settings.read(key.getResId(), 20);
+                    break;
+                case CAPTURE:
+                    capture = settings.read(key.getResId(), 100);
+                    break;
+                default:
+            }
         }
     }
 
@@ -163,8 +206,58 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
         });
     }
 
+    private void doProcess(ObjectScales objectScales){
+
+    }
+
     /** Интерфейс обратного вызова. */
     public interface OnFragmentInvoiceListener {
         void onInvoiceClosePressedButton();
+    }
+
+    class BaseReceiver extends BroadcastReceiver {
+        private final Context mContext;
+        private SpannableStringBuilder w;
+        private Rect bounds;
+        private ProgressDialog dialogSearch;
+        private final IntentFilter intentFilter;
+        protected boolean isRegistered;
+
+        BaseReceiver(Context context){
+            mContext = context;
+            intentFilter = new IntentFilter(InterfaceModule.ACTION_WEIGHT_STABLE);
+            intentFilter.addAction(InterfaceModule.ACTION_SCALES_RESULT);
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) { //обработчик Bluetooth
+            String action = intent.getAction();
+            if (action != null) {
+                switch (action) {
+                    case InterfaceModule.ACTION_SCALES_RESULT:
+                        ObjectScales obj = (ObjectScales) intent.getSerializableExtra(InterfaceModule.EXTRA_SCALES);
+                        if (obj == null)
+                            return;
+                        doProcess(obj);
+                        break;
+                    case InterfaceModule.ACTION_WEIGHT_STABLE:
+
+                        break;
+                    default:
+                }
+            }
+        }
+
+        public void register() {
+            isRegistered = true;
+            mContext.registerReceiver(this, intentFilter);
+        }
+
+        public void unregister() {
+            if (isRegistered) {
+                mContext.unregisterReceiver(this);  // edited
+                isRegistered = false;
+            }
+        }
     }
 }

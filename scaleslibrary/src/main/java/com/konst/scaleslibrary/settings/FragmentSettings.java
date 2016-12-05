@@ -48,9 +48,10 @@ public class FragmentSettings extends PreferenceFragment{
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
+                final CharSequence title = name.getTitle();
                 boolean check = name.getSharedPreferences().getBoolean(name.getContext().getString(R.string.KEY_SWITCH_ZERO), false);
                 name.setEnabled(check);
-                name.setTitle(context.getString(R.string.Time) + ' ' + name.getSharedPreferences().getInt(name.getKey(), 120) + ' ' + context.getString(R.string.second));
+                name.setTitle(title + " " + name.getSharedPreferences().getInt(name.getKey(), 120) + ' ' + context.getString(R.string.second));
                 name.setSummary(context.getString(R.string.sum_time_auto_zero) + ' ' + context.getResources().getInteger(R.integer.default_max_time_auto_null) + ' ' + context.getString(R.string.second));
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
@@ -59,7 +60,7 @@ public class FragmentSettings extends PreferenceFragment{
                             Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
                             return false;
                         }
-                        preference.setTitle(context.getString(R.string.Time) + ' ' + o + ' ' + context.getString(R.string.second));
+                        preference.setTitle(title + " " + o + ' ' + context.getString(R.string.second));
                         settings.write(preference.getKey(), Integer.valueOf(o.toString()));
                         Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o + ' ' + context.getString(R.string.second), Toast.LENGTH_SHORT).show();
                         return true;
@@ -71,9 +72,10 @@ public class FragmentSettings extends PreferenceFragment{
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
+                final CharSequence title = name.getTitle();
                 boolean check = name.getSharedPreferences().getBoolean(name.getContext().getString(R.string.KEY_SWITCH_ZERO), false);
                 name.setEnabled(check);
-                name.setTitle(context.getString(R.string.sum_weight) + ' ' + name.getSharedPreferences().getInt(name.getKey(), 50) + ' ' + context.getString(R.string.scales_kg));
+                name.setTitle(title + " " + name.getSharedPreferences().getInt(name.getKey(), 50) + ' ' + context.getString(R.string.scales_kg));
                 name.setSummary(context.getString(R.string.sum_max_null) + ' ' + context.getResources().getInteger(R.integer.default_limit_auto_null) + ' ' + context.getString(R.string.scales_kg));
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
@@ -82,9 +84,25 @@ public class FragmentSettings extends PreferenceFragment{
                             Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
                             return false;
                         }
-                        preference.setTitle(context.getString(R.string.sum_weight) + ' ' + o + ' ' + context.getString(R.string.scales_kg));
+                        preference.setTitle(title + " " + o + ' ' + context.getString(R.string.scales_kg));
                         settings.write(preference.getKey(), Integer.valueOf(o.toString()));
                         Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o + ' ' + context.getString(R.string.scales_kg), Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
+            }
+        },
+        SWITCH_STABLE(R.string.KEY_SWITCH_STABLE){
+            @Override
+            void setup(Preference name) throws Exception {
+                name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object o) {
+                        boolean flag_switch = (boolean)o;
+
+                        settings.write(preference.getKey(), flag_switch);
+                        //preference.getPreferenceManager().findPreference(preference.getContext().getString(R.string.KEY_TIMER_ZERO)).setEnabled(flag_switch);
+                        //preference.getPreferenceManager().findPreference(preference.getContext().getString(R.string.KEY_MAX_ZERO)).setEnabled(flag_switch);
                         return true;
                     }
                 });
@@ -94,9 +112,10 @@ public class FragmentSettings extends PreferenceFragment{
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
+                final CharSequence title = name.getTitle();
                 int t = name.getSharedPreferences().getInt(name.getKey(), 10);
                 name.setDefaultValue(t);
-                name.setTitle(context.getString(R.string.Timer_off) + ' ' + t + ' ' + context.getString(R.string.minute));
+                name.setTitle(title + " " + t + ' ' + context.getString(R.string.minute));
                 name.setSummary(context.getString(R.string.sum_timer) + ' ' + context.getString(R.string.range) + context.getResources().getInteger(R.integer.default_min_time_off) + context.getString(R.string.to) + context.getResources().getInteger(R.integer.default_max_time_off));
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
@@ -110,7 +129,7 @@ public class FragmentSettings extends PreferenceFragment{
                         try {
                             if (scalesView.getScaleModule().setModuleTimeOff(Integer.valueOf(o.toString()))) {
                                 settings.write(preference.getKey(), Integer.valueOf(o.toString()));
-                                preference.setTitle(context.getString(R.string.Timer_off) + ' ' + o + ' ' + context.getString(R.string.minute));
+                                preference.setTitle(title + " " + o + ' ' + context.getString(R.string.minute));
                                 Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o + ' ' + context.getString(R.string.minute), Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
@@ -126,7 +145,8 @@ public class FragmentSettings extends PreferenceFragment{
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
-                name.setTitle(context.getString(R.string.measuring_step) + ' ' + name.getSharedPreferences().getInt(name.getKey(), 5) + ' ' + context.getString(R.string.scales_kg));
+                final CharSequence title = name.getTitle();
+                name.setTitle(title + " " + name.getSharedPreferences().getInt(name.getKey(), 5) + ' ' + context.getString(R.string.scales_kg));
                 name.setSummary(context.getString(R.string.The_range_is_from_1_to) + context.getResources().getInteger(R.integer.default_max_step_scale) + ' ' + context.getString(R.string.scales_kg));
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
@@ -135,7 +155,7 @@ public class FragmentSettings extends PreferenceFragment{
                             Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
                             return false;
                         }
-                        preference.setTitle(context.getString(R.string.measuring_step) + ' ' + o + ' ' + context.getString(R.string.scales_kg));
+                        preference.setTitle(title + " " + o + ' ' + context.getString(R.string.scales_kg));
                         settings.write(preference.getKey(), Integer.valueOf(o.toString()));
                         Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o + ' ' + context.getString(R.string.scales_kg), Toast.LENGTH_SHORT).show();
                         return true;
@@ -147,9 +167,10 @@ public class FragmentSettings extends PreferenceFragment{
             @Override
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
+                final CharSequence title = name.getTitle();
                 int f = name.getSharedPreferences().getInt(name.getKey(), 15);
                 name.setDefaultValue(Integer.valueOf(f));
-                name.setTitle(context.getString(R.string.filter_adc) + ' ' + String.valueOf(f));
+                name.setTitle(title + " " + String.valueOf(f));
                 name.setSummary(context.getString(R.string.sum_filter_adc) + ' ' + context.getString(R.string.The_range_is_from_0_to) + context.getResources().getInteger(R.integer.default_adc_filter));
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
@@ -161,7 +182,7 @@ public class FragmentSettings extends PreferenceFragment{
                         try {
                             if (scalesView.getScaleModule().setModuleFilterADC(Integer.valueOf(o.toString()))) {
                                 settings.write(preference.getKey(), Integer.valueOf(o.toString()));
-                                preference.setTitle(context.getString(R.string.filter_adc) + ' ' + o);
+                                preference.setTitle(title + " " + o);
                                 Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o.toString(), Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
@@ -173,7 +194,7 @@ public class FragmentSettings extends PreferenceFragment{
                 });
             }
         },
-        STABLE(R.string.KEY_STABLE){
+        /*STABLE(R.string.KEY_STABLE){
             @Override
             void setup(Preference name) throws Exception {
                 name.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -183,7 +204,7 @@ public class FragmentSettings extends PreferenceFragment{
                     }
                 });
             }
-        },
+        },*/
         CLOSED(R.string.KEY_CLOSED){
             @Override
             void setup(Preference name) throws Exception {

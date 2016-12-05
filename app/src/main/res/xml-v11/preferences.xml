@@ -5,13 +5,14 @@
         <PreferenceScreen android:title="Установки для грейфера" android:summary="Настройки для работы с грейфером магнитной шайбой и тп.">
             <PreferenceCategory android:title="@string/Settings">
                 <com.kostya.cranescale.settings.IntegerEditPreference
-                        android:title="Дельта стабилизации"
-                        android:summary="Значение в диапазоне которого будет сбабилизация загруженого ковша"
+                        android:title="Дельта стабилизации:"
+                        android:summary="Установка значения в диапазоне которого срабатывает стабилизация веса загруженого ковша."
                         android:key="@string/KEY_DELTA_STAB"
                         android:numeric="integer" android:inputType="number" android:defaultValue="20"/>
                 <com.kostya.cranescale.settings.IntegerEditPreference
                         android:title="@string/auto_capture"
                         android:key="@string/KEY_AUTO_CAPTURE"
+                        android:summary="Установка значения веса после которого программа начинает определять значение веса как стабильное."
                         android:defaultValue="@integer/default_max_auto_capture" android:numeric="integer" android:inputType="number"/>
                 <com.kostya.cranescale.settings.IntegerEditPreference
                         android:title="@string/weight" android:summary="@string/sum_weight"

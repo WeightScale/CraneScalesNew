@@ -28,7 +28,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
     private ObjectScales objectScales = new ObjectScales();
     private ScaleVersion version;
     private ThreadScalesProcess threadScalesProcess;
-    private ThreadStableProcess threadStableProcess;
+    //private ThreadStableProcess threadStableProcess;
     private static final String TAG = ScaleModule.class.getName();
     private Thread threadAttach;
     /** Процент заряда батареи (0-100%). */
@@ -68,9 +68,11 @@ public class ScaleModule extends Module /*implements Serializable*/{
     /** Номер пломбы*/
     private int seal;
     /** Количество стабильных показаний веса для авто сохранения. */
-    public static final int STABLE_NUM_MAX = 150;
+    public static final int STABLE_NUM_MAX = 15;
     /** Флаг использования авто обнуленияю. */
     private boolean enableAutoNull = true;
+    /** Флаг обнаружения стабильного веса. */
+    private boolean enableProcessStable = true;
 
     public int getStepScale() {return stepScale; }
 
@@ -248,7 +250,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
     public void dettach() {
         isAttach = false;
         scalesProcessEnable(false);
-        stableActionEnable(false);
+        //stableActionEnable(false);
         bluetoothConnectReceiver.unregister();
         if (bluetoothProcessManager != null){
             bluetoothProcessManager.stopProcess();
@@ -667,6 +669,10 @@ public class ScaleModule extends Module /*implements Serializable*/{
 
     public void setEnableAutoNull(boolean enableAutoNull) {this.enableAutoNull = enableAutoNull;}
 
+    public void setEnableProcessStable(boolean stable) {
+        enableProcessStable = stable;
+    }
+
     public boolean writeData() {
         return version.writeData();
     }
@@ -675,7 +681,9 @@ public class ScaleModule extends Module /*implements Serializable*/{
 
     private class ThreadScalesProcess extends Thread{
         //private final ObjectScales objectScales;
-        private int numTimeTemp = 101;
+        private int numTimeTemp;
+        /** Временная переменная для хранения веса. */
+        private int tempWeight;
         private boolean cancel;
         /** Делитель для авто ноль. */
         private static final int DIVIDER_AUTO_NULL = 15;
@@ -717,17 +725,33 @@ public class ScaleModule extends Module /*implements Serializable*/{
                             autoNull = 0;
                         }
                     }
+                    /** Секция определения стабильного веса. */
+                    if (enableProcessStable){
+                        if (tempWeight - getStepScale() <= objectScales.getWeight() && tempWeight + getStepScale() >= objectScales.getWeight()) {
+                            if (objectScales.getStableNum() <= STABLE_NUM_MAX){
+                                if (objectScales.getStableNum() == STABLE_NUM_MAX) {
+                                    //getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_WEIGHT_STABLE).putExtra(InterfaceModule.EXTRA_SCALES, objectScales));
+                                    objectScales.setFlagStab(true);
+                                }
+                                objectScales.setStableNum(objectScales.getStableNum()+1);
+                            }
+                        } else {
+                            objectScales.setStableNum(0);
+                            objectScales.setFlagStab(false);
+                        }
+                        tempWeight = objectScales.getWeight();
+                    }
                     /** Секция батарея температура. */
-                    if (numTimeTemp > 100){
-                        numTimeTemp = 0;
+                    if (numTimeTemp == 0){
+                        numTimeTemp = 250;
                         objectScales.setBattery(getModuleBatteryCharge());
                         objectScales.setTemperature(getModuleTemperature());
 
                     }
                     getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_SCALES_RESULT).putExtra(InterfaceModule.EXTRA_SCALES, objectScales));
                 }catch (Exception e){}
-                numTimeTemp++;
-                try { TimeUnit.MILLISECONDS.sleep(PERIOD_UPDATE); } catch (InterruptedException e) {}
+                numTimeTemp--;
+                //try { TimeUnit.MILLISECONDS.sleep(PERIOD_UPDATE); } catch (InterruptedException e) {}
             }
             Log.i(TAG, "interrupt");
         }
@@ -769,7 +793,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
     /** Включаем выключаем процесс определения стабильного веса.
      * @param stable true - процесс запускается, false - процесс останавливается.
      */
-    public void stableActionEnable(boolean stable){
+    /*public void stableActionEnable(boolean stable){
         try {
             if (stable){
                 if (threadStableProcess != null)
@@ -783,14 +807,14 @@ public class ScaleModule extends Module /*implements Serializable*/{
         }catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
-    }
+    }*/
 
     /**
      * Процесс обработки стабильного показания веса.
      * Если вес стабильный определенное время посылаем сообщение.
      */
-    private class ThreadStableProcess extends Thread{
-        /** Временная переменная для хранения веса. */
+    /*private class ThreadStableProcess extends Thread{
+        *//** Временная переменная для хранения веса. *//*
         private int tempWeight;
         private boolean cancel;
 
@@ -818,7 +842,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
             super.interrupt();
             cancel = true;
         }
-    }
+    }*/
 
     void managerConnect(Socket socket){
         if (bluetoothProcessManager != null)
