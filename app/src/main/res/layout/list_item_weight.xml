@@ -12,7 +12,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" android:background="@color/background_light">
         <LinearLayout
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content" android:layout_weight="1">
             <TextView android:layout_height="fill_parent"

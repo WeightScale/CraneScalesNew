@@ -5,14 +5,14 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="transparent">#00000000</color>
-    <color name="background">#ffb0b0b0</color>
-    <color name="background_light">#ffefefef</color>
+    <color name="background">#b0b0b0</color>
+    <color name="background_light">#efefef</color>
     <color name="background_item_list">#ffcccccc</color>
     <color name="background_item_press">#ff9a9a9a</color>
     <color name="background1">#898989</color>
-    <color name="background2">#ff4e4e4e</color>
+    <color name="background2">#4e4e4e</color>
     <color name="text">#000000</color>
-    <color name="white">#FFFFFF</color>
+    <color name="white">#ffffff</color>
     <color name="dialog">#ff6c6c6c</color>
     <color name="greenStart">#ff34e745</color>
     <color name="greenMid">#ff0a9215</color>

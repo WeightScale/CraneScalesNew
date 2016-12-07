@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/app_bar_main"
-        tools:context="com.kostya.cranescale.ActivityMain">
+        tools:context="com.kostya.cranescale.ActivityTest">
     <FrameLayout
             android:id="@+id/fragmentCont"
             android:layout_width="fill_parent"

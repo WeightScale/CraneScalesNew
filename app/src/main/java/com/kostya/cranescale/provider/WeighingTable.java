@@ -53,8 +53,7 @@ public class WeighingTable {
 
     public Uri insertNewEntry(int _indexInvoice, int weight) {
         ContentValues newTaskValues = new ContentValues();
-        Date date = new Date();
-        newTaskValues.put(KEY_DATE_TIME_CREATE, new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).format(date));
+        newTaskValues.put(KEY_DATE_TIME_CREATE, new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date()));
         newTaskValues.put(KEY_ID_INVOICE, _indexInvoice);
         newTaskValues.put(KEY_WEIGHT, weight);
         newTaskValues.put(KEY_DATA0, "");

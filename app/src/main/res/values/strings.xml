@@ -4,7 +4,7 @@
     <string name="scales_kg">кг</string>
     <string name="OVER_LOAD">ПЕРЕГРУЗКА</string>
     <string name="NO_CONNECT">НЕТ СОЕДИНЕНИЯ</string>
-    <string name="Zeroing">\"Обнуление…\"</string>
+    <string name="Zeroing">\“Обнуление…\”</string>
     <string name="preferences_yes">Установлено</string>
     <string name="preferences_no">Ошибка</string>
     <string name="sum_zeroing">Запомнить ноль весов</string>

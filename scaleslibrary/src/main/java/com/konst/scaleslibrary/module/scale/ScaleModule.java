@@ -730,14 +730,14 @@ public class ScaleModule extends Module /*implements Serializable*/{
                         if (tempWeight - getStepScale() <= objectScales.getWeight() && tempWeight + getStepScale() >= objectScales.getWeight()) {
                             if (objectScales.getStableNum() <= STABLE_NUM_MAX){
                                 if (objectScales.getStableNum() == STABLE_NUM_MAX) {
-                                    //getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_WEIGHT_STABLE).putExtra(InterfaceModule.EXTRA_SCALES, objectScales));
-                                    objectScales.setFlagStab(true);
+                                    getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_WEIGHT_STABLE).putExtra(InterfaceModule.EXTRA_SCALES, objectScales));
+                                    //objectScales.setFlagStab(true);
                                 }
                                 objectScales.setStableNum(objectScales.getStableNum()+1);
                             }
                         } else {
                             objectScales.setStableNum(0);
-                            objectScales.setFlagStab(false);
+                            //objectScales.setFlagStab(false);
                         }
                         tempWeight = objectScales.getWeight();
                     }

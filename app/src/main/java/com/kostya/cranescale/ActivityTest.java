@@ -190,6 +190,12 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         showDialog(ALERT_DIALOG2);
     }
 
+    @Override
+    public void onEnableStable(boolean enable) {
+        if (scaleModule != null)
+            scaleModule.setEnableProcessStable(enable);
+    }
+
     private void openFragmentInvoice(){
         Fragment fragment = getFragmentManager().findFragmentByTag(FragmentInvoice.class.getSimpleName());
         if (fragment instanceof FragmentInvoice){

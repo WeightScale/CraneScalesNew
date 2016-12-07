@@ -27,7 +27,7 @@ public class FragmentSettings extends PreferenceFragment{
     private static Settings settings;
     public static ScalesView scalesView;
 
-    public enum Key{
+    public enum KEY{
         SWITCH_ZERO(R.string.KEY_SWITCH_ZERO){
             @Override
             void setup(Preference name) throws Exception {
@@ -229,7 +229,7 @@ public class FragmentSettings extends PreferenceFragment{
         private final int resId;
         abstract void setup(Preference name)throws Exception;
 
-        Key(int key){
+        KEY(int key){
             resId = key;
         }
         public int getResId() { return resId; }
@@ -252,7 +252,7 @@ public class FragmentSettings extends PreferenceFragment{
     }
 
     public void initPreferences(){
-        for (Key enumPreference : Key.values()){
+        for (KEY enumPreference : KEY.values()){
             Preference preference = findPreference(getString(enumPreference.getResId()));
             if(preference != null){
                 try {

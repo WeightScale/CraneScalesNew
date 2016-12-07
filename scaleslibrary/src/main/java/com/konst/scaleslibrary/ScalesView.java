@@ -156,7 +156,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     public void setDiscrete(int discrete){
         if (scaleModule != null)
             scaleModule.setStepScale(discrete);
-        settings.write(FragmentSettings.Key.STEP.getResId(), discrete);
+        settings.write(FragmentSettings.KEY.STEP.getResId(), discrete);
     }
 
     /** Устанавливаем флаг определять стабильный вес.
@@ -165,12 +165,12 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     public void setStable(boolean stable){
         if (scaleModule != null)
             scaleModule.setEnableProcessStable(stable);
-        settings.write(FragmentSettings.Key.SWITCH_STABLE.getResId(), stable);
+        settings.write(FragmentSettings.KEY.SWITCH_STABLE.getResId(), stable);
     }
 
     public void updateSettings(Settings settings){
 
-        for(FragmentSettings.Key key : FragmentSettings.Key.values()){
+        for(FragmentSettings.KEY key : FragmentSettings.KEY.values()){
             switch (key){
                 case STEP:
                     scaleModule.setStepScale(settings.read(key.getResId(), 5));

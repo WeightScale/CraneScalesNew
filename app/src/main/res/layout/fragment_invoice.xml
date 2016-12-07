@@ -3,18 +3,23 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:focusable="true">
+              android:focusable="true"
+              android:background="@color/background">
 
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/corners"
+            android:layout_marginRight="@dimen/corners"
+            android:background="@color/white"
+            android:layout_marginTop="@dimen/corners">
 
         <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/padding"
-                android:layout_marginRight="@dimen/padding">
+                android:layout_marginLeft="@dimen/corners"
+                android:layout_marginRight="@dimen/corners">
 
             <TableRow
                     android:layout_width="fill_parent"
@@ -28,7 +33,7 @@
                         android:text="ДАТА"
                         android:id="@+id/textView2"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_large"
+                        android:textSize="@dimen/text_margin"
                         />
 
                 <EditText
@@ -55,7 +60,7 @@
                         android:id="@+id/textView5"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:textSize="@dimen/text_large"/>
+                        android:textSize="@dimen/text_margin"/>
 
                 <EditText
                         android:layout_width="fill_parent"
@@ -81,7 +86,7 @@
                         android:id="@+id/textView6"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:textSize="@dimen/text_large"/>
+                        android:textSize="@dimen/text_margin"/>
 
                 <EditText
                         android:layout_width="fill_parent"
@@ -106,14 +111,18 @@
             android:layout_height="1dp"
             android:background="@color/background1"
             android:layout_marginLeft="@dimen/padding"
-            android:layout_marginRight="@dimen/padding">
+            android:layout_marginRight="@dimen/corners">
     </LinearLayout>
 
     <ListView
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:id="@+id/invoiceList"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/corners"
+            android:layout_marginRight="@dimen/corners"
+            android:background="@color/white"
+            android:dividerHeight="@dimen/padding"/>
 
     <LinearLayout
             android:orientation="vertical"
@@ -128,12 +137,16 @@
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/padding"
-            android:layout_marginRight="@dimen/padding">
+            android:layout_marginLeft="@dimen/corners"
+            android:layout_marginRight="@dimen/corners"
+            android:background="@color/white"
+            android:layout_marginBottom="@dimen/corners">
 
         <TableLayout
                 android:layout_width="fill_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/corners"
+                android:layout_marginRight="@dimen/corners">
 
             <TableRow
                     android:layout_width="fill_parent"
@@ -146,7 +159,7 @@
                         android:id="@+id/textView3"
                         android:gravity="left|center_horizontal"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_large"
+                        android:textSize="@dimen/text_margin"
                         android:layout_gravity="center"/>
 
                 <EditText
@@ -158,8 +171,10 @@
                         android:inputType="none"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
-                        android:textSize="@dimen/text_large"
-                        android:layout_gravity="center"/>
+                        android:textSize="@dimen/text_large_x"
+                        android:layout_gravity="center"
+                        android:textStyle="bold"
+                        android:textColor="@color/background2"/>
 
                 <Button
                         android:layout_width="wrap_content"
