@@ -101,8 +101,32 @@ public class FragmentSettings extends PreferenceFragment{
                         boolean flag_switch = (boolean)o;
 
                         settings.write(preference.getKey(), flag_switch);
-                        //preference.getPreferenceManager().findPreference(preference.getContext().getString(R.string.KEY_TIMER_ZERO)).setEnabled(flag_switch);
+                        preference.getPreferenceManager().findPreference(preference.getContext().getString(R.string.KEY_DELTA_STAB)).setEnabled(flag_switch);
                         //preference.getPreferenceManager().findPreference(preference.getContext().getString(R.string.KEY_MAX_ZERO)).setEnabled(flag_switch);
+                        return true;
+                    }
+                });
+            }
+        },
+        DELTA_STAB(R.string.KEY_DELTA_STAB){
+            @Override
+            void setup(Preference name)throws Exception {
+                final Context context = name.getContext();
+                final CharSequence title = name.getTitle();
+                boolean check = name.getSharedPreferences().getBoolean(name.getContext().getString(R.string.KEY_SWITCH_STABLE), false);
+                name.setEnabled(check);
+                name.setTitle(title + " " + name.getSharedPreferences().getInt(name.getKey(), 10) + ' ' + context.getString(R.string.scales_kg));
+                //name.setSummary(context.getString(R.string.sum_max_null) + ' ' + context.getResources().getInteger(R.integer.default_limit_auto_null) + ' ' + context.getString(R.string.scales_kg));
+                name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object o) {
+                        if (o.toString().isEmpty() || "0".equals(o.toString()) /*|| Integer.valueOf(o.toString()) > context.getResources().getInteger(R.integer.default_limit_auto_null)*/) {
+                            Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                        preference.setTitle(title + " " + o + ' ' + context.getString(R.string.scales_kg));
+                        settings.write(preference.getKey(), Integer.valueOf(o.toString()));
+                        Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o + ' ' + context.getString(R.string.scales_kg), Toast.LENGTH_SHORT).show();
                         return true;
                     }
                 });

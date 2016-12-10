@@ -5,6 +5,8 @@
     <!--<string name="KEY_ADDRESS">key_address</string>-->
     <string name="KEY_NULL">key_null</string>
     <string name="KEY_AUTO_CAPTURE">key_auto_capture</string>
+    <string name="KEY_SWITCH_LOADING">KEY_SWITCH_LOADING</string>
+    <string name="KEY_WEIGHT_LOADING">KEY_WEIGHT_LOADING</string>
     <string name="KEY_DAY_CLOSED_CHECK">key_day_closed_check</string>
     <string name="KEY_DAY_CHECK_DELETE">key_day_check_delete</string>
     <!--<string name="KEY_FILTER">key_filter</string>-->
@@ -34,4 +36,6 @@
     <string name="KEY_SENDER">key_sender</string>
     <string name="KEY_SERVICE_COD">key_service_cod</string>
     <string name="KEY_DELTA_STAB">key_delta_stab</string>
+    <string name="KEY_CLOSING_INVOICE">KEY_CLOSING_INVOICE</string>
+    <string name="KEY_SCALES">KEY_SCALES</string>
 </resources>

@@ -26,7 +26,7 @@
     <string name="sum_weight">Предел авто ноля</string>
     <string name="Timer_off">Время бездействия:</string>
     <string name="measuring_step">Шаг взвешивания:</string>
-    <string name="auto_capture">Автозахват:</string>
+    <string name="auto_capture">АВТОЗАХВАТ:</string>
     <string name="filter_adc">Фильтр АЦП:</string>
     <string name="sum_filter_adc">Чем больше число тем точнее, но медленей измерения.</string>
     <string name="zeroing">Установить Ноль</string>

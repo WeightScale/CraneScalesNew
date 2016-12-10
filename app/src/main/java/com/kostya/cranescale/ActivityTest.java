@@ -4,8 +4,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.bluetooth.BluetoothAdapter;
 import android.content.*;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -19,6 +22,7 @@ import android.view.*;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.konst.module.InterfaceModule;
 import com.konst.module.scale.ObjectScales;
 import com.konst.scaleslibrary.ScalesFragment;
@@ -39,12 +43,14 @@ import java.util.Locale;
  */
 public class ActivityTest extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         FragmentInvoice.OnFragmentInvoiceListener, ScalesFragment.OnInteractionListener {
+    private Vibrator vibrator; //вибратор
     private DrawerLayout drawer;
     private FloatingActionButton fab;
     private ScalesView scalesView;
     private ScaleModule scaleModule;
     private FragmentManager fragmentManager;
     private FragmentInvoice fragmentInvoice;
+    private FragmentListInvoice fragmentListInvoice;
     private Globals globals;
     private ListView listView;
     private final ArrayList<WeightObject> arrayList = new ArrayList<>();
@@ -53,11 +59,13 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     public static final String SETTINGS = ActivityTest.class.getName() + ".SETTINGS"; //
     private static final int ALERT_DIALOG1 = 1;
     private static final int ALERT_DIALOG2 = 2;
+    private boolean doubleBackToExitPressedOnce;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_main);
+        vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -67,7 +75,7 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                openFragmentInvoice();
+                openFragmentInvoice(null);
             }
         });
 
@@ -84,6 +92,8 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
 
         fragmentManager = getFragmentManager();
 
+        fragmentListInvoice = FragmentListInvoice.newInstance();
+        fragmentManager.beginTransaction().add(R.id.fragmentInvoice, fragmentListInvoice, FragmentListInvoice.class.getSimpleName()).commit();
         //listView = (ListView)findViewById(R.id.listView);
         //listView.setCacheColorHint(getResources().getColor(R.color.transparent));
         //listView.setVerticalFadingEdgeEnabled(false);
@@ -129,11 +139,13 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.search_scales) {
-            //scalesView.openSearchDialog("Выбор устройства для соединения");
+            scalesView.openSearchScales();
         } else if (id == R.id.settings) {
             startActivity(new Intent(getApplicationContext(), ActivityPreferences.class));
         } else if (id == R.id.new_invoice){
-            openFragmentInvoice();
+            openFragmentInvoice(null);
+        } else if(id == R.id.power){
+            finish();
         }
 
         //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -145,6 +157,25 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         super.onDestroy();
         scalesView.exit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        /*if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            //exit();
+            return;
+        }
+        BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
+        doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, R.string.press_again_to_exit, Toast.LENGTH_SHORT).show();
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);*/
     }
 
     @Override
@@ -164,17 +195,21 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
                         });
                 break;
             case ALERT_DIALOG2:
-                builder.setMessage("Вы хотите закрыть накладную?")
+                builder.setMessage("ВЫ ХОТИТЕ ЗАКРЫТЬ НАКЛАДНУЮ?")
                         .setIcon(R.drawable.ic_notification)
                         .setPositiveButton("ДА", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 fragmentManager.beginTransaction().remove(fragmentInvoice).commit();
                                 fab.setVisibility(View.VISIBLE);
                             }
-                        })
-                        .setNegativeButton("НЕТ", new DialogInterface.OnClickListener() {
+                        }).setNeutralButton("CANCEL", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        }).setNegativeButton("НЕТ", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
+
                             }
                         });
                 break;
@@ -185,9 +220,9 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
 
     }
 
-    @Override
-    public void onInvoiceClosePressedButton() {
-        showDialog(ALERT_DIALOG2);
+    public void closedInvoice(){
+        fragmentManager.beginTransaction().remove(fragmentInvoice).commit();
+        fab.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -196,14 +231,14 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
             scaleModule.setEnableProcessStable(enable);
     }
 
-    private void openFragmentInvoice(){
+    public void openFragmentInvoice(String id){
+        vibrator.vibrate(50);
         Fragment fragment = getFragmentManager().findFragmentByTag(FragmentInvoice.class.getSimpleName());
         if (fragment instanceof FragmentInvoice){
             showDialog(ALERT_DIALOG1);
         }else {
-
-            fragmentInvoice = FragmentInvoice.newInstance(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()), "");
-            fragmentManager.beginTransaction().replace(R.id.fragmentInvoice, fragmentInvoice, FragmentInvoice.class.getSimpleName()).commit();
+            fragmentInvoice = FragmentInvoice.newInstance(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()), id);
+            fragmentManager.beginTransaction().add(R.id.fragmentInvoice, fragmentInvoice, FragmentInvoice.class.getSimpleName()).commit();
             fab.setVisibility(View.INVISIBLE);
         }
     }

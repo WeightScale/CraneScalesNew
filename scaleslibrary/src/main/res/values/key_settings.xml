@@ -6,6 +6,7 @@
     <string name="KEY_SWITCH_STABLE">com.konst.scaleslibrary.KEY_SWITCH_STABLE</string>
     <string name="KEY_TIMER_ZERO">com.konst.scaleslibrary.KEY_TIMER_ZERO</string>
     <string name="KEY_MAX_ZERO">com.konst.scaleslibrary.KEY_MAX_ZERO</string>
+    <string name="KEY_DELTA_STAB">com.konst.scaleslibrary.KEY_DELTA_STAB</string>
     <string name="KEY_TIMER">com.konst.scaleslibrary.KEY_TIMER</string>
     <string name="KEY_STABLE">com.konst.scaleslibrary.KEY_STABLE</string>
     <string name="KEY_SERVICE_COD">com.konst.scaleslibrary.KEY_SERVICE_COD</string>

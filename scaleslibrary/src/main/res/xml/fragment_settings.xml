@@ -18,9 +18,13 @@
                 <!--<Preference android:title="Закрыть Окно" android:key="@string/KEY_CLOSED"/>-->
             </PreferenceCategory>
         </PreferenceScreen>
-        <PreferenceScreen android:title="Стабилизация веса" android:summary="Индикация события вес стабильный.">
-            <PreferenceCategory android:title="@string/Auto_zero" android:summary="@string/sum_auto_zero">
+        <PreferenceScreen android:title="Стабилизация веса" android:summary="Настройки функции события стабильный вес">
+            <PreferenceCategory android:title="Стабилизация" android:summary="@string/sum_auto_zero">
                 <SwitchPreference android:key="@string/KEY_SWITCH_STABLE" android:title="Стабилизация" android:defaultValue="false"/>
+                <com.konst.scaleslibrary.settings.IntegerEditPreference
+                        android:title="Значение дельты." android:summary="Значение дельты в диапазоне которой будет стабилизироваться вес."
+                        android:key="@string/KEY_DELTA_STAB"
+                        android:numeric="integer" android:inputType="number" android:defaultValue="10"/>
             </PreferenceCategory>
         </PreferenceScreen>
         <com.konst.scaleslibrary.settings.DialogTimerOff

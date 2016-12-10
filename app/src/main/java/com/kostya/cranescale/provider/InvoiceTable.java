@@ -15,6 +15,8 @@ import java.util.Map;
 public class InvoiceTable {
     private final Context mContext;
     final ContentResolver contentResolver;
+    public static final int READY = 1;
+    public static final int UNREADY = 0;
 
     public static final String TABLE = "invoiceTable";
 
@@ -78,6 +80,9 @@ public class InvoiceTable {
     }
 
     public Uri insertNewEntry(ContentValues value) {
+        value.put(KEY_IS_READY, UNREADY);
+        value.put(KEY_TOTAL_WEIGHT, 0);
+        value.put(KEY_NAME_AUTO, "");
         return contentResolver.insert(CONTENT_URI, value);
     }
 
@@ -121,6 +126,10 @@ public class InvoiceTable {
         long day1 = d1.getTime() / DAY_MILLIS;
         long day2 = d2.getTime() / DAY_MILLIS;
         return day1 - day2;
+    }
+
+    public Cursor getAllItem() {
+        return contentResolver.query(CONTENT_URI, All_COLUMN_TABLE, null, null, null);
     }
 
     public Cursor getEntryItem(int _rowIndex) {

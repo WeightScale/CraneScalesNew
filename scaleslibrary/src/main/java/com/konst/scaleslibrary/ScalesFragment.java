@@ -478,6 +478,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
                             case WEIGHT_MARGIN:
                                 w = new SpannableStringBuilder(String.valueOf(moduleWeight));
                                 w.setSpan(new ForegroundColorSpan(Color.RED), 0, w.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                                w.append(textKg);
                                 progressBarWeight.setProgress(obj.getTenzoSensor());
                                 vibrator.vibrate(100);
                                 break;

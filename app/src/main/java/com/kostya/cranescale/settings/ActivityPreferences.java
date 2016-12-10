@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.konst.scaleslibrary.ScalesView;
 import com.konst.scaleslibrary.Settings;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
+import com.konst.scaleslibrary.settings.ActivityProperties;
 import com.kostya.cranescale.ActivityAbout;
 import com.kostya.cranescale.ActivityTest;
 import com.kostya.cranescale.Globals;
@@ -80,6 +81,78 @@ public class ActivityPreferences extends PreferenceActivity {
                 });
             }
         },
+        SWITCH_LOADING(R.string.KEY_SWITCH_LOADING){
+            @Override
+            void setup(Preference name) throws Exception {
+                name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object o) {
+                        boolean flag_switch = (boolean)o;
+
+                        settings.write(preference.getKey(), flag_switch);
+                        preference.getPreferenceManager().findPreference(preference.getContext().getString(R.string.KEY_WEIGHT_LOADING)).setEnabled(flag_switch);
+                        //preference.getPreferenceManager().findPreference(preference.getContext().getString(R.string.KEY_MAX_ZERO)).setEnabled(flag_switch);
+                        return true;
+                    }
+                });
+            }
+        },
+        WEIGHT_LOADING(R.string.KEY_WEIGHT_LOADING){
+            @Override
+            void setup(Preference name)throws Exception {
+                final Context context = name.getContext();
+                final CharSequence title = name.getTitle();
+                boolean check = name.getSharedPreferences().getBoolean(name.getContext().getString(R.string.KEY_SWITCH_LOADING), false);
+                name.setEnabled(check);
+                name.setTitle(title + " " + name.getSharedPreferences().getInt(name.getKey(), 10) + ' ' + context.getString(R.string.scales_kg));
+                //name.setSummary(context.getString(R.string.sum_max_null) + ' ' + context.getResources().getInteger(R.integer.default_limit_auto_null) + ' ' + context.getString(R.string.scales_kg));
+                name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object o) {
+                        if (o.toString().isEmpty() || "0".equals(o.toString()) /*|| Integer.valueOf(o.toString()) > context.getResources().getInteger(R.integer.default_limit_auto_null)*/) {
+                            Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                        preference.setTitle(title + " " + o + ' ' + context.getString(R.string.scales_kg));
+                        settings.write(preference.getKey(), Integer.valueOf(o.toString()));
+                        Toast.makeText(context, context.getString(R.string.preferences_yes) + ' ' + o + ' ' + context.getString(R.string.scales_kg), Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
+            }
+        },
+        CLOSING_INVOICE(R.string.KEY_CLOSING_INVOICE){
+            @Override
+            void setup(Preference name) throws Exception {
+                name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object o) {
+                        boolean flag_switch = (boolean)o;
+
+                        settings.write(preference.getKey(), flag_switch);
+                        //preference.getPreferenceManager().findPreference(preference.getContext().getString(R.string.KEY_WEIGHT_LOADING)).setEnabled(flag_switch);
+                        //preference.getPreferenceManager().findPreference(preference.getContext().getString(R.string.KEY_MAX_ZERO)).setEnabled(flag_switch);
+                        return true;
+                    }
+                });
+            }
+        },
+        SCALES(R.string.KEY_SCALES){
+            @Override
+            void setup(Preference name) throws Exception {
+                final Context context = name.getContext();
+                name.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        if (!com.konst.scaleslibrary.settings.ActivityProperties.isActive()) {
+                            preference.getContext().startActivity(new Intent(preference.getContext(), com.konst.scaleslibrary.settings.ActivityProperties.class));
+                            ((ActivityPreferences)preference.getContext()).finish();
+                        }
+                        return false;
+                    }
+                });
+            }
+        },
         ABOUT(R.string.KEY_ABOUT){
             @Override
             void setup(Preference name)throws Exception {
@@ -92,60 +165,6 @@ public class ActivityPreferences extends PreferenceActivity {
                         return false;
                     }
                 });
-            }
-        },
-        ADMIN(R.string.KEY_ADMIN){
-            Context context;
-            private EditText input;
-            @Override
-            void setup(Preference name)throws Exception {
-                context = name.getContext();
-                name.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        startDialog();
-                        return true;
-                    }
-                });
-            }
-
-            void startDialog(){
-                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-                dialog.setTitle("ВВОД КОДА");
-                input = new EditText(context);
-                input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                input.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                dialog.setView(input);
-                dialog.setCancelable(false);
-                dialog.setPositiveButton(context.getString(R.string.OK), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (input.getText() != null) {
-                            boolean key = false;
-                            String string = input.getText().toString();
-                            if (!string.isEmpty()){
-                                try{
-                                    if ("343434".equals(string))
-                                        key = true;
-                                    else if (string.equals(scaleModule.getModuleServiceCod()))
-                                        key = true;
-                                    if (key){
-                                        context.startActivity(new Intent().setClass(context,ActivityTuning.class));
-                                        return;
-                                    }
-                                }catch (Exception e){}
-                            }
-                        }
-                    }
-                });
-                dialog.setNegativeButton(context.getString(R.string.Close), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.setMessage("Введи код доступа к административным настройкам");
-                dialog.show();
             }
         };
 

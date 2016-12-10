@@ -123,6 +123,12 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
 
     }
 
+    public void openSearchScales(){
+        if (scalesFragment != null){
+            scalesFragment.openSearchDialog("Выбор устройства для соединения.");
+        }
+    }
+
     public int getMicroSoftware() { return microSoftware; }
 
     public ScaleModule getScaleModule() {
@@ -177,6 +183,9 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
                     break;
                 case SWITCH_STABLE:
                     scaleModule.setEnableProcessStable(settings.read(key.getResId(), false));
+                    break;
+                case DELTA_STAB:
+                    scaleModule.setDeltaStab(settings.read(key.getResId(), 10));
                     break;
                 case SWITCH_ZERO:
                     scaleModule.setEnableAutoNull(settings.read(key.getResId(), false));

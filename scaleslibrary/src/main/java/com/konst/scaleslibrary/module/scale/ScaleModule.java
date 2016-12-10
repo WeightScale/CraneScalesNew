@@ -67,6 +67,10 @@ public class ScaleModule extends Module /*implements Serializable*/{
     private int weightMargin;
     /** Номер пломбы*/
     private int seal;
+    /** Шаг дискреты. */
+    private int stepScale = 1;
+    /** Дельта стабилизации веса. */
+    private int deltaStab = 10;
     /** Количество стабильных показаний веса для авто сохранения. */
     public static final int STABLE_NUM_MAX = 15;
     /** Флаг использования авто обнуленияю. */
@@ -81,10 +85,6 @@ public class ScaleModule extends Module /*implements Serializable*/{
             return;
         this.stepScale = stepScale;
     }
-
-    /** Шаг дискреты. */
-    private int stepScale = 1;
-
     /** Получить таблицу google disk.
      * @return Имя таблици.*/
     public String getSpreadsheet() {
@@ -291,6 +291,14 @@ public class ScaleModule extends Module /*implements Serializable*/{
             default:
                 throw new Exception("illegal version");
         }
+    }
+
+    public int getDeltaStab() {
+        return deltaStab;
+    }
+
+    public void setDeltaStab(int deltaStab) {
+        this.deltaStab = deltaStab;
     }
 
     /** Получаем класс загруженой версии весового модуля.
@@ -670,6 +678,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
     public void setEnableAutoNull(boolean enableAutoNull) {this.enableAutoNull = enableAutoNull;}
 
     public void setEnableProcessStable(boolean stable) {
+        objectScales.setStableNum(0);
         enableProcessStable = stable;
     }
 
@@ -727,7 +736,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
                     }
                     /** Секция определения стабильного веса. */
                     if (enableProcessStable){
-                        if (tempWeight - getStepScale() <= objectScales.getWeight() && tempWeight + getStepScale() >= objectScales.getWeight()) {
+                        if (tempWeight - getDeltaStab() <= objectScales.getWeight() && tempWeight + getDeltaStab() >= objectScales.getWeight()) {
                             if (objectScales.getStableNum() <= STABLE_NUM_MAX){
                                 if (objectScales.getStableNum() == STABLE_NUM_MAX) {
                                     getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_WEIGHT_STABLE).putExtra(InterfaceModule.EXTRA_SCALES, objectScales));
@@ -751,7 +760,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
                     getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_SCALES_RESULT).putExtra(InterfaceModule.EXTRA_SCALES, objectScales));
                 }catch (Exception e){}
                 numTimeTemp--;
-                //try { TimeUnit.MILLISECONDS.sleep(PERIOD_UPDATE); } catch (InterruptedException e) {}
+                try { TimeUnit.MILLISECONDS.sleep(PERIOD_UPDATE); } catch (InterruptedException e) {}
             }
             Log.i(TAG, "interrupt");
         }

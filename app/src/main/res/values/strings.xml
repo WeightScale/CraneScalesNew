@@ -25,7 +25,7 @@
     <string name="sum_max_null">Вес считается ошибкой ноля, максимальное значение</string>
     <string name="measuring_step">Шаг взвешивания:</string>
     <string name="The_range_is_from_1_to">"Диапазон от 1 до "</string>
-    <string name="auto_capture">Автозахват:</string>
+    <string name="auto_capture">АВТОЗАХВАТ:</string>
     <string name="Range_between">"Диапазон между "</string>
     <string name="and">" и "</string>
     <string name="closed_checks">Закрывать чеки через:</string>
@@ -136,7 +136,7 @@
     <string name="sum_removing_checks">Чеки будут удалятся из базы данных через … дней от даты создания чека</string>
     <string name="sum_closed_checks">Не закрытые чеки будут закрыватся через … дней от даты создания чека</string>
     <string name="zeroing">Установить Ноль</string>
-    <string name="about">О программе</string>
+    <string name="about">О ПРОГРАММЕ</string>
     <!--<string name="sum_auto_capture">Авто захват</string>-->
     <string name="sum_delete_check">Удалять чеки через:</string>
     <string name="day">дней</string>
