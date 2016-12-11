@@ -13,7 +13,7 @@
                         android:title="ДЕЛЬТА СТАБИЛИЗАЦИИ:"
                         android:summary="Установка значения в диапазоне которого срабатывает стабилизация веса загруженого ковша."
                         android:key="@string/KEY_DELTA_STAB"
-                        android:numeric="integer" android:inputType="number" android:defaultValue="20"/>
+                        android:numeric="integer" android:inputType="number" android:defaultValue="10"/>
                 <PreferenceScreen android:title="НАСТРОЙКИ ЗАГРУЗКИ" android:summary="Настройки нормы веса который надо взвесить. Необходимо для слежения окончания загрузки.">
                     <PreferenceCategory android:title="НОРМА ЗАГРУЗКИ" android:summary="Настройки нормы веса.">
                         <SwitchPreference android:key="@string/KEY_SWITCH_LOADING" android:title="ЗАГРУЗКА ПО УМОЛЧАНИЮ"

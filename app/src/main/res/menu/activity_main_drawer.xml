@@ -30,7 +30,8 @@
 </menu>-->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 <group android:id="@+id/menu_top" android:checkableBehavior="single">
-    <item android:id="@+id/new_invoice" android:icon="@drawable/ic_invoice" android:title="НАКЛАДНАЯ"/>
+    <item android:id="@+id/new_invoice" android:icon="@drawable/ic_invoice" android:title="НОВАЯ"/>
+    <item android:id="@+id/archive" android:icon="@drawable/ic_archive_invoice" android:title="АРХИВ"/>
     <item android:id="@+id/search_scales" android:icon="@drawable/ic_search" android:title="ПОИСК ВЕСОВ"/>
     <!--<item android:id="@+id/nav_slideshow" android:title="Slideshow"/>-->
     <!--<item android:id="@+id/nav_manage" android:title="Tools"/>-->

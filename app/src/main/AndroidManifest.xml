@@ -45,6 +45,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".settings.ActivityPreferences"
+                  android:theme="@android:style/Theme.Holo"
                   android:screenOrientation="portrait"
                   android:configChanges="orientation">
         </activity>

@@ -169,11 +169,11 @@ public class FileItem extends LinearLayout {
 	 */
 	private void updateIcon() {
 		// Define the icon.
-		int icon = R.drawable.document;
+		int icon = R.drawable.ic_file;
 		if(file != null && file.isDirectory()) {
-			icon = selectable ? R.drawable.folder : R.drawable.folder_gray;
+			icon = selectable ? R.drawable.ic_folder : R.drawable.folder_gray;
 		} else {
-			icon = selectable ? R.drawable.document : R.drawable.document_gray;
+			icon = selectable ? R.drawable.ic_file : R.drawable.document_gray;
 		}
 
 		// Set the icon.
@@ -181,7 +181,7 @@ public class FileItem extends LinearLayout {
 
 		// Change the color of the text.
 		if(icon != R.drawable.document_gray && icon != R.drawable.folder_gray) {
-            label.setTextColor(getResources().getColor(R.color.daidalos_active_file));
+            label.setTextColor(getResources().getColor(R.color.background_item_list));
 		} else {
             label.setTextColor(getResources().getColor(R.color.daidalos_inactive_file));
 		}

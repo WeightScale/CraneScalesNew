@@ -120,36 +120,39 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.preferences) {
-            startActivity(new Intent(getApplicationContext(), ActivityPreferences.class));
-            return true;
+        switch (item.getItemId()){
+            case R.id.preferences:
+                startActivity(new Intent(getApplicationContext(), ActivityPreferences.class));
+            break;
+            case R.id.search:
+                scalesView.openSearchScales();
+            break;
+            case R.id.power_off:
+                finish();
+            break;
+            default:
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.search_scales) {
-            scalesView.openSearchScales();
-        } else if (id == R.id.settings) {
-            startActivity(new Intent(getApplicationContext(), ActivityPreferences.class));
-        } else if (id == R.id.new_invoice){
-            openFragmentInvoice(null);
-        } else if(id == R.id.power){
-            finish();
+        switch (item.getItemId()){
+            case R.id.search_scales:
+                scalesView.openSearchScales();
+            break;
+            case R.id.settings:
+                startActivity(new Intent(getApplicationContext(), ActivityPreferences.class));
+            break;
+            case R.id.new_invoice:
+                openFragmentInvoice(null);
+            break;
+            case R.id.power:
+                finish();
+            break;
+            default:
         }
-
-        //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

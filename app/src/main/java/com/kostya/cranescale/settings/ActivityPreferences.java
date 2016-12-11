@@ -42,7 +42,7 @@ public class ActivityPreferences extends PreferenceActivity {
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
                 final CharSequence title = name.getTitle();
-                name.setTitle(title + " " + settings.read(name.getKey(), 20)+ "кг");
+                name.setTitle(title + " " + settings.read(name.getKey(), 10)+ "кг");
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
                     public boolean onPreferenceChange(Preference preference, Object o) {
@@ -68,7 +68,7 @@ public class ActivityPreferences extends PreferenceActivity {
             void setup(Preference name)throws Exception {
                 final Context context = name.getContext();
                 final CharSequence title = name.getTitle();
-                name.setTitle(name.getTitle() + " " + settings.read(name.getKey(), 200)+ "кг");
+                name.setTitle(name.getTitle() + " " + settings.read(name.getKey(), 100)+ "кг");
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
                     public boolean onPreferenceChange(Preference preference, Object o) {
@@ -112,7 +112,7 @@ public class ActivityPreferences extends PreferenceActivity {
                 final CharSequence title = name.getTitle();
                 boolean check = name.getSharedPreferences().getBoolean(name.getContext().getString(R.string.KEY_SWITCH_LOADING), false);
                 name.setEnabled(check);
-                name.setTitle(title + " " + name.getSharedPreferences().getInt(name.getKey(), 10) + ' ' + context.getString(R.string.scales_kg));
+                name.setTitle(title + " " + name.getSharedPreferences().getInt(name.getKey(), 1000) + ' ' + context.getString(R.string.scales_kg));
                 //name.setSummary(context.getString(R.string.sum_max_null) + ' ' + context.getResources().getInteger(R.integer.default_limit_auto_null) + ' ' + context.getString(R.string.scales_kg));
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override

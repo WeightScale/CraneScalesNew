@@ -17,6 +17,10 @@ import android.widget.*;
 import com.kostya.cranescale.provider.InvoiceTable;
 import com.kostya.cranescale.provider.WeighingTable;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * @author Kostya on 10.12.2016.
  */
@@ -72,7 +76,7 @@ public class FragmentListInvoice extends ListFragment {
 
     /** Обновляем данные листа загрузок. */
     private void updateListWeight() {
-        Cursor cursor = invoiceTable.getAllItem();
+        Cursor cursor = invoiceTable.getToday(new SimpleDateFormat("dd-MM-yy", Locale.getDefault()).format(new Date()));
         if (cursor == null) {
             return;
         }
@@ -100,16 +104,19 @@ public class FragmentListInvoice extends ListFragment {
     }
 
     private class ListInvoiceViewBinder implements SimpleCursorAdapter.ViewBinder {
-        private int ready;
+        private int ready, send;
 
         @Override
         public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
             switch (view.getId()){
                 case R.id.imageReady:
                     ready = cursor.getInt(cursor.getColumnIndex(InvoiceTable.KEY_IS_READY));
+                    send = cursor.getInt(cursor.getColumnIndex(InvoiceTable.KEY_IS_CLOUD));
                     if (ready == InvoiceTable.UNREADY){
                         ((ImageView)view).setImageDrawable(getResources().getDrawable(R.drawable.ic_invoice_red));
-                    }else {
+                    }else if(send == InvoiceTable.READY){
+                        ((ImageView)view).setImageDrawable(getResources().getDrawable(R.drawable.ic_invoice_check));
+                    }else  {
                         ((ImageView)view).setImageDrawable(getResources().getDrawable(R.drawable.ic_invoice));
                     }
                 break;

@@ -216,4 +216,7 @@ public class InvoiceTable {
         return contentResolver.query(CONTENT_URI, null, KEY_IS_CLOUD + "= " + UNREADY, null, null);
     }
 
+    public Cursor getToday(String date) {
+        return contentResolver.query(CONTENT_URI, null, KEY_DATE_CREATE + "= " + "\""+date+"\"", null, null);
+    }
 }
