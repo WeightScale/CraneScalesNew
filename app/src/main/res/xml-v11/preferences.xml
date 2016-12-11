@@ -29,6 +29,7 @@
             </PreferenceCategory>
         </PreferenceScreen>
         <Preference android:title="УСТАНОВКИ ВЕСОВ" android:summary="Настройки весов (калибровка ...)" android:key="@string/KEY_SCALES"/>
+        <Preference android:title="ФАИЛ ФОРМЫ" android:summary="Загрузить фаил формы настроек. Загружается один раз. Получите фаил у администратора." android:key="@string/KEY_PATH_FORM"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="Информация">
         <Preference android:title="@string/about" android:key="@string/KEY_ABOUT"/>

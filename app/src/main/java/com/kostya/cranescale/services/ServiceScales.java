@@ -24,8 +24,8 @@ import com.konst.scaleslibrary.module.scale.ScaleModule;
 //import com.kostya.cranescale.ActivityMain;
 import com.kostya.cranescale.ActivityTest;
 import com.kostya.cranescale.Globals;
-import com.kostya.cranescale.Internet;
 import com.kostya.cranescale.R;
+import com.kostya.cranescale.internet.Internet;
 
 public class ServiceScales extends Service {
     private Globals globals;

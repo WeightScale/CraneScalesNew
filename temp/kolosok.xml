@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GoogleDisk mail="kolosok.alchevsk@gmail.com" password="kosolok1">
+    <EventsForm http="https://docs.google.com/forms/d/1aIjkJW9lGipWGhza4Ww79YyIDUweELE0UCxFlfenf5s/formResponse">
+        <Entrys>
+            <Table name="eventTable">
+                <Columns entry.2118418280="date"
+                         entry.681043812="time"
+                         entry.1887166797="deviceId"
+                         entry.1255208466="event"
+                         entry.1395921243="eventText"/>
+            </Table>
+        </Entrys>
+    </EventsForm>
+</GoogleDisk>

@@ -4,20 +4,28 @@ package com.kostya.cranescale.settings;
 //import android.content.SharedPreferences;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.view.WindowManager;
 import android.widget.Toast;
+import com.google.common.io.ByteStreams;
 import com.konst.module.Commands;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.kostya.cranescale.Globals;
 import com.kostya.cranescale.R;
+import com.kostya.cranescale.filedialog.FileChooserDialog;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
 //import android.preference.PreferenceManager;
 
@@ -183,6 +191,7 @@ public class ActivityTuning extends PreferenceActivity {
                 });
             }
         },
+
         SERVICE_COD(R.string.KEY_SERVICE_COD){
             @Override
             void setup(final Preference name) throws Exception {

@@ -2,10 +2,12 @@
 package com.kostya.cranescale.settings;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -15,6 +17,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.google.common.io.ByteStreams;
 import com.konst.scaleslibrary.ScalesView;
 import com.konst.scaleslibrary.Settings;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
@@ -23,6 +26,11 @@ import com.kostya.cranescale.ActivityAbout;
 import com.kostya.cranescale.ActivityTest;
 import com.kostya.cranescale.Globals;
 import com.kostya.cranescale.R;
+import com.kostya.cranescale.filedialog.FileChooserDialog;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
 public class ActivityPreferences extends PreferenceActivity {
     private static Settings settings;
@@ -151,6 +159,75 @@ public class ActivityPreferences extends PreferenceActivity {
                         return false;
                     }
                 });
+            }
+        },
+        PATH_FILE_FORM(R.string.KEY_PATH_FORM){
+            Context mContext;
+            @Override
+            void setup(Preference name) throws Exception {
+                mContext = name.getContext();
+                name.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        showFileChooser(mContext);
+                        return false;
+                    }
+                });
+            }
+            public void showFileChooser(Context context) {
+                FileChooserDialog dialog = new FileChooserDialog(context);
+                dialog.addListener(new FileChooserDialog.OnFileSelectedListener() {
+                    @Override
+                    public void onFileSelected(Dialog source, File file) {
+                        source.hide();
+                        /* Получаем путь к файлу. */
+                        Uri uri = Uri.fromFile(file);
+                        /* Создаем фаил с именем . */
+                        File storeFile = new File(Globals.getInstance().pathLocalForms, "form.xml");
+                        try {
+                            /* Создаем поток для записи фаила в папку хранения. */
+                            FileOutputStream fileOutputStream = new FileOutputStream(storeFile);
+                            InputStream inputStream = mContext.getContentResolver().openInputStream(uri);
+                            /* Получаем байты данных. */
+                            byte[] bytes = ByteStreams.toByteArray(inputStream);
+                            inputStream.close();
+                            /* Записываем фаил в папку. */
+                            fileOutputStream.write(bytes);
+                            /* Закрываем поток. */
+                            fileOutputStream.close();
+                            Toast.makeText(mContext, "Фаил сохранен " + file.getPath(),  Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            Toast.makeText(mContext, "Ошибка выбора файла " + e.getMessage(),  Toast.LENGTH_LONG).show();
+                        }
+                        //systemTable.updateEntry(SystemTable.Name.PATH_FORM, uri.toString());
+                    }
+                    @Override
+                    public void onFileSelected(Dialog source, File folder, String name) {
+                        source.hide();
+                        Toast toast = Toast.makeText(mContext, "File created: " + folder.getName() + "/" + name, Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                });
+                dialog.show();
+                /*Intent intent = new Intent();
+                //intent.setType("**//*//*");
+                //intent.addCategory(Intent.CATEGORY_OPENABLE);
+                if (Build.VERSION.SDK_INT < 19){
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+
+                    //((Activity)context).startActivityForResult(intent, FILE_SELECT_CODE);
+                } else {
+                    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    //((Activity)context).startActivityForResult(intent, FILE_SELECT_CODE);
+                }
+                intent.setType("**//*//*");
+
+                try {
+                    ((Activity)context).startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"), FILE_SELECT_CODE);
+                } catch (ActivityNotFoundException ex) {
+                    Toast.makeText(context, "Пожалуйста инсталируйте File Manager.",  Toast.LENGTH_LONG).show();
+                }*/
             }
         },
         ABOUT(R.string.KEY_ABOUT){

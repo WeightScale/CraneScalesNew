@@ -35,6 +35,7 @@
     <string name="KEY_PHONE">key_phone</string>
     <string name="KEY_SENDER">key_sender</string>
     <string name="KEY_SERVICE_COD">key_service_cod</string>
+    <string name="KEY_PATH_FORM">KEY_PATH_FORM</string>
     <string name="KEY_DELTA_STAB">key_delta_stab</string>
     <string name="KEY_CLOSING_INVOICE">KEY_CLOSING_INVOICE</string>
     <string name="KEY_SCALES">KEY_SCALES</string>

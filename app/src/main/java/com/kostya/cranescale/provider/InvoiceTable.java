@@ -21,10 +21,12 @@ public class InvoiceTable {
     public static final String TABLE = "invoiceTable";
 
     public static final String KEY_ID               = BaseColumns._ID;
-    public static final String KEY_DATE_TIME_CREATE = "dateTime";
+    public static final String KEY_DATE_CREATE      = "date";
+    public static final String KEY_TIME_CREATE      = "time";
     public static final String KEY_NAME_AUTO        = "nameAuto";
     public static final String KEY_TOTAL_WEIGHT     = "totalWeight";
     public static final String KEY_IS_READY         = "checkIsReady";
+    public static final String KEY_IS_CLOUD         = "isCloud";
     public static final String KEY_DATA0            = "data0";
     public static final String KEY_DATA1            = "data1";
 
@@ -54,20 +56,24 @@ public class InvoiceTable {
 
     private static final String[] All_COLUMN_TABLE = {
             KEY_ID,
-            KEY_DATE_TIME_CREATE,
+            KEY_DATE_CREATE,
+            KEY_TIME_CREATE,
             KEY_NAME_AUTO,
             KEY_TOTAL_WEIGHT,
             KEY_IS_READY,
+            KEY_IS_CLOUD,
             KEY_DATA0,
             KEY_DATA1};
 
     public static final String TABLE_CREATE = "create table "
             + TABLE + " ("
             + KEY_ID + " integer primary key autoincrement, "
-            + KEY_DATE_TIME_CREATE + " text,"
+            + KEY_DATE_CREATE + " text,"
+            + KEY_TIME_CREATE + " text,"
             + KEY_NAME_AUTO + " text,"
             + KEY_TOTAL_WEIGHT + " integer,"
             + KEY_IS_READY + " integer,"
+            + KEY_IS_CLOUD + " integer,"
             + KEY_DATA0 + " text,"
             + KEY_DATA1 + " text );";
 
@@ -80,9 +86,12 @@ public class InvoiceTable {
     }
 
     public Uri insertNewEntry(ContentValues value) {
-        value.put(KEY_IS_READY, UNREADY);
-        value.put(KEY_TOTAL_WEIGHT, 0);
         value.put(KEY_NAME_AUTO, "");
+        value.put(KEY_TOTAL_WEIGHT, 0);
+        value.put(KEY_IS_READY, UNREADY);
+        value.put(KEY_IS_CLOUD, UNREADY);
+        value.put(KEY_DATA0, "");
+        value.put(KEY_DATA1, "");
         return contentResolver.insert(CONTENT_URI, value);
     }
 
@@ -95,7 +104,8 @@ public class InvoiceTable {
     public Uri insertNewEntry() {
         ContentValues newTaskValues = new ContentValues();
         Date date = new Date();
-        newTaskValues.put(KEY_DATE_TIME_CREATE, new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).format(date));
+        newTaskValues.put(KEY_DATE_CREATE, new SimpleDateFormat("dd-MM-yy", Locale.getDefault()).format(date));
+        newTaskValues.put(KEY_TIME_CREATE, new SimpleDateFormat("hh:mm:ss", Locale.getDefault()).format(date));
         newTaskValues.put(KEY_NAME_AUTO, "");
         newTaskValues.put(KEY_TOTAL_WEIGHT, 0);
         newTaskValues.put(KEY_IS_READY, 0);
@@ -107,7 +117,8 @@ public class InvoiceTable {
     public Uri insertNewEntry(String nameAuto) {
         ContentValues newTaskValues = new ContentValues();
         Date date = new Date();
-        newTaskValues.put(KEY_DATE_TIME_CREATE, new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).format(date));
+        newTaskValues.put(KEY_DATE_CREATE, new SimpleDateFormat("dd-MM-yy", Locale.getDefault()).format(date));
+        newTaskValues.put(KEY_TIME_CREATE, new SimpleDateFormat("hh:mm:ss", Locale.getDefault()).format(date));
         newTaskValues.put(KEY_NAME_AUTO, nameAuto);
         newTaskValues.put(KEY_TOTAL_WEIGHT, 0);
         newTaskValues.put(KEY_IS_READY, 0);
@@ -199,6 +210,10 @@ public class InvoiceTable {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public Cursor getPreliminary() {
+        return contentResolver.query(CONTENT_URI, null, KEY_IS_CLOUD + "= " + UNREADY, null, null);
     }
 
 }

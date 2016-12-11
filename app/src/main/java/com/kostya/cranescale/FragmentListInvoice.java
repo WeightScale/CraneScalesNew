@@ -78,7 +78,7 @@ public class FragmentListInvoice extends ListFragment {
         }
 
         int[] to = {R.id.id_row, R.id.date_row, R.id.number_row, R.id.weight_row, R.id.imageReady};
-        String[] column = {InvoiceTable.KEY_ID,InvoiceTable.KEY_DATE_TIME_CREATE,InvoiceTable.KEY_NAME_AUTO,InvoiceTable.KEY_TOTAL_WEIGHT, InvoiceTable.KEY_IS_READY};
+        String[] column = {InvoiceTable.KEY_ID,InvoiceTable.KEY_DATE_CREATE,InvoiceTable.KEY_NAME_AUTO,InvoiceTable.KEY_TOTAL_WEIGHT, InvoiceTable.KEY_IS_READY};
 
         simpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.item_list_invoice, cursor, column, to, CursorAdapter.FLAG_AUTO_REQUERY);
         //namesAdapter = new MyCursorAdapter(this, R.layout.item_check, cursor, columns, to);

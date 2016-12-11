@@ -53,6 +53,7 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
     private int grab, grab_virtual, auto, loading;
     private static final int REQUEST_CLOSED_INVOICE = 1;
     private static final String ARG_DATE = "date";
+    private static final String ARG_TIME = "time";
     private static final String ARG_ID = "_id";
     private STAGE stage = STAGE.START;
     private String _id = null;
@@ -82,10 +83,11 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
      * @param _id Parameter 2.
      * @return A new instance of fragment InvoiceFragment.
      */
-    public static FragmentInvoice newInstance(String date, String _id) {
+    public static FragmentInvoice newInstance(String date, String time, String _id) {
         FragmentInvoice fragment = new FragmentInvoice();
         Bundle args = new Bundle();
         args.putString(ARG_DATE, date);
+        args.putString(ARG_TIME, time);
         if(_id != null){
             args.putString(ARG_ID, _id);
         }
@@ -97,10 +99,12 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            values.put(InvoiceTable.KEY_DATE_TIME_CREATE, getArguments().getString(ARG_DATE));
+            values.put(InvoiceTable.KEY_DATE_CREATE, getArguments().getString(ARG_DATE));
+            values.put(InvoiceTable.KEY_TIME_CREATE, getArguments().getString(ARG_TIME));
             _id = getArguments().getString(ARG_ID);
         }else {
-            values.put(InvoiceTable.KEY_DATE_TIME_CREATE, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
+            values.put(InvoiceTable.KEY_DATE_CREATE, new SimpleDateFormat("dd-MM-yy", Locale.getDefault()).format(new Date()));
+            values.put(InvoiceTable.KEY_TIME_CREATE, new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date()));
         }
         vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         settings = new Settings(getActivity(), ActivityTest.SETTINGS);
@@ -142,7 +146,8 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
         textViewBatch = (TextView)view.findViewById(R.id.textViewBatch);
 
         dateInvoice = (TextView) view.findViewById(R.id.invoiceDate);
-        dateInvoice.setText(values.getAsString(InvoiceTable.KEY_DATE_TIME_CREATE));
+        dateInvoice.setText(values.getAsString(InvoiceTable.KEY_DATE_CREATE));
+        dateInvoice.append(" "+values.getAsString(InvoiceTable.KEY_TIME_CREATE));
 
         nameInvoice = (EditText)view.findViewById(R.id.invoiceName);
         nameInvoice.setText(values.getAsString(InvoiceTable.KEY_NAME_AUTO));

@@ -434,7 +434,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
                         switch (BluetoothAdapter.getDefaultAdapter().getState()) {
                             case BluetoothAdapter.STATE_OFF:
                                 Toast.makeText(mContext, R.string.bluetooth_off, Toast.LENGTH_SHORT).show();
-                                new Internet(mContext).turnOnWiFiConnection(false);
+                                //new Internet(mContext).turnOnWiFiConnection(false);
                                 BluetoothAdapter.getDefaultAdapter().enable();
                                 break;
                             case BluetoothAdapter.STATE_TURNING_ON:

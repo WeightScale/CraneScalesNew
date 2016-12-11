@@ -3,14 +3,20 @@ package com.kostya.cranescale;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.util.Log;
 import com.konst.scaleslibrary.module.boot.BootModule;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
+
+import java.io.File;
 
 /**
  * @author Kostya
  */
 public class Globals {
     private static Globals instance = new Globals();
+    public static File pathLocalForms;
+    /** Папка для хранения локальных данных программы. */
+    public static final String FOLDER_LOCAL_FORMS = "forms";
     private ScaleModule scaleModule;
     private BootModule bootModule;
     /** Настройки для весов. */
@@ -31,6 +37,7 @@ public class Globals {
     private int battery;
     /** Флаг есть соединение. */
     //private boolean isScaleConnect;
+    private static final String TAG = Globals.class.getName();
 
     public int getBattery() { return battery; }
 
@@ -108,6 +115,14 @@ public class Globals {
         //scaleModule.setTimerNull(Preferences.read(getString(R.string.KEY_TIMER_NULL), default_max_time_auto_null));
         //scaleModule.setWeightError(Preferences.read(getString(R.string.KEY_MAX_NULL), default_limit_auto_null));
         timeDelayDetectCapture = context.getResources().getInteger(R.integer.time_delay_detect_capture);
+        /* Создаем путь к папке для для хранения файлов с данными формы google disk form. */
+        pathLocalForms = new File(context.getFilesDir() + File.separator + FOLDER_LOCAL_FORMS);
+        /* Если нет папки тогда создаем. */
+        if (!pathLocalForms.exists()) {
+            if (!pathLocalForms.mkdirs()) {
+                Log.e(TAG, "Путь не созданый: " + pathLocalForms.getPath());
+            }
+        }
     }
 
     public static Globals getInstance() { return instance; }

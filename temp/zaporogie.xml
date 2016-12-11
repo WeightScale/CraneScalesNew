@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GoogleDisk >
+    <EventsForm http="https://docs.google.com/forms/d/e/1FAIpQLScw70mLM_SHP3dEzo_Zn3PVJnGJKqWy6L2oIahXiLSfx2aiWg/formResponse">
+        <Entrys>
+            <Table name="invoiceTable">
+                <Columns entry.210754226="date"
+                         entry.1943738697="time"
+                         entry.204409097="nameAuto"
+                         entry.853999339="totalWeight"
+                         entry.1128394226="checkIsReady"
+                         entry.1075825717="data0"
+                         entry.430080304="data1"/>
+            </Table>
+        </Entrys>
+    </EventsForm>
+</GoogleDisk>

@@ -32,6 +32,7 @@ import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.kostya.cranescale.settings.ActivityPreferences;
+import com.kostya.cranescale.task.IntentServiceGoogleForm;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -157,6 +158,7 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         super.onDestroy();
         scalesView.exit();
+        startService(new Intent(this, IntentServiceGoogleForm.class).setAction(IntentServiceGoogleForm.ACTION_EVENT_TABLE));
     }
 
     @Override
@@ -223,6 +225,7 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     public void closedInvoice(){
         fragmentManager.beginTransaction().remove(fragmentInvoice).commit();
         fab.setVisibility(View.VISIBLE);
+        startService(new Intent(this, IntentServiceGoogleForm.class).setAction(IntentServiceGoogleForm.ACTION_EVENT_TABLE));
     }
 
     @Override
@@ -237,7 +240,8 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         if (fragment instanceof FragmentInvoice){
             showDialog(ALERT_DIALOG1);
         }else {
-            fragmentInvoice = FragmentInvoice.newInstance(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()), id);
+            fragmentInvoice = FragmentInvoice.newInstance(new SimpleDateFormat("dd-MM-yy", Locale.getDefault()).format(new Date()),
+                    new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date()), id);
             fragmentManager.beginTransaction().add(R.id.fragmentInvoice, fragmentInvoice, FragmentInvoice.class.getSimpleName()).commit();
             fab.setVisibility(View.INVISIBLE);
         }
