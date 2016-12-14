@@ -50,21 +50,20 @@ public class FragmentCalibrator extends PreferenceFragment {
             }
         },
         POINT1(R.string.KEY_POINT1){
-            Context context;
             @Override
-            void setup(final Preference name) throws Exception {
-                context = name.getContext();
+            void setup(Preference name) throws Exception {
                 if(!scaleModule.isAttach())
                     throw new Exception(" ");
                 name.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        return startDialog(name);
+                        return startDialog(preference);
                     }
                 });
             }
 
             boolean startDialog(final Preference name){
+                Context context = name.getContext();
                 AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                 dialog.setTitle("Установка ноль");
                 dialog.setCancelable(false);
@@ -149,11 +148,9 @@ public class FragmentCalibrator extends PreferenceFragment {
             }
         },
         SEALING(R.string.KEY_SEAL){
-            Context context;
-
             @Override
             void setup(Preference name) throws Exception {
-                context = name.getContext();
+                final Context context = name.getContext();
                 ((SealingLayout)name).setOnClickButton(new SealingLayout.OnClickButton() {
                     @Override
                     public void onButtonYes() {
@@ -218,7 +215,7 @@ public class FragmentCalibrator extends PreferenceFragment {
     }
 
     static class Calibrator {
-        Context context;
+        final Context context;
         private final Point point1 = new Point(Integer.MIN_VALUE, 0);
         private final Point point2 = new Point(Integer.MIN_VALUE, 0);
         private int weightMaX = 0;

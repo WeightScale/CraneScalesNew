@@ -4,14 +4,12 @@ import android.app.*;
 import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.konst.scaleslibrary.avr.AVRProgrammer;
 import com.konst.scaleslibrary.avr.HandlerBootloader;
@@ -21,10 +19,8 @@ import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.boot.BootModule;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
 
 /**
  * @author Kostya 08.11.2016.
@@ -513,7 +509,7 @@ public class BootFragment extends Fragment implements View.OnClickListener {
 
     class ThreadTest extends Thread{
         protected AlertDialog.Builder dialog;
-        protected AVRProgrammer programmer;
+        protected final AVRProgrammer programmer;
 
         ThreadTest(){
             imageViewBack.setEnabled(false);
@@ -550,7 +546,7 @@ public class BootFragment extends Fragment implements View.OnClickListener {
             }
         }
 
-        boolean onProgramed() throws Exception {
+        void onProgramed() throws Exception {
             if (!bootModule.startProgramming())
                 throw new Exception("Программатор не запустился");
 
@@ -615,8 +611,7 @@ public class BootFragment extends Fragment implements View.OnClickListener {
                 handlerProgrammed.obtainMessage(HandlerBootloader.Result.MSG_LOG.ordinal(), e.getMessage()).sendToTarget();
                 return false;
             }*/
-            return true;
-        }
+            }
 
 
     }

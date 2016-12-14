@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
-              android:background="@color/background1">
+              android:background="@color/background2">
 
     <LinearLayout
             android:layout_width="fill_parent"
@@ -32,11 +32,11 @@
                             android:textSize="@dimen/text_large_xx"
                             android:gravity="center"
                             android:textStyle="bold|italic"
-                            android:singleLine="true"
                             android:layout_gravity="bottom"
                             android:layout_weight="1"
                             android:longClickable="true"
-                            android:clickable="true"/>
+                            android:clickable="true"
+                            android:maxLines="1"/>
 
                     <LinearLayout
                             android:orientation="horizontal"

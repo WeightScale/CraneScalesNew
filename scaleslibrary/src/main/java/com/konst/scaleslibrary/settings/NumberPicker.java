@@ -1125,7 +1125,7 @@ public class NumberPicker extends LinearLayout {
      * formatter is never invoked.
      * </p>
      *
-     * @param formatter The formatter object. If formatter is <code>null</code>,
+     * @param formatter The formatter object. If formatter is {@code null},
      *            {@link String#valueOf(int)} will be used.
      *@see #setDisplayedValues(String[])
      */
@@ -1142,22 +1142,22 @@ public class NumberPicker extends LinearLayout {
      * Set the current value for the number picker.
      * <p>
      * If the argument is less than the {@link NumberPicker#getMinValue()} and
-     * {@link NumberPicker#getWrapSelectorWheel()} is <code>false</code> the
+     * {@link NumberPicker#getWrapSelectorWheel()} is {@code false} the
      * current value is set to the {@link NumberPicker#getMinValue()} value.
      * </p>
      * <p>
      * If the argument is less than the {@link NumberPicker#getMinValue()} and
-     * {@link NumberPicker#getWrapSelectorWheel()} is <code>true</code> the
+     * {@link NumberPicker#getWrapSelectorWheel()} is {@code true} the
      * current value is set to the {@link NumberPicker#getMaxValue()} value.
      * </p>
      * <p>
      * If the argument is less than the {@link NumberPicker#getMaxValue()} and
-     * {@link NumberPicker#getWrapSelectorWheel()} is <code>false</code> the
+     * {@link NumberPicker#getWrapSelectorWheel()} is {@code false} the
      * current value is set to the {@link NumberPicker#getMaxValue()} value.
      * </p>
      * <p>
      * If the argument is less than the {@link NumberPicker#getMaxValue()} and
-     * {@link NumberPicker#getWrapSelectorWheel()} is <code>true</code> the
+     * {@link NumberPicker#getWrapSelectorWheel()} is {@code true} the
      * current value is set to the {@link NumberPicker#getMinValue()} value.
      * </p>
      *
@@ -1674,7 +1674,7 @@ public class NumberPicker extends LinearLayout {
     }
 
     /**
-     * Callback invoked upon completion of a given <code>scroller</code>.
+     * Callback invoked upon completion of a given {@code scroller}.
      */
     private void onScrollerFinished(Scroller scroller) {
         if (scroller == mFlingScroller) {
@@ -1690,7 +1690,7 @@ public class NumberPicker extends LinearLayout {
     }
 
     /**
-     * Handles transition to a given <code>scrollState</code>
+     * Handles transition to a given {@code scrollState}
      */
     private void onScrollStateChange(int scrollState) {
         if (mScrollState == scrollState) {
@@ -1703,7 +1703,7 @@ public class NumberPicker extends LinearLayout {
     }
 
     /**
-     * Flings the selector with the given <code>velocityY</code>.
+     * Flings the selector with the given {@code velocityY}.
      */
     private void fling(int velocityY) {
         mPreviousScrollerY = 0;
@@ -1718,7 +1718,7 @@ public class NumberPicker extends LinearLayout {
     }
 
     /**
-     * @return The wrapped index <code>selectorIndex</code> value.
+     * @return The wrapped index {@code selectorIndex} value.
      */
     private int getWrappedSelectorIndex(int selectorIndex) {
         if (selectorIndex > mMaxValue) {
@@ -1731,7 +1731,7 @@ public class NumberPicker extends LinearLayout {
     }
 
     /**
-     * Increments the <code>selectorIndices</code> whose string representations
+     * Increments the {@code selectorIndices} whose string representations
      * will be displayed in the selector.
      */
     private void incrementSelectorIndices(int... selectorIndices) {
@@ -1745,7 +1745,7 @@ public class NumberPicker extends LinearLayout {
     }
 
     /**
-     * Decrements the <code>selectorIndices</code> whose string representations
+     * Decrements the {@code selectorIndices} whose string representations
      * will be displayed in the selector.
      */
     private void decrementSelectorIndices(int... selectorIndices) {
@@ -1759,8 +1759,8 @@ public class NumberPicker extends LinearLayout {
     }
 
     /**
-     * Ensures we have a cached string representation of the given <code>
-     * selectorIndex</code> to avoid multiple instantiations of the same string.
+     * Ensures we have a cached string representation of the given {@code
+     * selectorIndex} to avoid multiple instantiations of the same string.
      */
     private void ensureCachedScrollSelectorValue(int selectorIndex) {
         SparseArray<String> cache = mSelectorIndexToStringCache;
@@ -1894,7 +1894,7 @@ public class NumberPicker extends LinearLayout {
     }
 
     /**
-     * @return The selected index given its displayed <code>value</code>.
+     * @return The selected index given its displayed {@code value}.
      */
     private int getSelectedPos(String value) {
         if (mDisplayedValues == null) {
@@ -1927,8 +1927,8 @@ public class NumberPicker extends LinearLayout {
     }
 
     /**
-     * Posts an {@link SetSelectionCommand} from the given <code>selectionStart
-     * </code> to <code>selectionEnd</code>.
+     * Posts an {@link SetSelectionCommand} from the given {@code selectionStart
+     * } to <code>selectionEnd</code>.
      */
     private void postSetSelectionCommand(int selectionStart, int selectionEnd) {
         if (mSetSelectionCommand == null) {
@@ -2543,7 +2543,7 @@ public class NumberPicker extends LinearLayout {
             info.setEnabled(isEnabled());
             info.setScrollable(true);
 
-            /** TODO: Figure out compat implementation for this
+            /* TODO: Figure out compat implementation for this
             final float applicationScale =
                     getContext().getResources().getCompatibilityInfo().applicationScale;
 

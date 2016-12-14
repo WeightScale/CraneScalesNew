@@ -6,6 +6,7 @@ import java.io.Serializable;
  * @author Kostya  on 24.07.2016.
  */
 public class ObjectCommand implements Serializable {
+    private static final long serialVersionUID = 3124433923323779155L;
     final Commands command;
     String value = "";
     boolean isResponse;

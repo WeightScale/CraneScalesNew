@@ -85,7 +85,7 @@ public class BootModule extends Module {
     }
 
     @Override
-    protected void attachWiFi() throws InterruptedException {
+    protected void attachWiFi() {
 
     }
 
@@ -139,7 +139,7 @@ public class BootModule extends Module {
     }
 
     @Override
-    protected void connectWiFi() throws IOException, NullPointerException {
+    protected void connectWiFi() {
 
     }
 
@@ -225,7 +225,8 @@ public class BootModule extends Module {
             try {
                 outputStream.write(ch);
                 //outputStream.flush();
-            } catch (Exception ioe) {}
+            } catch (Exception ioe) {
+            }
         }
 
         public synchronized int getByte() {

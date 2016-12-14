@@ -10,7 +10,6 @@ import java.io.InputStream;
  */
 public abstract class AVRProgrammer {
     private HandlerBootloader handler = null;                        // для сообщений
-    private Handler h;
     private AVRDevice avrDevice;                                    // микроконтроллер
     private HEXFile hexFile;                                        // фаил прошивки
     private long pageSize;                                          // Flash page size.
@@ -26,7 +25,7 @@ public abstract class AVRProgrammer {
      * Конструктор программатора.
      * @param _handler Класс Handler для вывода сообщений
      */
-    public AVRProgrammer(HandlerBootloader _handler) {
+    protected AVRProgrammer(HandlerBootloader _handler) {
         handler = _handler;
     }
 

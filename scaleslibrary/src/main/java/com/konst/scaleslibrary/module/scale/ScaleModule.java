@@ -216,7 +216,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
     }
 
     @Override
-    protected void attachWiFi() throws InterruptedException {
+    protected void attachWiFi() {
         //new RunnableScaleAttachWiFi();
     }
 
@@ -236,7 +236,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
             } catch (Exception e) {
                 throw new Exception(e);
             }
-            /** Если версия правильная создаем обьек и посылаем сообщения. */
+            /* Если версия правильная создаем обьек и посылаем сообщения. */
             objectScales = new ObjectScales();
             return true;
         }
@@ -258,7 +258,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
     }
 
     @Override
-    protected void connectWiFi() throws IOException {
+    protected void connectWiFi() {
         WifiInfo info = wifiManager.getConnectionInfo();
         int ip = info.getIpAddress();
 
@@ -394,13 +394,17 @@ public class ScaleModule extends Module /*implements Serializable*/{
         this.coefficientB = coefficientB;
     }
 
-    /** Пароль акаунта google.*/ /** Получить пароль акаута google.
+    /* Пароль акаунта google.*/
+
+    /** Получить пароль акаута google.
      * @return Пароль.   */
     public String getPassword() {
         return password;
     }
 
-    /** Номер телефона. */ /** Получить номер телефона.
+    /* Номер телефона. */
+
+    /** Получить номер телефона.
      * @return Номер телефона.   */
     public String getPhone() {
         return phone;
@@ -707,7 +711,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
         public void run() {
             while (!interrupted() && !cancel){
                 try{
-                    /** Секция вес. */
+                    /* Секция вес. */
                     int temp = version.updateWeight();
                     ResultWeight resultWeight;
                     if (temp == Integer.MIN_VALUE) {
@@ -722,7 +726,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
                     objectScales.setWeight(getWeightToStepMeasuring(temp));
                     objectScales.setResultWeight(resultWeight);
                     objectScales.setTenzoSensor(version.getSensor());
-                    /** Секция авто ноль. */
+                    /* Секция авто ноль. */
                     if (enableAutoNull){
                         if (version.getWeight() != Integer.MIN_VALUE && Math.abs(version.getWeight()) < weightError) { //автоноль
                             autoNull += 1;
@@ -734,7 +738,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
                             autoNull = 0;
                         }
                     }
-                    /** Секция определения стабильного веса. */
+                    /* Секция определения стабильного веса. */
                     if (enableProcessStable){
                         if (tempWeight - getDeltaStab() <= objectScales.getWeight() && tempWeight + getDeltaStab() >= objectScales.getWeight()) {
                             if (objectScales.getStableNum() <= STABLE_NUM_MAX){
@@ -750,7 +754,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
                         }
                         tempWeight = objectScales.getWeight();
                     }
-                    /** Секция батарея температура. */
+                    /* Секция батарея температура. */
                     if (numTimeTemp == 0){
                         numTimeTemp = 250;
                         objectScales.setBattery(getModuleBatteryCharge());
@@ -799,8 +803,8 @@ public class ScaleModule extends Module /*implements Serializable*/{
         }
     }
 
-    /** Включаем выключаем процесс определения стабильного веса.
-     * @param stable true - процесс запускается, false - процесс останавливается.
+    /* Включаем выключаем процесс определения стабильного веса.
+      @param stable true - процесс запускается, false - процесс останавливается.
      */
     /*public void stableActionEnable(boolean stable){
         try {
@@ -818,9 +822,9 @@ public class ScaleModule extends Module /*implements Serializable*/{
         }
     }*/
 
-    /**
-     * Процесс обработки стабильного показания веса.
-     * Если вес стабильный определенное время посылаем сообщение.
+    /*
+      Процесс обработки стабильного показания веса.
+      Если вес стабильный определенное время посылаем сообщение.
      */
     /*private class ThreadStableProcess extends Thread{
         *//** Временная переменная для хранения веса. *//*

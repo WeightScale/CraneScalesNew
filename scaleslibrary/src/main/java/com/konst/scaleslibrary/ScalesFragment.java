@@ -21,14 +21,10 @@ import android.widget.*;
 import com.konst.scaleslibrary.module.ErrorDeviceException;
 import com.konst.scaleslibrary.module.InterfaceModule;
 import com.konst.scaleslibrary.module.Module;
-import com.konst.scaleslibrary.module.boot.BootModule;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ObjectScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.konst.scaleslibrary.settings.ActivityProperties;
-import com.konst.scaleslibrary.settings.FragmentSettings;
-
-import java.io.IOException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -318,7 +314,11 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
 
             @Override
             public void onLongClick() {
-                onInteractionListener.onSaveWeight(moduleWeight);
+                //onInteractionListener.onSaveWeight(moduleWeight);
+                ObjectScales objectScales = new ObjectScales();
+                objectScales.setWeight(moduleWeight);
+                objectScales.setFlagStab(true);
+                getActivity().sendBroadcast(new Intent(InterfaceModule.ACTION_WEIGHT_STABLE).putExtra(InterfaceModule.EXTRA_SCALES, objectScales));
             }
 
 
@@ -453,7 +453,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
                             return;
                         moduleWeight = obj.getWeight();
                         final String textWeight = String.valueOf(moduleWeight);
-                        /** Обновляем прогресс стабилизации веса. */
+                        /* Обновляем прогресс стабилизации веса. */
                         progressBarStable.setProgress(obj.getStableNum());
                         //handler.obtainMessage(Action.UPDATE_PROGRESS.ordinal(), obj.getStableNum(), 0).sendToTarget();
                         switch (obj.getResultWeight()) {
@@ -545,7 +545,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
     public interface OnInteractionListener {
         void onUpdateSettings(Settings settings);
         void onScaleModuleCallback(ScaleModule obj);
-        void onSaveWeight(int weight);
+        //void onSaveWeight(int weight);
     }
 
 }

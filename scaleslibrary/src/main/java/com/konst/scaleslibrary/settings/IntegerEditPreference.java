@@ -30,11 +30,6 @@ public class IntegerEditPreference extends EditTextPreference {
     }
 
     @Override
-    protected Object onGetDefaultValue(TypedArray a, int index) {
-        return super.onGetDefaultValue(a, index);
-    }
-
-    @Override
     protected String getPersistedString(String defaultReturnValue) {
         return String.valueOf(getPersistedInt(-1));
     }

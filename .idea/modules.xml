@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CraneScales.iml" filepath="$PROJECT_DIR$/.idea/modules/CraneScales.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/scaleslibrary/scaleslibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/scaleslibrary/scaleslibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CraneScales.iml" filepath="$PROJECT_DIR$/CraneScales.iml" />
+      <module fileurl="file://$PROJECT_DIR$/grabe/grabe.iml" filepath="$PROJECT_DIR$/grabe/grabe.iml" />
+      <module fileurl="file://$PROJECT_DIR$/scaleslibrary/scaleslibrary.iml" filepath="$PROJECT_DIR$/scaleslibrary/scaleslibrary.iml" />
     </modules>
   </component>
 </project>

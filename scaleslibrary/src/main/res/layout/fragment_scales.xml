@@ -48,8 +48,7 @@
                             android:gravity="center"
                             android:clickable="true"
                             android:textStyle="italic"
-                            android:singleLine="true"
-                            />
+                            android:maxLines="1"/>
                 </LinearLayout>
 
                 <LinearLayout

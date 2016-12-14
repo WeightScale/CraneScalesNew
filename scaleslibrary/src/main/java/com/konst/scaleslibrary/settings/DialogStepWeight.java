@@ -74,8 +74,4 @@ class DialogStepWeight extends DialogPreference /*implements ActivityPreferences
         return a.getInt(index, 0);
     }
 
-    @Override
-    public void setDefaultValue(Object defaultValue) {
-        super.setDefaultValue(defaultValue);
-    }
 }

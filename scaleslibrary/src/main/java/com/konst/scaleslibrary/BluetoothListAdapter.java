@@ -1,13 +1,6 @@
 package com.konst.scaleslibrary;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Kostya
- * Date: 23.10.11
- * Time: 9:20
- * To change this template use File | Settings | File Templates.
- */
-
+/*  */
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -17,11 +10,12 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 class BluetoothListAdapter extends ArrayAdapter<BluetoothDevice> {
-    private final ArrayList<BluetoothDevice> items;
+    private final List<BluetoothDevice> items;
 
-    public BluetoothListAdapter(Context context, ArrayList<BluetoothDevice> items) {
+    public BluetoothListAdapter(Context context, List<BluetoothDevice> items) {
         super(context, R.layout.list_item_bluetooth, items);
         this.items = items;
     }

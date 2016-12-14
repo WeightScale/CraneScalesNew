@@ -16,7 +16,6 @@ import android.util.Log;
 import com.konst.scaleslibrary.module.bluetooth.BluetoothHandler;
 import com.konst.scaleslibrary.module.bluetooth.BluetoothProcessManager;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
-import com.konst.scaleslibrary.module.scale.ObjectScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 import java.io.IOException;
@@ -65,8 +64,8 @@ public abstract class Module implements InterfaceModule{
     }
 
     protected abstract void dettach();
-    protected abstract void attach() throws InterruptedException;
-    protected abstract void attachWiFi() throws InterruptedException;
+    protected abstract void attach();
+    protected abstract void attachWiFi();
     protected abstract boolean isVersion() throws Exception;
     protected abstract void reconnect();
     protected abstract void load();
@@ -75,11 +74,11 @@ public abstract class Module implements InterfaceModule{
      * @throws NullPointerException Нулевое значение.
      */
     //protected abstract void connect() throws IOException, NullPointerException;
-    protected abstract void connectWiFi() throws IOException, NullPointerException;
+    protected abstract void connectWiFi();
 
     private Module(Context mContext, InterfaceCallbackScales event) throws Exception {
         this.mContext = mContext;
-        /** Проверяем и включаем bluetooth. */
+        /* Проверяем и включаем bluetooth. */
         isEnableBluetooth();
         resultCallback = event;
         Commands.setInterfaceCommand(this);
@@ -107,7 +106,7 @@ public abstract class Module implements InterfaceModule{
         }
     }
 
-    protected Module(Context mContext, final WifiManager wifiManager, InterfaceCallbackScales event) throws Exception, ErrorDeviceException{
+    protected Module(Context mContext, final WifiManager wifiManager, InterfaceCallbackScales event) throws Exception {
         this.mContext = mContext;
         this.wifiManager = wifiManager;
         WifiConfiguration wc = new WifiConfiguration();

@@ -1,27 +1,13 @@
 package com.konst.scaleslibrary.settings;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.*;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.text.InputType;
-import android.text.method.PasswordTransformationMethod;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.konst.scaleslibrary.*;
-import com.konst.scaleslibrary.module.InterfaceModule;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
-
-import java.util.List;
 
 public class FragmentSettings extends PreferenceFragment{
     private static Settings settings;
@@ -193,7 +179,7 @@ public class FragmentSettings extends PreferenceFragment{
                 final Context context = name.getContext();
                 final CharSequence title = name.getTitle();
                 int f = name.getSharedPreferences().getInt(name.getKey(), 15);
-                name.setDefaultValue(Integer.valueOf(f));
+                name.setDefaultValue(f);
                 name.setTitle(title + " " + String.valueOf(f));
                 name.setSummary(context.getString(R.string.sum_filter_adc) + ' ' + context.getString(R.string.The_range_is_from_0_to) + context.getResources().getInteger(R.integer.default_adc_filter));
                 name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {

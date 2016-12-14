@@ -5,7 +5,7 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 
 /**
- * Created by Kostya on 12.11.2016.
+ * @author Kostya on 12.11.2016.
  */
 public class Main extends Application {
 

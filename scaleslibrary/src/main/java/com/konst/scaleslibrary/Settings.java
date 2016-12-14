@@ -3,30 +3,29 @@ package com.konst.scaleslibrary;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 
 public class Settings {
-    Context mContext;
+    final Context mContext;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
-    /** ключ адресс bluetooth. */
+    /* ключ адресс bluetooth. */
     //public static final String KEY_ADDRESS = ScalesView.class.getPackage() +".KEY_ADDRESS";
-    /** Ключ значения дискретности веса. */
+    /* Ключ значения дискретности веса. */
     /*public static final String KEY_DISCRETE = ScalesView.class.getPackage() +".KEY_DISCRETE";*/
-    /** Ключь флага стабилизации веса. */
+    /* Ключь флага стабилизации веса. */
     /*public static final String KEY_STABLE = ScalesView.class.getPackage() +".KEY_STABLE";*/
 
     /*enum KEY{
         KEY_FILTER(R.string.KEY_FILTER),
-        *//** ключ адресс bluetooth. *//*
+        *//* ключ адресс bluetooth. *//*
         KEY_ADDRESS(R.string.KEY_ADDRESS),
-        *//** Ключ значения дискретности веса. *//*
+        *//* Ключ значения дискретности веса. *//*
         KEY_DISCRETE(R.string.KEY_DISCRETE),
         KEY_STABLE(R.string.KEY_STABLE),
-        *//** Переключатель ато ноль *//*
+        *//* Переключатель ато ноль *//*
         KEY_SWITCH_ZERO(R.string.KEY_SWITCH_ZERO),
-        *//** Время через которое устанавливается ноль. *//*
+        *//* Время через которое устанавливается ноль. *//*
         KEY_TIMER_ZERO(R.string.KEY_TIMER_ZERO),
         *//** Значение веса которое считается нолем. *//*
         KEY_MAX_ZERO(R.string.KEY_MAX_ZERO);;

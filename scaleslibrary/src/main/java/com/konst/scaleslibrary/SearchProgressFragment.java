@@ -59,8 +59,8 @@ public class SearchProgressFragment extends DialogFragment {
                 onButtonPressed();
             }
         });
-        //getDialog().setCancelable(false);
-        //getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        getDialog().setCancelable(false);
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         return view;
     }*/
 
@@ -79,13 +79,13 @@ public class SearchProgressFragment extends DialogFragment {
                 onButtonPressed();
             }
         });
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.Theme_Transparent);
         builder.setView(view);
         AlertDialog dialog = builder.create();
         setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
-        /*ColorDrawable dialogColor = new ColorDrawable(Color.YELLOW);
-        dialogColor.setAlpha(30);*/
+        //ColorDrawable dialogColor = new ColorDrawable(Color.TRANSPARENT);
+        //dialogColor.setAlpha(30);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         return dialog;
     }

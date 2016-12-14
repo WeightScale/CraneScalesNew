@@ -3,7 +3,6 @@ package com.konst.scaleslibrary.settings;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceFragment;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.widget.EditText;
@@ -54,11 +53,6 @@ public class ActivityProperties extends PreferenceActivity {
     protected boolean isValidFragment(String fragmentName) {
         //return true;
         return FragmentSettings.class.getName().equals(fragmentName) || FragmentSettingsAdmin.class.getName().equals(fragmentName) || FragmentCalibrator.class.getName().equals(fragmentName);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     public static boolean isActive(){

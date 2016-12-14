@@ -4,14 +4,10 @@ import android.app.*;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.*;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.*;
 
 import java.util.ArrayList;

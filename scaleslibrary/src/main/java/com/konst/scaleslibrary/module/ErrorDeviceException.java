@@ -5,6 +5,8 @@ package com.konst.scaleslibrary.module;
  */
 public class ErrorDeviceException extends Throwable {
 
+    private static final long serialVersionUID = 1155565806109146017L;
+
     /** Ошибка при работе с удаленным устройством bluetooth.
      * @param detailMessage Текст ошибки.
      */

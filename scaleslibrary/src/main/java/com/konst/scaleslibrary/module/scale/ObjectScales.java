@@ -6,6 +6,7 @@ import java.io.Serializable;
  * @author Kostya on 19.07.2016.
  */
 public class ObjectScales implements Serializable {
+    private static final long serialVersionUID = 443475064124921197L;
     /** Значение тензодатчика. */
     private int tenzoSensor;
     /** Значение веса. */

@@ -1,30 +1,14 @@
 package com.konst.scaleslibrary.settings;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.DialogPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.text.InputType;
-import android.text.method.PasswordTransformationMethod;
-import android.transition.Transition;
-import android.util.AttributeSet;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.konst.scaleslibrary.R;
 import com.konst.scaleslibrary.ScalesView;
-import com.konst.scaleslibrary.module.Commands;
 import com.konst.scaleslibrary.module.InterfaceModule;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 
@@ -83,15 +67,13 @@ public class FragmentSettingsAdmin extends PreferenceFragment {
             }
         },
         SAVE_MAN(R.string.KEY_SAVE_MAN){
-            Context context;
             @Override
             void setup(Preference name) throws Exception {
-                context = name.getContext();
                 name.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
 
-                        ((Activity)context).onBackPressed();
+                        ((Activity)preference.getContext()).onBackPressed();
                         return true;
                     }
                 });
@@ -201,11 +183,6 @@ public class FragmentSettingsAdmin extends PreferenceFragment {
         addPreferencesFromResource(R.xml.fragment_settings_admin);
         scaleModule = ScalesView.getInstance().getScaleModule();
         initPreferences();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
     public void initPreferences(){

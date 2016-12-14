@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GoogleDisk >
+<GoogleDisk mail="" password="">
     <EventsForm http="https://docs.google.com/forms/d/e/1FAIpQLScw70mLM_SHP3dEzo_Zn3PVJnGJKqWy6L2oIahXiLSfx2aiWg/formResponse">
         <Entrys>
             <Table name="invoiceTable">

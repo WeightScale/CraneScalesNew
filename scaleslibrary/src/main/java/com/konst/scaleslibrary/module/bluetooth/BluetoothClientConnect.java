@@ -76,17 +76,20 @@ class BluetoothClientConnect extends Thread implements InterfaceBluetoothClient 
     }
 
     @Override
-    public synchronized ObjectCommand sendCommand(Commands cmd){
+    public synchronized ObjectCommand sendCommand(Commands cmd) {
         write(cmd.toString());
         response = new ObjectCommand(cmd, "");
-        for (int i=0; i < cmd.getTimeOut(); i++){
+        for (int i = 0; i < cmd.getTimeOut(); i++) {
             try {
-                TimeUnit.MILLISECONDS.sleep(1);} catch (InterruptedException e) {}
+                TimeUnit.MILLISECONDS.sleep(1);
+            } catch (InterruptedException e) {
+            }
             try {
-                if (response.isResponse()){
+                if (response.isResponse()) {
                     return response;
                 }
-            }catch (Exception e){}
+            } catch (Exception e) {
+            }
         }
         return null;
     }

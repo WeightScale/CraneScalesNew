@@ -7,14 +7,13 @@
         android:layout_height="match_parent"
         android:visibility="visible"
         android:id="@+id/searchScreen"
-        android:background="@color/background_light"
-        tools:context="com.konst.scaleslibrary.SearchDialog">
+        android:background="@color/background_light">
 
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:singleLine="false" android:text="@string/find_device" android:textColor="@color/text"
+            android:text="@string/find_device" android:textColor="@color/text"
             android:background="@color/white"/>
 
     <ListView
@@ -28,7 +27,7 @@
 
     <TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/textView"
               android:gravity="center_horizontal"
-              android:singleLine="false" android:text="@string/search_message" android:textColor="@color/text"
+              android:text="@string/search_message" android:textColor="@color/text"
               android:background="@color/white"/>
 
     <ScrollView

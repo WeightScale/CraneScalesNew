@@ -92,16 +92,4 @@ public class AVRDevice {
         return pageSize;
     }
 
-    public long getSignature0() {
-        return signature0;
-    }
-
-    public long getSignature1() {
-        return signature1;
-    }
-
-    public long getSignature2() {
-        return signature2;
-    }
-
 }

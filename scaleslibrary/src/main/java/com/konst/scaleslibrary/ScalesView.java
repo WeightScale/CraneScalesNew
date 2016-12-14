@@ -2,32 +2,18 @@ package com.konst.scaleslibrary;
 
 import android.app.*;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.*;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.*;
 import com.konst.scaleslibrary.module.ErrorDeviceException;
 import com.konst.scaleslibrary.module.InterfaceModule;
-import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.boot.BootModule;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.konst.scaleslibrary.settings.FragmentSettings;
-
-import java.util.Map;
-import java.util.Set;
 
 /** Класс индикатора весового модуля.
  * @author Kostya on 26.09.2016.
@@ -74,7 +60,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         //settings = new Settings(context);
         addressDevice = settings.read(R.string.KEY_ADDRESS, "");
 
-        fragmentManager = ((AppCompatActivity)getContext()).getFragmentManager();
+        fragmentManager = ((Activity) getContext()).getFragmentManager();
 
         baseReceiver = new BaseReceiver(context);
         baseReceiver.register();
