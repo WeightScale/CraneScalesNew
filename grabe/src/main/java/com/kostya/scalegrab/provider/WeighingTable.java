@@ -61,6 +61,10 @@ public class WeighingTable {
         return contentResolver.insert(CONTENT_URI, newTaskValues);
     }
 
+    public void removeEntryInvoice(int invoice){
+        contentResolver.delete(CONTENT_URI, KEY_ID_INVOICE + " = " + invoice, null);
+    }
+
     public void removeEntry(int _rowIndex) {
         Uri uri = ContentUris.withAppendedId(CONTENT_URI, _rowIndex);
         contentResolver.delete(uri, null, null);

@@ -40,7 +40,6 @@
     <string name="Reserved">Все права защищены</string>
 
 
-
     <!--<string name="discovery_start">НАЧАТЬ ПОИСК</string>-->
     <string name="discovery_started">Поиск весов…</string>
     <!--<string name="scales_null">НОЛЬ</string>-->
@@ -134,4 +133,6 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_archive">ArchiveActivity</string>
+    <string name="action_settings">Settings</string>
 </resources>

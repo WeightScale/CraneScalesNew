@@ -1,6 +1,9 @@
 package com.kostya.scalegrab;
 
-import android.app.*;
+//import android.app.*;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.*;
 import android.database.Cursor;
 import android.graphics.Rect;
@@ -9,6 +12,8 @@ import android.media.SoundPool;
 import android.os.Bundle;
 
 import android.os.Vibrator;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.DialogFragment;
 import android.text.*;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.TextAppearanceSpan;
@@ -101,7 +106,7 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
             values.put(InvoiceTable.KEY_TIME_CREATE, getArguments().getString(ARG_TIME));
             _id = getArguments().getString(ARG_ID);
         }else {
-            values.put(InvoiceTable.KEY_DATE_CREATE, new SimpleDateFormat("dd-MM-yy", Locale.getDefault()).format(new Date()));
+            values.put(InvoiceTable.KEY_DATE_CREATE, new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date()));
             values.put(InvoiceTable.KEY_TIME_CREATE, new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date()));
         }
         vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);

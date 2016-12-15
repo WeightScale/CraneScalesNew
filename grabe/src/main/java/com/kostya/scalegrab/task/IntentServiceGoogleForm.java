@@ -37,6 +37,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 //import com.viktyusk.scales.*;
@@ -133,13 +134,14 @@ public class IntentServiceGoogleForm extends IntentService {
             InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(Uri.fromFile(file));
             //InputStream inputStream = new FileInputStream(path);
             GoogleForms.Form form = new GoogleForms(inputStream).createForm(nameForm);
-            Cursor invoice = new InvoiceTable(getApplicationContext()).getPreliminary();
+            Cursor invoice = new InvoiceTable(getApplicationContext()).getPreliminary(new Date());
             if (invoice.getCount() > 0) {
                 invoice.moveToFirst();
                 if (!invoice.isAfterLast()) {
                     do {
 
                         String http = form.getHttp();
+
                         Collection<BasicNameValuePair> values = form.getEntrys();
                         List<ValuePair> results = new ArrayList<>();
 

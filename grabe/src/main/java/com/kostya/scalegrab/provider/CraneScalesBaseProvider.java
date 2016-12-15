@@ -70,6 +70,42 @@ public class CraneScalesBaseProvider extends ContentProvider {
         return true;
     }
 
+    public Cursor queryG(Uri uri, String[] projection, String selection, String[] selectionArgs, String group, String sort) {
+        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+
+        switch (TableList.values()[uriMatcher.match(uri)]) {
+            case INVOICE_LIST: // общий Uri
+                queryBuilder.setTables(InvoiceTable.TABLE);
+                break;
+            case INVOICE_ID: // Uri с ID
+                queryBuilder.setTables(InvoiceTable.TABLE);
+                queryBuilder.appendWhere(BaseColumns._ID + '=' + uri.getLastPathSegment());
+                break;
+            case WEIGHING_LIST: // общий Uri
+                queryBuilder.setTables(WeighingTable.TABLE);
+                break;
+            case WEIGHING_ID: // Uri с ID
+                queryBuilder.setTables(WeighingTable.TABLE);
+                queryBuilder.appendWhere(BaseColumns._ID + '=' + uri.getLastPathSegment());
+                break;
+            default:
+                throw new IllegalArgumentException("Wrong URI: " + uri);
+        }
+
+        Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, group, null, sort);
+        if (cursor == null) {
+            return null;
+        }
+        Context context = getContext();
+        if (context != null) {
+            ContentResolver contentResolver = context.getContentResolver();
+            if (contentResolver != null) {
+                cursor.setNotificationUri(contentResolver, uri);
+            }
+        }
+        return cursor;
+    }
+
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sort) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();

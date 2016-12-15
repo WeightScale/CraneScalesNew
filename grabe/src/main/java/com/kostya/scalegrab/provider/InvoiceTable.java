@@ -2,9 +2,12 @@ package com.kostya.scalegrab.provider;
 
 import android.content.*;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.util.Log;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -102,7 +105,7 @@ public class InvoiceTable {
     public Uri insertNewEntry() {
         ContentValues newTaskValues = new ContentValues();
         Date date = new Date();
-        newTaskValues.put(KEY_DATE_CREATE, new SimpleDateFormat("dd-MM-yy", Locale.getDefault()).format(date));
+        newTaskValues.put(KEY_DATE_CREATE, new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(date));
         newTaskValues.put(KEY_TIME_CREATE, new SimpleDateFormat("hh:mm:ss", Locale.getDefault()).format(date));
         newTaskValues.put(KEY_NAME_AUTO, "");
         newTaskValues.put(KEY_TOTAL_WEIGHT, 0);
@@ -115,7 +118,7 @@ public class InvoiceTable {
     public Uri insertNewEntry(String nameAuto) {
         ContentValues newTaskValues = new ContentValues();
         Date date = new Date();
-        newTaskValues.put(KEY_DATE_CREATE, new SimpleDateFormat("dd-MM-yy", Locale.getDefault()).format(date));
+        newTaskValues.put(KEY_DATE_CREATE, new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(date));
         newTaskValues.put(KEY_TIME_CREATE, new SimpleDateFormat("hh:mm:ss", Locale.getDefault()).format(date));
         newTaskValues.put(KEY_NAME_AUTO, nameAuto);
         newTaskValues.put(KEY_TOTAL_WEIGHT, 0);
@@ -130,7 +133,11 @@ public class InvoiceTable {
         contentResolver.delete(uri, null, null);
     }
 
-    long dayDiff(Date d1, Date d2) {
+    public Cursor getIsCloud(){
+        return contentResolver.query(CONTENT_URI, null, KEY_IS_CLOUD + "= " + READY, null, null);
+    }
+
+    public static long dayDiff(Date d1, Date d2) {
         final long DAY_MILLIS = 1000 * 60 * 60 * 24;
         long day1 = d1.getTime() / DAY_MILLIS;
         long day2 = d2.getTime() / DAY_MILLIS;
@@ -139,6 +146,12 @@ public class InvoiceTable {
 
     public Cursor getAllItem() {
         return contentResolver.query(CONTENT_URI, All_COLUMN_TABLE, null, null, null);
+    }
+
+    public Cursor getAllGroupDate() {
+        //c = db.query("invoiceTable", new String[] { "date", "sum(totalWeight) as totalWeight" }, null, null, "date", null, null);
+        String selection = "date IS NOT NULL) GROUP BY (" + KEY_DATE_CREATE;
+        return contentResolver.query(CONTENT_URI, new String[] {KEY_ID,KEY_DATE_CREATE,"sum(totalWeight) AS "+KEY_TOTAL_WEIGHT}, selection, null,null);
     }
 
     public Cursor getEntryItem(int _rowIndex) {
@@ -212,6 +225,17 @@ public class InvoiceTable {
 
     public Cursor getPreliminary() {
         return contentResolver.query(CONTENT_URI, null, KEY_IS_CLOUD + "= " + UNREADY, null, null);
+    }
+
+    /** Получить записи все записи которые не отправленые на сервер
+     * и те которые проведенные или не равны дате.
+     * Для того чтобы не закрытые сегодняшнии записи не отправлять на сервер.
+     * @param date Дата рабочачя для не закрытых записей.
+     * @return Курсор записей.
+     */
+    public Cursor getPreliminary(Date date) {
+        String d = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(date);
+        return contentResolver.query(CONTENT_URI, null, KEY_IS_CLOUD + " = " + UNREADY + " and (" + KEY_IS_READY + " = " + READY + " or " + KEY_DATE_CREATE + " != " + '"' +d+ '"' + " )", null, null);
     }
 
     public Cursor getToday(String date) {

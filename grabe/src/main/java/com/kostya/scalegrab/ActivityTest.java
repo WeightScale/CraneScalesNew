@@ -2,9 +2,8 @@ package com.kostya.scalegrab;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.*;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
@@ -15,6 +14,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.*;
 import com.konst.scaleslibrary.ScalesFragment;
 import com.konst.scaleslibrary.ScalesView;
@@ -22,9 +24,12 @@ import com.konst.scaleslibrary.Settings;
 import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
+import com.kostya.scalegrab.provider.InvoiceTable;
+import com.kostya.scalegrab.provider.WeighingTable;
 import com.kostya.scalegrab.settings.ActivityPreferences;
 import com.kostya.scalegrab.task.IntentServiceGoogleForm;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -84,9 +89,9 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         globals = Globals.getInstance();
         globals.initialize(this);
 
-        fragmentManager = getFragmentManager();
+        fragmentManager = getSupportFragmentManager();
 
-        fragmentListInvoice = FragmentListInvoice.newInstance();
+        fragmentListInvoice = FragmentListInvoice.newInstance(new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date()));
         fragmentManager.beginTransaction().add(R.id.fragmentInvoice, fragmentListInvoice, FragmentListInvoice.class.getSimpleName()).commit();
 
         scalesView = (ScalesView)findViewById(R.id.scalesView);
@@ -126,6 +131,9 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            case R.id.archive_invoice:
+                startActivity(new Intent(getApplicationContext(), ActivityArchive.class));
+                break;
             case R.id.search_scales:
                 scalesView.openSearchScales();
             break;
@@ -148,6 +156,7 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         super.onDestroy();
         scalesView.exit();
+        removeInvoiceIsCloud(0);
         startService(new Intent(this, IntentServiceGoogleForm.class).setAction(IntentServiceGoogleForm.ACTION_EVENT_TABLE));
     }
 
@@ -229,11 +238,12 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
 
     public void openFragmentInvoice(String id){
         vibrator.vibrate(50);
-        Fragment fragment = getFragmentManager().findFragmentByTag(FragmentInvoice.class.getSimpleName());
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(FragmentInvoice.class.getSimpleName());
         if (fragment instanceof FragmentInvoice){
             showDialog(ALERT_DIALOG1);
         }else {
-            fragmentInvoice = FragmentInvoice.newInstance(new SimpleDateFormat("dd-MM-yy", Locale.getDefault()).format(new Date()),
+            fragmentInvoice = FragmentInvoice.newInstance(new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date()),
                     new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date()), id);
             fragmentManager.beginTransaction().add(R.id.fragmentInvoice, fragmentInvoice, FragmentInvoice.class.getSimpleName()).commit();
             fab.setVisibility(View.INVISIBLE);
@@ -248,6 +258,33 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     @Override
     public void onScaleModuleCallback(ScaleModule obj) {
         scaleModule = obj;
+    }
+
+    public void removeInvoiceIsCloud(long dayAfter) {
+        try {
+            InvoiceTable invoiceTable = new InvoiceTable(this);
+            WeighingTable weighingTable = new WeighingTable(this);
+            Cursor result = invoiceTable.getIsCloud();
+            result.moveToFirst();
+            if (!result.isAfterLast()) {
+                do {
+                    int id = result.getInt(result.getColumnIndex(InvoiceTable.KEY_ID));
+                    String date = result.getString(result.getColumnIndex(InvoiceTable.KEY_DATE_CREATE));
+                    long day = 0;
+                    try {
+                        day = InvoiceTable.dayDiff(new Date(), new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(date));
+                    } catch (ParseException e) {
+                        Log.e("TAG", e.getMessage());
+                    }
+                    if (day > dayAfter) {
+                        invoiceTable.removeEntry(id);
+                        weighingTable.removeEntryInvoice(id);
+                    }
+                } while (result.moveToNext());
+            }
+            result.close();
+        } catch (Exception e) {
+        }
     }
 
     /*@Override

@@ -1,7 +1,7 @@
 package com.kostya.scalegrab;
 
 import android.app.Activity;
-import android.app.ListFragment;
+import android.support.v4.app.ListFragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -27,19 +27,28 @@ import java.util.Locale;
 public class FragmentListInvoice extends ListFragment {
     private SimpleCursorAdapter simpleCursorAdapter;
     private InvoiceTable invoiceTable;
-    //private OnFragmentListInvoiceListener onFragmentListInvoiceListener;
+    private String date;
+    private static final String ARG_DATE = "arg_date";
 
     /**
      * @return A new instance of fragment InvoiceFragment.
      */
-    public static FragmentListInvoice newInstance() {
+    public static FragmentListInvoice newInstance(String date) {
         FragmentListInvoice fragment = new FragmentListInvoice();
+        Bundle args = new Bundle();
+        args.putString(ARG_DATE, date);
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            date = getArguments().getString(ARG_DATE);
+        }else {
+            date = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
+        }
         invoiceTable = new InvoiceTable(getActivity());
     }
 
@@ -61,7 +70,7 @@ public class FragmentListInvoice extends ListFragment {
 
     /** Обновляем данные листа загрузок. */
     private void updateListWeight() {
-        Cursor cursor = invoiceTable.getToday(new SimpleDateFormat("dd-MM-yy", Locale.getDefault()).format(new Date()));
+        Cursor cursor = invoiceTable.getToday(date);
         if (cursor == null) {
             return;
         }

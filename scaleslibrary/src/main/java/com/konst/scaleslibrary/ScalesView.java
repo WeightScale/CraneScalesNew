@@ -104,11 +104,6 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         scaleModule = obj;
     }
 
-    @Override
-    public void onSaveWeight(int weight) {
-
-    }
-
     public void openSearchScales(){
         if (scalesFragment != null){
             scalesFragment.openSearchDialog("Выбор устройства для соединения.");
