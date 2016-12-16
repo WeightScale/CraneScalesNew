@@ -3,6 +3,8 @@ package com.kostya.scalegrab;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import com.konst.scaleslibrary.module.boot.BootModule;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
@@ -35,6 +37,7 @@ public class Globals {
     private final int defaultMinAutoCapture = 20;
     /** Процент заряда батареи (0-100%). */
     private int battery;
+    private String deviceId = "";
     /** Флаг есть соединение. */
     //private boolean isScaleConnect;
     private static final String TAG = Globals.class.getName();
@@ -102,6 +105,12 @@ public class Globals {
     public int getTimeDelayDetectCapture() { return timeDelayDetectCapture; }
 
     public void initialize(Context context) {
+        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        if (tm.getDeviceId() != null) {
+            deviceId = tm.getDeviceId();
+        } else {
+            deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        }
         /*PreferenceManager.setDefaultValues(this, R.xml.preferences, false);*/
         try {
             PackageManager packageManager = context.getPackageManager();
@@ -128,4 +137,8 @@ public class Globals {
     public static Globals getInstance() { return instance; }
 
     public static void setInstance(Globals instance) { Globals.instance = instance; }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
 }

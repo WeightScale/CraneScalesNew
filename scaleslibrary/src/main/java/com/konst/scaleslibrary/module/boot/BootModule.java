@@ -116,7 +116,7 @@ public class BootModule extends Module {
 
     @Override
     protected void load() {
-        resultCallback.onCallback(instance);
+        resultCallback.onCreate(instance);
     }
 
     /**
@@ -189,7 +189,7 @@ public class BootModule extends Module {
 
                 if(isVersion()){
                     isAttach = true;
-                    resultCallback.onCallback(instance);
+                    resultCallback.onCreate(instance);
                     getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_LOAD_OK));
                 }else {
                     throw new Exception("Ошибка проверки версии.");

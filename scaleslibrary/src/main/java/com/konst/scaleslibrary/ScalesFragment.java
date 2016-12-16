@@ -246,7 +246,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
                 /** Сообщение о результате соединения.
                  * @param module Модуль с которым соединились. */
                 @Override
-                public void onCallback(Module module) {
+                public void onCreate(Module module) {
                     if (module instanceof ScaleModule){
                         scaleModule = (ScaleModule)module;
                         onInteractionListener.onScaleModuleCallback(scaleModule);

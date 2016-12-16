@@ -37,7 +37,6 @@ repositories {
 
 dependencies {
     provided fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
     //compile files('libs/scalesmodule.jar')
     //compile 'com.konst.weightmodule:weightmodule-release@aar'
     //compile(name: 'scaleslibrary-release', ext: 'aar')
@@ -50,4 +49,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'com.google.guava:guava:20.0'
     compile 'cz.msebera.android:httpclient:4.4.1.2'
+    testCompile 'junit:junit:4.12'
 }

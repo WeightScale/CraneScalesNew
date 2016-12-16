@@ -15,10 +15,16 @@ import android.os.Bundle;
 import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import com.kostya.scalegrab.provider.InvoiceTable;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class ActivityArchive extends AppCompatActivity {
     //private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -31,38 +37,26 @@ public class ActivityArchive extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_archive);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
         invoiceTable = new InvoiceTable(this);
         Cursor cursor = invoiceTable.getAllGroupDate();
         if (cursor == null) {
             return;
         }
-
-        /*mSectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(),cursor) {
-            @Override
-            public Fragment getItem(Context context, Cursor cursor) {
-                int i = cursor.getInt(cursor.getColumnIndex(InvoiceTable.KEY_ID));
-                return PlaceholderFragment.newInstance(i);
-            }
-        };*/
-        cursorFragmentPagerAdapter = new CursorFragmentPagerAdapter(this, getSupportFragmentManager(), cursor) {
+        if (cursor.getCount() == 0){
+            findViewById(R.id.archive_empty).setVisibility(View.VISIBLE);
+            return;
+        }
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(new CursorFragmentPagerAdapter(this, getSupportFragmentManager(), cursor) {
             @Override
             public Fragment getItem(Context context, Cursor cursor) {
                 String d = cursor.getString(cursor.getColumnIndex(InvoiceTable.KEY_DATE_CREATE));
                 int w = cursor.getInt(cursor.getColumnIndex(InvoiceTable.KEY_TOTAL_WEIGHT));
                 return FragmentListArchiveInvoice.newInstance(d, String.valueOf(w));
             }
-        };
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(cursorFragmentPagerAdapter);
-        //mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        //TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        //tabLayout.setupWithViewPager(mViewPager);
-
+        });
     }
 
 

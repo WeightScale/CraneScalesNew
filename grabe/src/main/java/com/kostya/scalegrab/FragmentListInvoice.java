@@ -1,11 +1,14 @@
 package com.kostya.scalegrab;
 
 import android.app.Activity;
+import android.content.Context;
+import android.provider.Settings;
 import android.support.v4.app.ListFragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.telephony.TelephonyManager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -14,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.kostya.scalegrab.provider.InvoiceTable;
 import com.kostya.scalegrab.task.IntentServiceGoogleForm;
 
@@ -55,6 +60,7 @@ public class FragmentListInvoice extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list_invoice, container, false);
+        setupBanner(view);
         return view;
     }
 
@@ -62,6 +68,16 @@ public class FragmentListInvoice extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         updateListWeight();
+    }
+
+    private void setupBanner(View view){
+        AdView mAdView = (AdView) view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice(Globals.getInstance().getDeviceId())
+                .build();
+        mAdView.loadAd(adRequest);
+        //requestNewInterstitial();
     }
 
     private void openInvoice(long _id){

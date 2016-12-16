@@ -61,9 +61,8 @@
                 android:layout_height="match_parent"
                 android:id="@+id/totalWeight"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:gravity="right|center"
+                android:gravity="center"
                 android:layout_weight="1"
-                android:text="130"
                 android:textSize="@dimen/text_large_x"
                 android:textStyle="bold|italic"/>
     </LinearLayout>

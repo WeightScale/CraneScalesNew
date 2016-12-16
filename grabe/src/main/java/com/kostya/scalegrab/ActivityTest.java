@@ -18,6 +18,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.konst.scaleslibrary.ScalesFragment;
 import com.konst.scaleslibrary.ScalesView;
 import com.konst.scaleslibrary.Settings;
@@ -48,6 +51,7 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     private FragmentManager fragmentManager;
     private FragmentInvoice fragmentInvoice;
     private FragmentListInvoice fragmentListInvoice;
+    private InterstitialAd mInterstitialAd;
     private Globals globals;
     /** Настройки общии для модуля. */
     public static final String SETTINGS = ActivityTest.class.getName() + ".SETTINGS"; //
@@ -88,6 +92,8 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
 
         globals = Globals.getInstance();
         globals.initialize(this);
+
+        setupInterstitial();
 
         fragmentManager = getSupportFragmentManager();
 
@@ -132,8 +138,12 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.archive_invoice:
-                startActivity(new Intent(getApplicationContext(), ActivityArchive.class));
-                break;
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    startActivity(new Intent(getApplicationContext(), ActivityArchive.class));
+                }
+            break;
             case R.id.search_scales:
                 scalesView.openSearchScales();
             break;
@@ -146,6 +156,9 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
             case R.id.power:
                 finish();
             break;
+            case R.id.help:
+                startActivity(new Intent(getApplicationContext(), ActivityHelp.class));
+            break;
             default:
         }
         drawer.closeDrawer(GravityCompat.START);
@@ -156,7 +169,7 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         super.onDestroy();
         scalesView.exit();
-        removeInvoiceIsCloud(0);
+        removeInvoiceIsCloud(10);
         startService(new Intent(this, IntentServiceGoogleForm.class).setAction(IntentServiceGoogleForm.ACTION_EVENT_TABLE));
     }
 
@@ -224,6 +237,9 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
 
     }
 
+    /**
+     * Закрыть накладную.
+     */
     public void closedInvoice(){
         fragmentManager.beginTransaction().remove(fragmentInvoice).commit();
         fab.setVisibility(View.VISIBLE);
@@ -260,6 +276,9 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         scaleModule = obj;
     }
 
+    /** Удалять накладные старше количества дней, и те которые не отправлены на сервер.
+     * @param dayAfter Количество дней.
+     */
     public void removeInvoiceIsCloud(long dayAfter) {
         try {
             InvoiceTable invoiceTable = new InvoiceTable(this);
@@ -287,9 +306,42 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    /*@Override
-    public void onSaveWeight(int weight) {
-        if (fragmentInvoice != null)
-            fragmentInvoice.addRowWeight(weight);
-    }*/
+    /**
+     * Настройка межстарничного рекламного блок.
+     */
+    private void setupInterstitial(){
+        mInterstitialAd = new InterstitialAd(getApplicationContext());
+        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_id));
+        mInterstitialAd.setAdListener(new AdListener() {
+           /* @Override
+            public void onAdLoaded() {
+                Toast.makeText(ActivityScales.this,"The interstitial is loaded", Toast.LENGTH_SHORT).show();
+                mInterstitialAd.show();
+            }*/
+
+            @Override
+            public void onAdClosed() {
+                requestNewInterstitial();
+                startActivity(new Intent(getApplicationContext(), ActivityArchive.class));
+            }
+
+            @Override
+            public void onAdFailedToLoad(int i) {
+                super.onAdFailedToLoad(i);
+            }
+
+        });
+        requestNewInterstitial();
+    }
+
+    /**
+     * запрос на новый межстраничный рекламный блок.
+     */
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)// This is for emulators
+                .addTestDevice(Globals.getInstance().getDeviceId())
+                .build();
+        mInterstitialAd.loadAd(adRequest);
+    }
 }

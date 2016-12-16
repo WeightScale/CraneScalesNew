@@ -207,7 +207,7 @@ public class ScaleModule extends Module /*implements Serializable*/{
     protected void load() {
         try {
             version.load();
-            resultCallback.onCallback(instance);
+            resultCallback.onCreate(instance);
         }  catch (ErrorTerminalException e) {
             getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_TERMINAL_ERROR)/*.putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales())*/);
         } catch (Exception e) {

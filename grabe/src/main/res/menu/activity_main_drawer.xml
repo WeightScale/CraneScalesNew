@@ -38,8 +38,8 @@
 </group>
 <group android:checkableBehavior="none">
     <item android:id="@+id/settings" android:icon="@drawable/ic_menu_settings" android:title="НАСТРОЙКИ"/>
-    <item
-            android:icon="@drawable/ic_info" android:title="@string/about" android:actionLayout="@layout/about"/>
+    <item android:icon="@drawable/ic_info" android:title="@string/about" android:actionLayout="@layout/about"/>
+    <item android:title="Справка" android:id="@+id/help" android:icon="@drawable/ic_help_24dp"/>
     <item android:id="@+id/power" android:icon="@drawable/ic_power" android:title="ВЫХОД" />
 </group>
 </menu>

@@ -8,6 +8,8 @@ import android.text.Spanned;
 import android.text.style.StyleSpan;
 import android.view.WindowManager;
 import android.widget.TextView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 /*
@@ -127,6 +129,8 @@ public class ActivityAbout extends Activity {
         TextView textAuthority = (TextView) findViewById(R.id.textAuthority);
         textAuthority.append(getString(R.string.Copyright) + '\n');
         textAuthority.append(getString(R.string.Reserved) + '\n');
+
+        setupBanner();
     }
 
     void parserTextSettings(TextView textView){
@@ -143,5 +147,14 @@ public class ActivityAbout extends Activity {
                 textView.append("\n");
             }
         }
+    }
+
+    private void setupBanner(){
+        AdView mAdView = (AdView)findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice(Globals.getInstance().getDeviceId())
+                .build();
+        mAdView.loadAd(adRequest);
     }
 }

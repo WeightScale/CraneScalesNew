@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <uses-feature android:name="android.hardware.bluetooth"/>
 
@@ -58,10 +59,12 @@
                 android:screenOrientation="portrait"
                 android:theme="@android:style/Theme.Holo">
         </activity>
-        <activity android:name=".ActivityArchive"
-                  android:screenOrientation="portrait"
-                  android:configChanges="orientation"
-                  android:theme="@style/AppTheme.NoActionBar">>
+        <activity
+                android:name=".ActivityArchive"
+                android:configChanges="orientation"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar">
+            >
         </activity>
         <!--
         <activity android:name=".bootloader.ActivityBootloader"
@@ -85,6 +88,9 @@
                 android:screenOrientation="portrait">
         </activity>
 
+        <activity android:name=".ActivityHelp"
+                  android:theme="@style/Theme.AppCompat.NoActionBar">
+        </activity>
         <service
                 android:name=".services.ServiceScales"
                 android:enabled="true"
@@ -94,7 +100,10 @@
                 android:enabled="true"
                 android:exported="true"/>
 
-        <provider android:name=".provider.CraneScalesBaseProvider" android:authorities="com.kostya.scalegrab.craneScales" android:exported="true"/>
+        <provider
+                android:name=".provider.CraneScalesBaseProvider"
+                android:authorities="com.kostya.scalegrab.craneScales"
+                android:exported="true"/>
     </application>
 
 </manifest>

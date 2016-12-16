@@ -156,7 +156,7 @@ public class BootFragment extends Fragment implements View.OnClickListener {
                 /** Сообщение о результате соединения.
                  * @param module Модуль с которым соединились. */
                 @Override
-                public void onCallback(Module module) {
+                public void onCreate(Module module) {
                     if (module instanceof BootModule){
                         bootModule = (BootModule)module;
                     }

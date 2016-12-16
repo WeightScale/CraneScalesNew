@@ -10,6 +10,6 @@ public interface InterfaceCallbackScales {
      //* @param what Статус веса {@link ScaleModule.ResultWeight}
      * @param obj Обьект весов с данными.
      */
-    void onCallback(/*ScaleModule.ResultWeight what, */Module obj);
+    void onCreate(/*ScaleModule.ResultWeight what, */Module obj);
 
 }

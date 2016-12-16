@@ -2,9 +2,11 @@
 
 <PreferenceScreen xmlns:tools="http://schemas.android.com/tools"
                   xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.kostya.scalegrab.settings.AdMobPreference android:layout="@layout/banner"/>
     <PreferenceCategory android:title="@string/Settings">
         <PreferenceScreen android:title="УСТАНОВКИ ДЛЯ ГРЕЙФЕРА" android:summary="Настройки для работы с грейфером магнитной шайбой и тп."
                           android:icon="@drawable/ic_settings">
+            <com.kostya.scalegrab.settings.AdMobPreference android:layout="@layout/banner"/>
             <PreferenceCategory android:title="@string/Settings">
                 <com.konst.scaleslibrary.settings.IntegerEditPreference
                         android:title="@string/auto_capture"
