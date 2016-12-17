@@ -62,7 +62,6 @@ public class IntentServiceGoogleForm extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         try {
-            //systemTable = new SystemTable(getBaseContext());
             internet = new Internet(getApplicationContext());
             String action = intent.getAction();
             switch (action){
@@ -139,7 +138,10 @@ public class IntentServiceGoogleForm extends IntentService {
                 invoice.moveToFirst();
                 if (!invoice.isAfterLast()) {
                     do {
-
+                        int weight = invoice.getInt(invoice.getColumnIndex(InvoiceTable.KEY_TOTAL_WEIGHT));
+                        if (weight == 0){
+                            continue;
+                        }
                         String http = form.getHttp();
 
                         Collection<BasicNameValuePair> values = form.getEntrys();
@@ -172,7 +174,7 @@ public class IntentServiceGoogleForm extends IntentService {
             invoice.close();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
-            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 

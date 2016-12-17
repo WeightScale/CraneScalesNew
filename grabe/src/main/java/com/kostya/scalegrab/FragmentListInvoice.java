@@ -1,7 +1,9 @@
 package com.kostya.scalegrab;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.provider.Settings;
 import android.support.v4.app.ListFragment;
 import android.content.Intent;
@@ -13,6 +15,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.TextAppearanceSpan;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,7 @@ import android.widget.*;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.kostya.scalegrab.provider.InvoiceTable;
+import com.kostya.scalegrab.provider.WeighingTable;
 import com.kostya.scalegrab.task.IntentServiceGoogleForm;
 
 import java.text.SimpleDateFormat;
@@ -73,8 +77,8 @@ public class FragmentListInvoice extends ListFragment {
     private void setupBanner(View view){
         AdView mAdView = (AdView) view.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice(Globals.getInstance().getDeviceId())
+                //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                //.addTestDevice(Globals.getInstance().getDeviceId())
                 .build();
         mAdView.loadAd(adRequest);
         //requestNewInterstitial();
@@ -101,12 +105,36 @@ public class FragmentListInvoice extends ListFragment {
         setListAdapter(simpleCursorAdapter);
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Cursor cursor = invoiceTable.getEntryItem((int)l, InvoiceTable.KEY_IS_READY);
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, final long l) {
+                Cursor cursor = invoiceTable.getEntryItem((int)l, InvoiceTable.KEY_IS_READY,InvoiceTable.KEY_TOTAL_WEIGHT);
                 if (cursor != null){
                     int isReady = cursor.getInt(cursor.getColumnIndex(InvoiceTable.KEY_IS_READY));
-                    if (isReady != InvoiceTable.READY){
-                        openInvoice(l);
+                    int totalWeight = cursor.getInt(cursor.getColumnIndex(InvoiceTable.KEY_TOTAL_WEIGHT));
+                    if (isReady != InvoiceTable.READY || totalWeight == 0){
+                        if (totalWeight == 0){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.CustomAlertDialogInvoice));
+                            builder.setCancelable(false)
+                                    .setTitle("Сообщение")
+                                    .setMessage("НАКЛАДНАЯ" + " №"+l)
+                                    .setIcon(R.drawable.ic_notification)
+                                    .setPositiveButton("УДАЛИТЬ", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            invoiceTable.removeEntry((int)l);
+                                            new WeighingTable(getActivity()).removeEntryInvoice((int) l);
+                                        }
+                                    })
+                                    .setNegativeButton("ОТКРЫТЬ", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.dismiss();
+                                            openInvoice(l);
+                                        }
+                                    });
+                            builder.create().show();
+                        }else {
+                            openInvoice(l);
+                        }
                     }else {
                         getActivity().startService(new Intent(getActivity(), IntentServiceGoogleForm.class).setAction(IntentServiceGoogleForm.ACTION_EVENT_TABLE));
                     }

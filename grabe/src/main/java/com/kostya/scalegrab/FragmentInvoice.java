@@ -3,6 +3,7 @@ package com.kostya.scalegrab;
 //import android.app.*;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.KeyguardManager;
 import android.app.ProgressDialog;
 import android.content.*;
 import android.database.Cursor;
@@ -11,6 +12,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
 
+import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.DialogFragment;
@@ -18,10 +20,7 @@ import android.text.*;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.TextAppearanceSpan;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.*;
 import com.konst.scaleslibrary.*;
 import com.konst.scaleslibrary.module.InterfaceModule;
@@ -38,6 +37,8 @@ import java.util.Locale;
  *
  */
 public class FragmentInvoice extends Fragment implements View.OnClickListener {
+    KeyguardManager.KeyguardLock keyguardLock;
+    PowerManager.WakeLock wakeLock;
     private Vibrator vibrator; //вибратор
     private SoundPool soundPool;
     private SimpleCursorAdapter adapterWeightingList;
@@ -101,6 +102,15 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "TAG");
+        wakeLock.acquire();
+
+        /*KeyguardManager keyguardManager = (KeyguardManager) getActivity().getSystemService(Context.KEYGUARD_SERVICE);
+        keyguardLock = keyguardManager.newKeyguardLock("TAG");
+        keyguardLock.disableKeyguard();*/
+
         if (getArguments() != null) {
             values.put(InvoiceTable.KEY_DATE_CREATE, getArguments().getString(ARG_DATE));
             values.put(InvoiceTable.KEY_TIME_CREATE, getArguments().getString(ARG_TIME));
@@ -241,6 +251,7 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
         soundPool.unload(shutterSound3);
         soundPool.release();
         soundPool = null;
+        wakeLock.release();
     }
 
     @Override
@@ -270,10 +281,22 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
         }
     }
 
+    /*@Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_POWER) {
+            Log.i("", "Dispath event power");
+            Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+            sendBroadcast(closeDialog);
+            return true;
+        }
+
+        return super.dispatchKeyEvent(event);
+    }*/
+
     /** Закрыть накладную. */
     public void onClose() {
         invoiceTable.updateEntry(entryID, values);
-        ((ActivityTest)getActivity()).closedInvoice();
+        ((ActivityTest)getActivity()).closedFragmentInvoice();
     }
 
     /** Кнопка закрыть накладную. */

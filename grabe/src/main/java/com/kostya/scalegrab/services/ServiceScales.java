@@ -158,7 +158,7 @@ public class ServiceScales extends Service {
         /** Сообщение о результате соединения.
          * @param module Модуль с которым соединились. */
         @Override
-        public void onCallback(Module module) {
+        public void onCreate(Module module) {
             ServiceScales.this.module = module;
             if (module instanceof ScaleModule){
                 scaleModule = (ScaleModule)module;

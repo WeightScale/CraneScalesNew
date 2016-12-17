@@ -125,29 +125,30 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
         if (activity instanceof OnInteractionListener) {
             onInteractionListener = (OnInteractionListener) activity;
         } else {
-            throw new RuntimeException(activity.toString() + " must implement OnInteractionListener");
+            throw new RuntimeException(activity + " must implement OnInteractionListener");
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        try {scaleModule.scalesProcessEnable(true);}catch (Exception e){}
+        //try {scaleModule.scalesProcessEnable(true);}catch (Exception e){}
 
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        try {scaleModule.scalesProcessEnable(false);}catch (Exception e){}
+        //try {scaleModule.scalesProcessEnable(false);}catch (Exception e){}
     }
 
     @Override
     public void onDetach() {
-        super.onDetach();
+        try {scaleModule.scalesProcessEnable(false);}catch (Exception e){}
         baseReceiver.unregister();
         if (scaleModule != null)
             scaleModule.dettach();
+        super.onDetach();
     }
 
     @Override
@@ -183,63 +184,6 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
         }
     }
 
-    /*@Override
-    public boolean onLongClick(View view) {
-        int i = view.getId();
-        if (i == R.id.weightTextView){
-            onInteractionListener.onSaveWeight(moduleWeight);
-        }
-        return false;
-    }*/
-
-    /*public void updateSettings(Settings settings){
-
-        for(FragmentSettings.EnumSettings key : FragmentSettings.EnumSettings.values()){
-            switch (key){
-                case STEP:
-                    scaleModule.setStepScale(settings.read(key.getResId(), 5));
-                    break;
-                case STABLE:
-                    scaleModule.stableActionEnable(settings.read(key.getResId(), false));
-                    break;
-                case SWITCH_ZERO:
-                    scaleModule.setEnableAutoNull(settings.read(key.getResId(), false));
-                    break;
-                case TIMER_ZERO:
-                    scaleModule.setTimerZero(settings.read(key.getResId(), 120));
-                    break;
-                case MAX_ZERO:
-                    scaleModule.setWeightError(settings.read(key.getResId(), 50));
-                    break;
-                default:
-            }
-        }
-
-        *//*for (Settings.KEY key : Settings.KEY.values()){
-            switch (key){
-                *//**//*case KEY_FILTER:
-                    scaleModule.setFilterADC(settings.read(key, 5));
-                    break;*//**//*
-                case KEY_DISCRETE:
-                    scaleModule.setStepScale(settings.read(key, 5));
-                    break;
-                case KEY_STABLE:
-                    scaleModule.stableActionEnable(settings.read(key, false));
-                    break;
-                case KEY_SWITCH_ZERO:
-                    scaleModule.setEnableAutoNull(settings.read(key, false));
-                    break;
-                case KEY_TIMER_ZERO:
-                    scaleModule.setTimerZero(settings.read(key, 120));
-                    break;
-                case KEY_MAX_ZERO:
-                    scaleModule.setWeightError(settings.read(key, 50));
-                    break;
-                default:
-            }
-        }*//*
-    }*/
-
     private void createScalesModule(String device){
         try {
             ScaleModule.create(getActivity(), version, device, new InterfaceCallbackScales() {
@@ -259,7 +203,8 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
                 }
             });
         }catch (Exception | ErrorDeviceException e) {
-            openSearchDialog(e.getMessage());
+            getActivity().sendBroadcast(new Intent(InterfaceModule.ACTION_CONNECT_ERROR).putExtra(InterfaceModule.EXTRA_MESSAGE, e.getMessage()));
+            //openSearchDialog(e.getMessage());
         }
     }
 
@@ -425,6 +370,9 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
                         openSearchProgress(msg);
                         break;
                     case InterfaceModule.ACTION_CONNECT_ERROR:
+                        SpannableStringBuilder text = new SpannableStringBuilder("нет соединения");
+                        text.setSpan(new TextAppearanceSpan(getActivity(), R.style.SpanTextKgMini),0,text.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                        weightTextView.setText(text, TextView.BufferType.SPANNABLE);
                         String message = intent.getStringExtra(InterfaceModule.EXTRA_MESSAGE);
                         if (message == null)
                             message = "";

@@ -45,8 +45,8 @@ public class ActivityHelp extends AppCompatActivity {
     private void setupBanner(){
         AdView mAdView = (AdView)findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice(Globals.getInstance().getDeviceId())
+                //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                //.addTestDevice(Globals.getInstance().getDeviceId())
                 .build();
         mAdView.loadAd(adRequest);
     }

@@ -6,6 +6,7 @@ import android.content.*;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -63,6 +64,12 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_main);
 
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.screenBrightness = 1.0f;
+        getWindow().setAttributes(lp);
+
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+
         /*PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
         wakeLock.acquire();*/
@@ -77,7 +84,7 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                //SnackBar.make(view, "Replace with your own action", SnackBar.LENGTH_LONG).setAction("Action", null).show();
                 openFragmentInvoice(null);
             }
         });
@@ -89,6 +96,12 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View view, DragEvent dragEvent) {
+                return false;
+            }
+        });
 
         globals = Globals.getInstance();
         globals.initialize(this);
@@ -101,10 +114,11 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         fragmentManager.beginTransaction().add(R.id.fragmentInvoice, fragmentListInvoice, FragmentListInvoice.class.getSimpleName()).commit();
 
         scalesView = (ScalesView)findViewById(R.id.scalesView);
-        scalesView.create(globals.getPackageInfo().versionName, new InterfaceCallbackScales() {
+        scalesView.create(globals.getPackageInfo().versionName, new InterfaceCallbackScales(){
             @Override
-            public void onCallback(Module obj) {
+            public void onCreate(Module obj) {
                 globals.setScaleModule((ScaleModule)obj);
+
             }
         });
     }
@@ -135,7 +149,7 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.archive_invoice:
                 if (mInterstitialAd.isLoaded()) {
@@ -168,6 +182,7 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         scalesView.exit();
         removeInvoiceIsCloud(10);
         startService(new Intent(this, IntentServiceGoogleForm.class).setAction(IntentServiceGoogleForm.ACTION_EVENT_TABLE));
@@ -240,10 +255,13 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     /**
      * Закрыть накладную.
      */
-    public void closedInvoice(){
-        fragmentManager.beginTransaction().remove(fragmentInvoice).commit();
-        fab.setVisibility(View.VISIBLE);
-        startService(new Intent(this, IntentServiceGoogleForm.class).setAction(IntentServiceGoogleForm.ACTION_EVENT_TABLE));
+    public void closedFragmentInvoice(){
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(FragmentInvoice.class.getSimpleName());
+        if (fragment instanceof FragmentInvoice){
+            fragmentManager.beginTransaction().remove(fragment).commit();
+            fab.setVisibility(View.VISIBLE);
+            startService(new Intent(this, IntentServiceGoogleForm.class).setAction(IntentServiceGoogleForm.ACTION_EVENT_TABLE));
+        }
     }
 
     @Override
@@ -252,17 +270,18 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
             scaleModule.setEnableProcessStable(enable);
     }
 
-    public void openFragmentInvoice(String id){
-        vibrator.vibrate(50);
-
+    public boolean openFragmentInvoice(String id){
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(FragmentInvoice.class.getSimpleName());
         if (fragment instanceof FragmentInvoice){
-            showDialog(ALERT_DIALOG1);
+            return false;
+            //showDialog(ALERT_DIALOG1);
         }else {
+            vibrator.vibrate(50);
             fragmentInvoice = FragmentInvoice.newInstance(new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date()),
                     new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date()), id);
             fragmentManager.beginTransaction().add(R.id.fragmentInvoice, fragmentInvoice, FragmentInvoice.class.getSimpleName()).commit();
             fab.setVisibility(View.INVISIBLE);
+            return true;
         }
     }
 
@@ -276,11 +295,48 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         scaleModule = obj;
     }
 
+    /*@Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+        switch (event.getKeyCode()){
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                openFragmentInvoice(null);
+            return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+
+                return true;
+            default:
+                return super.dispatchKeyEvent(event);
+        }
+
+        *//*if (event.getKeyCode() == KeyEvent.KEYCODE_POWER) {
+            Log.i("", "Dispath event power");
+            Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+            sendBroadcast(closeDialog);
+            return true;
+        }else if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP){
+            openFragmentInvoice(null);
+            return true;
+        }
+
+        return super.dispatchKeyEvent(event);*//*
+    }*/
+
+    /*@Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_POWER) {
+            // Do something here...
+            event.startTracking(); // Needed to track long presses
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }*/
+
     /** Удалять накладные старше количества дней, и те которые не отправлены на сервер.
      * @param dayAfter Количество дней.
      */
     public void removeInvoiceIsCloud(long dayAfter) {
-        try {
+        try{
             InvoiceTable invoiceTable = new InvoiceTable(this);
             WeighingTable weighingTable = new WeighingTable(this);
             Cursor result = invoiceTable.getIsCloud();
@@ -339,8 +395,8 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
      */
     private void requestNewInterstitial() {
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)// This is for emulators
-                .addTestDevice(Globals.getInstance().getDeviceId())
+                //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)// This is for emulators
+                //.addTestDevice(Globals.getInstance().getDeviceId())
                 .build();
         mInterstitialAd.loadAd(adRequest);
     }

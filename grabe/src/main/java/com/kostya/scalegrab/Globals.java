@@ -105,12 +105,12 @@ public class Globals {
     public int getTimeDelayDetectCapture() { return timeDelayDetectCapture; }
 
     public void initialize(Context context) {
-        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        /*TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (tm.getDeviceId() != null) {
             deviceId = tm.getDeviceId();
         } else {
             deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        }
+        }*/
         /*PreferenceManager.setDefaultValues(this, R.xml.preferences, false);*/
         try {
             PackageManager packageManager = context.getPackageManager();

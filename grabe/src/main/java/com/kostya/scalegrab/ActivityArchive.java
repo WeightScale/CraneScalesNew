@@ -49,14 +49,16 @@ public class ActivityArchive extends AppCompatActivity {
             return;
         }
         mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(new CursorFragmentPagerAdapter(this, getSupportFragmentManager(), cursor) {
+        cursorFragmentPagerAdapter = new CursorFragmentPagerAdapter(this, getSupportFragmentManager(), cursor) {
             @Override
             public Fragment getItem(Context context, Cursor cursor) {
                 String d = cursor.getString(cursor.getColumnIndex(InvoiceTable.KEY_DATE_CREATE));
                 int w = cursor.getInt(cursor.getColumnIndex(InvoiceTable.KEY_TOTAL_WEIGHT));
                 return FragmentListArchiveInvoice.newInstance(d, String.valueOf(w));
             }
-        });
+        };
+        mViewPager.setAdapter(cursorFragmentPagerAdapter);
+        mViewPager.setCurrentItem(mViewPager.getAdapter().getCount());
     }
 
 
@@ -81,40 +83,6 @@ public class ActivityArchive extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    /*public static class PlaceholderFragment extends Fragment {
-        *//**
-         * The fragment argument representing the section number for this
-         * fragment.
-         *//*
-        private static final String ARG_DATE = "arg_date";
-
-        public PlaceholderFragment() {
-        }
-
-        *//**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         *//*
-        public static PlaceholderFragment newInstance(String date) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putString(ARG_DATE, date);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_archive, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getArguments().getString(ARG_DATE));
-            return rootView;
-        }
-    }*/
 
     public abstract class CursorFragmentPagerAdapter extends FragmentPagerAdapter {
 

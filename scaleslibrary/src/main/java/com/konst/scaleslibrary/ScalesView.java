@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.*;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
@@ -127,8 +128,6 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
 
     /** Создаем обьект весовой модуль.
      * @param version Имя версии весового модуля.
-     * @throws ErrorDeviceException Ошибка создания удаленного устройства.
-     * @throws Exception            Ошибка создания обьекта.
      */
     public void create(String version, InterfaceCallbackScales listener) {
         this.version = version;
@@ -147,7 +146,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     }
 
     /** Устанавливаем флаг определять стабильный вес.
-     * @param stable
+     * @param stable Флаг если true контроль стабилизации включен.
      */
     public void setStable(boolean stable){
         if (scaleModule != null)
@@ -157,29 +156,34 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
 
     public void updateSettings(Settings settings){
 
-        for(FragmentSettings.KEY key : FragmentSettings.KEY.values()){
-            switch (key){
-                case STEP:
-                    scaleModule.setStepScale(settings.read(key.getResId(), 5));
-                    break;
-                case SWITCH_STABLE:
-                    scaleModule.setEnableProcessStable(settings.read(key.getResId(), false));
-                    break;
-                case DELTA_STAB:
-                    scaleModule.setDeltaStab(settings.read(key.getResId(), 10));
-                    break;
-                case SWITCH_ZERO:
-                    scaleModule.setEnableAutoNull(settings.read(key.getResId(), false));
-                    break;
-                case TIMER_ZERO:
-                    scaleModule.setTimerZero(settings.read(key.getResId(), 120));
-                    break;
-                case MAX_ZERO:
-                    scaleModule.setWeightError(settings.read(key.getResId(), 50));
-                    break;
-                default:
+        try {
+            for(FragmentSettings.KEY key : FragmentSettings.KEY.values()){
+                switch (key){
+                    case STEP:
+                        scaleModule.setStepScale(settings.read(key.getResId(), 5));
+                        break;
+                    case SWITCH_STABLE:
+                        scaleModule.setEnableProcessStable(settings.read(key.getResId(), false));
+                        break;
+                    case DELTA_STAB:
+                        scaleModule.setDeltaStab(settings.read(key.getResId(), 10));
+                        break;
+                    case SWITCH_ZERO:
+                        scaleModule.setEnableAutoNull(settings.read(key.getResId(), false));
+                        break;
+                    case TIMER_ZERO:
+                        scaleModule.setTimerZero(settings.read(key.getResId(), 120));
+                        break;
+                    case MAX_ZERO:
+                        scaleModule.setWeightError(settings.read(key.getResId(), 50));
+                        break;
+                    default:
+                }
             }
+        }catch (Exception e){
+            Log.e(TAG_FRAGMENT, e.getMessage());
         }
+
     }
 
     /** Приемник сообщений. */

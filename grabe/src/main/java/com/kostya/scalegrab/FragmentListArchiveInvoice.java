@@ -94,10 +94,6 @@ public class FragmentListArchiveInvoice extends Fragment {
 
     }
 
-    private void openInvoice(long _id){
-        //((ActivityTest)getActivity()).openFragmentInvoice(String.valueOf(_id));
-    }
-
     private void updateRecyclerView() {
         Cursor cursor = invoiceTable.getToday(date);
         if (cursor == null) {
@@ -108,7 +104,7 @@ public class FragmentListArchiveInvoice extends Fragment {
             @Override
             public void onBindViewHolder(CursorRecyclerViewAdapter.InvoiceHolder viewHolder, Cursor cursor) {
                 viewHolder._id.setText(String.valueOf(cursor.getInt(cursor.getColumnIndex(InvoiceTable.KEY_ID))));
-                viewHolder.date.setText(String.valueOf(cursor.getInt(cursor.getColumnIndex(InvoiceTable.KEY_DATE_CREATE))));
+                viewHolder.date.setText(date);
                 viewHolder.number.setText(String.valueOf(cursor.getString(cursor.getColumnIndex(InvoiceTable.KEY_NAME_AUTO))));
                 int ready = cursor.getInt(cursor.getColumnIndex(InvoiceTable.KEY_IS_READY));
                 int send = cursor.getInt(cursor.getColumnIndex(InvoiceTable.KEY_IS_READY));
@@ -131,38 +127,7 @@ public class FragmentListArchiveInvoice extends Fragment {
 
     }
 
-    /** Обновляем данные листа загрузок. */
-    /*private void updateListWeight() {
-        Cursor cursor = invoiceTable.getToday(date);
-        if (cursor == null) {
-            return;
-        }
-
-        int[] to = {R.id.id_row, R.id.weight_row, R.id.imageReady};
-        String[] column = {InvoiceTable.KEY_ID,InvoiceTable.KEY_TOTAL_WEIGHT, InvoiceTable.KEY_IS_READY};
-
-        simpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.item_list_archive_invoice, cursor, column, to, CursorAdapter.FLAG_AUTO_REQUERY);
-        //namesAdapter = new MyCursorAdapter(this, R.layout.item_check, cursor, columns, to);
-        simpleCursorAdapter.setViewBinder(new ListInvoiceViewBinder());
-
-        listView.setAdapter(simpleCursorAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Cursor cursor = invoiceTable.getEntryItem((int)l, InvoiceTable.KEY_IS_READY);
-                if (cursor != null){
-                    int isReady = cursor.getInt(cursor.getColumnIndex(InvoiceTable.KEY_IS_READY));
-                    if (isReady != InvoiceTable.READY){
-                        openInvoice(l);
-                    }else {
-                        getActivity().startService(new Intent(getActivity(), IntentServiceGoogleForm.class).setAction(IntentServiceGoogleForm.ACTION_EVENT_TABLE));
-                    }
-                }
-            }
-        });
-    }*/
-
-    private class ListInvoiceViewBinder implements SimpleCursorAdapter.ViewBinder {
+    /*private class ListInvoiceViewBinder implements SimpleCursorAdapter.ViewBinder {
         private int ready, send;
 
         @Override
@@ -192,7 +157,7 @@ public class FragmentListArchiveInvoice extends Fragment {
             }
             return true;
         }
-    }
+    }*/
 
     protected abstract class CursorRecyclerViewAdapter extends RecyclerView.Adapter<CursorRecyclerViewAdapter.InvoiceHolder> {
 

@@ -18,7 +18,7 @@ import com.konst.scaleslibrary.module.scale.ScaleModule;
 public class ActivityAbout extends Activity {
     private static Globals globals;
     private static ScaleModule scaleModule;
-    enum StrokeSettings{
+    enum STROKE{
         VERSION(R.string.Version_scale){
             @Override
             String getValue() {
@@ -99,7 +99,7 @@ public class ActivityAbout extends Activity {
         abstract String getValue();
         abstract int getMeasure();
 
-        StrokeSettings(int res){
+        STROKE(int res){
             resId = res;
         }
 
@@ -134,15 +134,15 @@ public class ActivityAbout extends Activity {
     }
 
     void parserTextSettings(TextView textView){
-        for (StrokeSettings s : StrokeSettings.values()){
+        for (STROKE stroke : STROKE.values()){
             try {
-                SpannableStringBuilder text = new SpannableStringBuilder(getString(s.getResId()));
+                SpannableStringBuilder text = new SpannableStringBuilder(getString(stroke.getResId()));
                 text.setSpan(new StyleSpan(Typeface.NORMAL), 0, text.length(), Spanned.SPAN_MARK_MARK);
                 textView.append(text);
-                SpannableStringBuilder value = new SpannableStringBuilder(s.getValue());
+                SpannableStringBuilder value = new SpannableStringBuilder(stroke.getValue());
                 value.setSpan(new StyleSpan(Typeface.BOLD_ITALIC),0,value.length(), Spanned.SPAN_MARK_MARK);
                 textView.append(value);
-                textView.append((s.getMeasure() == -1 ? "" : getString(s.getMeasure())) + '\n');
+                textView.append((stroke.getMeasure() == -1 ? "" : getString(stroke.getMeasure())) + '\n');
             }catch (Exception e){
                 textView.append("\n");
             }
@@ -152,8 +152,8 @@ public class ActivityAbout extends Activity {
     private void setupBanner(){
         AdView mAdView = (AdView)findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice(Globals.getInstance().getDeviceId())
+                //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                //.addTestDevice(Globals.getInstance().getDeviceId())
                 .build();
         mAdView.loadAd(adRequest);
     }
