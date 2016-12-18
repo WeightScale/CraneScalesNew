@@ -103,9 +103,15 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
+        /*PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "TAG");
-        wakeLock.acquire();
+        wakeLock.acquire();*/
+
+        WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
+        lp.screenBrightness = 1.0f;
+        getActivity().getWindow().setAttributes(lp);
+
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         /*KeyguardManager keyguardManager = (KeyguardManager) getActivity().getSystemService(Context.KEYGUARD_SERVICE);
         keyguardLock = keyguardManager.newKeyguardLock("TAG");
@@ -251,7 +257,8 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
         soundPool.unload(shutterSound3);
         soundPool.release();
         soundPool = null;
-        wakeLock.release();
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        //wakeLock.release();
     }
 
     @Override

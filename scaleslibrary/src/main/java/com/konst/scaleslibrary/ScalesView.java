@@ -118,6 +118,20 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     }
 
     /**
+     * Запустить процесс измерения.
+     */
+    public void resume(){
+        try {scaleModule.scalesProcessEnable(true);}catch (Exception e){}
+    }
+
+    /**
+     * Остановить процесс измерения.
+     */
+    public void pause(){
+        try {scaleModule.scalesProcessEnable(false);}catch (Exception e){}
+    }
+
+    /**
      * Прцедура вызывается при закрытии главной программы.
      */
     public void exit(){

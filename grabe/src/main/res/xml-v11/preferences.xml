@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<PreferenceScreen xmlns:tools="http://schemas.android.com/tools"
-                  xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <com.kostya.scalegrab.settings.AdMobPreference android:layout="@layout/banner"/>
     <PreferenceCategory android:title="@string/Settings">
         <PreferenceScreen android:title="УСТАНОВКИ ДЛЯ ГРЕЙФЕРА" android:summary="Настройки для работы с грейфером магнитной шайбой и тп."

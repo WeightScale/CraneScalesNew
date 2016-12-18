@@ -236,7 +236,7 @@ public class ActivityPreferences extends PreferenceActivity {
             @Override
             void setup(Preference name) {
                 final Context context = name.getContext();
-                name.setSummary(context.getString(R.string.version) + globals.getPackageInfo().versionName + ' ' + Integer.toString(globals.getPackageInfo().versionCode));
+                name.setSummary(context.getString(R.string.version) + globals.getPackageInfo().versionName + " v." + Integer.toString(globals.getPackageInfo().versionCode));
                 name.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {

@@ -28,6 +28,7 @@ import com.konst.scaleslibrary.Settings;
 import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
+import com.kostya.scalegrab.internet.Internet;
 import com.kostya.scalegrab.provider.InvoiceTable;
 import com.kostya.scalegrab.provider.WeighingTable;
 import com.kostya.scalegrab.settings.ActivityPreferences;
@@ -44,6 +45,7 @@ import java.util.Locale;
 public class ActivityTest extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         FragmentInvoice.OnFragmentInvoiceListener, ScalesFragment.OnInteractionListener {
     private Vibrator vibrator; //вибратор
+    private float screenBrightness;
     //private PowerManager.WakeLock wakeLock;
     private DrawerLayout drawer;
     private FloatingActionButton fab;
@@ -65,15 +67,16 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.test_main);
 
         WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.screenBrightness = 1.0f;
-        getWindow().setAttributes(lp);
+        screenBrightness = lp.screenBrightness;
+
+        //getWindow().setAttributes(lp);
 
         //getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 
         /*PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
         wakeLock.acquire();*/
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -180,6 +183,20 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        scalesView.resume();
+        new Internet(this).turnOnWiFiConnection(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        scalesView.pause();
+        //new Internet(this).turnOnWiFiConnection(false);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -262,6 +279,9 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
             fab.setVisibility(View.VISIBLE);
             startService(new Intent(this, IntentServiceGoogleForm.class).setAction(IntentServiceGoogleForm.ACTION_EVENT_TABLE));
         }
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.screenBrightness = screenBrightness;
+        getWindow().setAttributes(lp);
     }
 
     @Override

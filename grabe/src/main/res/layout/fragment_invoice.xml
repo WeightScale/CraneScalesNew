@@ -55,23 +55,26 @@
 
                 <TextView
                         android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
+                        android:layout_height="match_parent"
                         android:text="НОМЕР"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:textAppearance="?android:attr/textAppearanceSmall"/>
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:id="@+id/textView6"/>
 
                 <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/invoiceName"
                         android:inputType="text"
+                        android:imeOptions="actionDone"
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:textStyle="bold"
-                        android:textColor="@color/background2"/>
+                        android:textColor="@color/background2"
+                        android:singleLine="true"/>
 
             </TableRow>
 
@@ -82,7 +85,7 @@
 
                 <TextView
                         android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
+                        android:layout_height="match_parent"
                         android:text="ЗАГРУЗКА"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
@@ -102,12 +105,12 @@
                             android:layout_weight="1"
                             android:focusable="true"
                             android:focusableInTouchMode="true"
-                            android:textSize="@dimen/text_margin"
+                            android:textSize="@dimen/text_medium"
                             android:textStyle="bold"
                             android:textColor="@color/background2"
                             android:gravity="center"
-                            android:imeOptions="actionGo"
-                            />
+                            android:imeOptions="actionDone"
+                            android:singleLine="true"/>
 
                     <TextView
                             android:layout_width="wrap_content"
@@ -195,15 +198,14 @@
                 android:layout_marginRight="@dimen/corners">
 
             <TableRow
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
                 <TextView
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:text="ИТОГО:"
                         android:gravity="left|center_horizontal"
-                        android:layout_weight="1"
                         android:textSize="@dimen/text_margin"
                         android:layout_gravity="center"/>
 
@@ -211,7 +213,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:id="@+id/invoiceTotal"
-                        android:layout_weight="1"
                         android:gravity="center_horizontal"
                         android:inputType="none"
                         android:focusable="false"
@@ -220,12 +221,15 @@
                         android:layout_gravity="center"
                         android:textStyle="bold"
                         android:textColor="@color/background2"
-                        android:maxLines="1"/>
+                        android:maxLines="1"
+                        android:layout_weight="1"
+                        android:singleLine="true"
+                        android:clickable="false"/>
 
                 <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="ЗАКРЫТЬ"
+                        android:text="провести"
                         android:id="@+id/buttonCloseInvoice"
                         android:gravity="center"
                         android:layout_gravity="center"

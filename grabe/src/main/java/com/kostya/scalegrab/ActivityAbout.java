@@ -120,7 +120,7 @@ public class ActivityAbout extends Activity {
         getWindow().setAttributes(lp);
 
         TextView textSoftVersion = (TextView) findViewById(R.id.textSoftVersion);
-        textSoftVersion.setText(globals.getPackageInfo().versionName + ' ' + String.valueOf(globals.getPackageInfo().versionCode));
+        textSoftVersion.setText(globals.getPackageInfo().versionName + " v." + String.valueOf(globals.getPackageInfo().versionCode));
 
         TextView textSettings = (TextView) findViewById(R.id.textSettings);
         parserTextSettings(textSettings);

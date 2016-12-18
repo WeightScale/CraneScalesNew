@@ -77,10 +77,7 @@ public class IntentServiceGoogleForm extends IntentService {
                     submitData(http, results);
                 }
             }
-
-
-
-        }catch (Exception e){}
+        }catch (Exception e){Log.e(TAG, e.getMessage());}
 
     }
 
