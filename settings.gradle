@@ -1,1 +1,1 @@
-include ':grabe', ':scaleslibrary'
+include ':grabe', ':scaleslibrary', ':testwifi', ':grabe_wifi'

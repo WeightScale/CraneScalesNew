@@ -10,13 +10,14 @@ import android.widget.Toast;
 import com.konst.scaleslibrary.R;
 import com.konst.scaleslibrary.ScalesView;
 import com.konst.scaleslibrary.module.InterfaceModule;
+import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 /**
  * @author Kostya 26.10.2016.
  */
 public class FragmentSettingsAdmin extends PreferenceFragment {
-    public static ScaleModule scaleModule;
+    public static Module scaleModule;
     private static float coefficientA;
 
     enum EnumSettings{
@@ -110,7 +111,7 @@ public class FragmentSettingsAdmin extends PreferenceFragment {
                 final Context context = name.getContext();
                 try {
                     if (scaleModule.getVersion() != null) {
-                        if (scaleModule.getNumVersion() < ScalesView.getInstance().getMicroSoftware()) {
+                        if (scaleModule.getVersionNum() < ScalesView.getInstance().getMicroSoftware()) {
                             name.setSummary(context.getString(R.string.Is_new_version));
                         } else {
                             name.setSummary(context.getString(R.string.Scale_update));

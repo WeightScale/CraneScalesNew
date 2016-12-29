@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:showAsAction="never" android:id="@+id/settings" android:icon="@drawable/ic_menu_settings" android:title="Настройки"></item>
+
+    &lt;!&ndash;<group android:checkableBehavior="single">
+        <item
+                android:id="@+id/search_scales"
+                android:title="Поиск весов"/>
+
+        <item
+                android:id="@+id/nav_slideshow"
+                android:title="Slideshow"/>
+        <item
+                android:id="@+id/nav_manage"
+                android:title="Tools"/>
+    </group>&ndash;&gt;
+</menu>-->
+<!--<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/search_scales" android:title="Поиск весов"/>
+    <item android:id="@+id/nav_slideshow" android:title="Slideshow"/>
+    <item android:id="@+id/nav_manage" android:title="Tools"/>
+    <item android:title=" ">
+        <menu>
+            <item android:id="@+id/settings" android:icon="@drawable/ic_menu_settings" android:title="Настройки"/>
+            <item android:id="@+id/about" android:title="@string/about" android:actionLayout="@layout/about"></item>
+        </menu>
+    </item>
+
+</menu>-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<group android:checkableBehavior="single">
+    <item android:id="@+id/new_invoice" android:icon="@drawable/ic_invoice" android:title="НОВАЯ"/>
+    <item android:id="@+id/archive_invoice" android:icon="@drawable/ic_archive_invoice" android:title="АРХИВ"/>
+    <item android:id="@+id/search_scales" android:icon="@drawable/ic_search" android:title="ПОИСК ВЕСОВ"/>
+    <!--<item android:id="@+id/nav_slideshow" android:title="Slideshow"/>-->
+    <!--<item android:id="@+id/nav_manage" android:title="Tools"/>-->
+</group>
+<group android:checkableBehavior="none">
+    <item android:id="@+id/settings" android:icon="@drawable/ic_menu_settings" android:title="НАСТРОЙКИ"/>
+    <item android:icon="@drawable/ic_info" android:title="@string/about" android:actionLayout="@layout/about"/>
+    <item android:title="Справка" android:id="@+id/help" android:icon="@drawable/ic_help_24dp"/>
+    <item android:id="@+id/power" android:icon="@drawable/ic_power" android:title="ВЫХОД" />
+</group>
+</menu>

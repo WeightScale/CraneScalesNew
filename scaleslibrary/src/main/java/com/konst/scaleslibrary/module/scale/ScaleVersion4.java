@@ -11,6 +11,7 @@ package com.konst.scaleslibrary.module.scale;
 import com.konst.scaleslibrary.module.Commands;
 import com.konst.scaleslibrary.module.ErrorModuleException;
 import com.konst.scaleslibrary.module.InterfaceModule;
+import com.konst.scaleslibrary.module.Module;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,12 +29,12 @@ public class ScaleVersion4 extends ScaleVersion {
     /** Предельное показани датчика. */
     protected int marginTenzo;
 
-    ScaleVersion4(ScaleModule module){
+    public ScaleVersion4(Module module){
         scaleModule = module;
     }
 
     @Override
-    public void load() throws Exception {
+    public void extract() throws Exception {
         //======================================================================
         scaleModule.setFilterADC(Integer.valueOf(Commands.FAD.getParam()));
         if (scaleModule.getFilterADC() < 0 || scaleModule.getFilterADC() > MAX_ADC_FILTER) {
@@ -60,7 +61,7 @@ public class ScaleVersion4 extends ScaleVersion {
         }
         //======================================================================
         scaleModule.setSpreadsheet(Commands.SGD.getParam());
-        scaleModule.setUsername(Commands.UGD.getParam());
+        scaleModule.setUserName(Commands.UGD.getParam());
         scaleModule.setPassword(Commands.PGD.getParam());
         scaleModule.setPhone(Commands.PHN.getParam());
         //======================================================================
@@ -86,7 +87,7 @@ public class ScaleVersion4 extends ScaleVersion {
     }
 
     @Override
-    boolean setOffsetScale() {
+    public boolean setOffsetScale() {
         try {
             //int offset = Integer.valueOf(Commands.CMD_GET_OFFSET.getParam());
             if(Commands.SCO.getParam().equals(Commands.SCO.getName())){
@@ -123,7 +124,7 @@ public class ScaleVersion4 extends ScaleVersion {
     }
 
     @Override
-    int getSensor() {
+    public int getSensor() {
         return offset + sensorTenzoOffset;
     }
 
@@ -134,7 +135,7 @@ public class ScaleVersion4 extends ScaleVersion {
      * Формат параметра данных: [[{@link InterfaceModule#CMD_DATA_CFA}=[значение]] [{@link InterfaceModule#CMD_DATA_WGM}=[значение]] [{@link InterfaceModule#CMD_DATA_LMT}=[значение]]]
      * @param d Данные
      * @throws Exception Данные не правельные.
-     * @see ScaleVersion4#load()
+     * @see ScaleVersion4#extract() ()
      * @see Commands#DAT  */
     private void parserData(String d) throws Exception {
         String[] parts = d.split(" ", 0);

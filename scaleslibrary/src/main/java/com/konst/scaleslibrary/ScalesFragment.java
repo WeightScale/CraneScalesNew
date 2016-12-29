@@ -29,7 +29,7 @@ import com.konst.scaleslibrary.settings.ActivityProperties;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ScalesFragment.OnInteractionListener} interface
+ * {@link OnInteractionListener} interface
  * to handle interaction events.
  * Use the {@link ScalesFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -57,7 +57,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
     private boolean weightViewIsSwipe;
     protected boolean isStable;
 
-    private OnInteractionListener onInteractionListener;
+    //private OnInteractionListener onInteractionListener;
     private static OnInteractionListener onListener;
 
     public ScalesFragment(){}
@@ -66,9 +66,9 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
         this.scaleModule = scaleModule;
     }
 
-    public void setOnInteractionListener(OnInteractionListener listener){
+    /*public void setOnInteractionListener(OnInteractionListener listener){
         onInteractionListener = listener;
-    }
+    }*/
 
     public static ScalesFragment newInstance(String version, String device, OnInteractionListener listener) {
         onListener = listener;
@@ -119,7 +119,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
         return view;
     }
 
-    @Override
+    /*@Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (activity instanceof OnInteractionListener) {
@@ -127,7 +127,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
         } else {
             throw new RuntimeException(activity + " must implement OnInteractionListener");
         }
-    }
+    }*/
 
     @Override
     public void onResume() {
@@ -193,18 +193,14 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
                 public void onCreate(Module module) {
                     if (module instanceof ScaleModule){
                         scaleModule = (ScaleModule)module;
-                        onInteractionListener.onScaleModuleCallback(scaleModule);
                         onListener.onScaleModuleCallback(scaleModule);
-                        onListener.onUpdateSettings(settings);
                         scaleModule.scalesProcessEnable(true);
-
                     }
-                    settings.write(R.string.KEY_ADDRESS, module.getAddressBluetoothDevice());
+                    settings.write(R.string.KEY_ADDRESS, scaleModule.getAddressBluetoothDevice());
                 }
             });
         }catch (Exception | ErrorDeviceException e) {
             getActivity().sendBroadcast(new Intent(InterfaceModule.ACTION_CONNECT_ERROR).putExtra(InterfaceModule.EXTRA_MESSAGE, e.getMessage()));
-            //openSearchDialog(e.getMessage());
         }
     }
 
@@ -485,15 +481,6 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
                 isRegistered = false;
             }
         }
-    }
-
-    /**
-     * Интерфейс обратного вызова.
-     */
-    public interface OnInteractionListener {
-        void onUpdateSettings(Settings settings);
-        void onScaleModuleCallback(ScaleModule obj);
-        //void onSaveWeight(int weight);
     }
 
 }

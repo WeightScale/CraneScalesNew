@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.*;
 import com.konst.scaleslibrary.module.ErrorDeviceException;
 import com.konst.scaleslibrary.module.InterfaceModule;
+import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.boot.BootModule;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
@@ -19,11 +20,11 @@ import com.konst.scaleslibrary.settings.FragmentSettings;
 /** Класс индикатора весового модуля.
  * @author Kostya on 26.09.2016.
  */
-public class ScalesView extends LinearLayout implements ScalesFragment.OnInteractionListener/*, SearchFragment.OnFragmentInteractionListener */{
+public class ScalesView extends LinearLayout implements OnInteractionListener/*, SearchFragment.OnFragmentInteractionListener */{
     private static ScalesView instance;
     /** Настройки для весов. */
     public Settings settings;
-    private ScaleModule scaleModule;
+    private Module scaleModule;
     private BootModule bootModule;
     private ScalesFragment scalesFragment;
     //private SearchFragment searchFragment;
@@ -101,8 +102,10 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
     }
 
     @Override
-    public void onScaleModuleCallback(ScaleModule obj) {
+    public void onScaleModuleCallback(Module obj) {
         scaleModule = obj;
+        interfaceCallbackScales.onCreate(obj);
+        updateSettings(settings);
     }
 
     public void openSearchScales(){
@@ -113,7 +116,7 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
 
     public int getMicroSoftware() { return microSoftware; }
 
-    public ScaleModule getScaleModule() {
+    public Module getScaleModule() {
         return scaleModule;
     }
 
@@ -138,6 +141,16 @@ public class ScalesView extends LinearLayout implements ScalesFragment.OnInterac
         baseReceiver.unregister();
         BluetoothAdapter.getDefaultAdapter().disable();
         while (BluetoothAdapter.getDefaultAdapter().isEnabled());
+    }
+
+    /** Создаем обьект весовой модуль WiFi.
+     * @param version Имя версии весового модуля.
+     */
+    public void createWiFi(String version, InterfaceCallbackScales listener) {
+        this.version = version;
+        interfaceCallbackScales = listener;
+        Fragment fragment = ScalesFragmentWiFi.newInstance(version, this);
+        fragmentManager.beginTransaction().replace(R.id.fragment, fragment, fragment.getClass().getName()).commit();
     }
 
     /** Создаем обьект весовой модуль.

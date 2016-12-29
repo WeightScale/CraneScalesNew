@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 import com.konst.scaleslibrary.R;
 import com.konst.scaleslibrary.ScalesView;
+import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 
@@ -16,7 +17,7 @@ import com.konst.scaleslibrary.module.scale.ScaleModule;
 public class DialogPoint2 extends DialogPreference /*implements ScaleModule.WeightCallback*/ {
     //TextView textViewSensor;
     EditText editTextPoint2;
-    final ScaleModule scaleModule;
+    final Module scaleModule;
     final Context mContext;
 
     public DialogPoint2(Context context, AttributeSet attrs) {

@@ -10,6 +10,7 @@ import android.os.Build;
 import android.util.Log;
 import com.konst.scaleslibrary.module.*;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
+import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 import java.io.*;
 import java.util.UUID;
@@ -19,17 +20,18 @@ import java.util.concurrent.TimeUnit;
  * Класс для самопрограммирования весового модуля.
  * @author Kostya
  */
-public class BootModule extends Module {
+public class BootModule extends ScaleModule {
     private static BootModule instance;
     private ThreadBootAttach threadAttach;
     private String versionName = "";
     private int versionNumber;
+    private static final String TAG = BootModule.class.getSimpleName();
 
     /** Конструктор модуля бутлодера.
      * @param version Верситя бутлодера.
      */
     private BootModule(Context context, String version, String address, InterfaceCallbackScales event) throws Exception, ErrorDeviceException {
-        super(context, address, event);
+        super(context, version, address, event);
         //runnableBootConnect = new RunnableBootConnect();
         versionName = version;
         attach();
@@ -39,7 +41,7 @@ public class BootModule extends Module {
      * @param version Верситя бутлодера.
      */
     private BootModule(Context context, String version, BluetoothDevice device, InterfaceCallbackScales event) throws Exception, ErrorDeviceException {
-        super(context, device, event);
+        super(context, version, device, event);
         //runnableBootConnect = new RunnableBootConnect();
         versionName = version;
         attach();
@@ -55,7 +57,6 @@ public class BootModule extends Module {
 
     public static BootModule getInstance() { return instance; }
 
-    @Override
     public void attach(){
         /*getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_ATTACH_START).putExtra(InterfaceModule.EXTRA_DEVICE_NAME, getNameBluetoothDevice()));
         //resultCallback.resultConnect(ResultConnect.STATUS_ATTACH_START, getNameBluetoothDevice(), null);
@@ -74,11 +75,6 @@ public class BootModule extends Module {
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
         }
-    }
-
-    @Override
-    protected void attachWiFi() {
-
     }
 
     /**
@@ -102,7 +98,12 @@ public class BootModule extends Module {
     }
 
     @Override
-    protected void reconnect() {
+    protected void connect() {
+
+    }
+
+    @Override
+    public void reconnect() {
 
     }
 
@@ -128,11 +129,6 @@ public class BootModule extends Module {
         if (threadAttach != null){
             threadAttach.cancel();
         }
-    }
-
-    @Override
-    protected void connectWiFi() {
-
     }
 
     @Override

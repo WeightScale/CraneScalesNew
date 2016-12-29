@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/transparent" >
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" android:layout_margin="@dimen/stroke"
+            android:background="@drawable/round_item_invoice" android:padding="@dimen/corners">
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        >
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/imageReady" android:src="@drawable/ic_invoice"
+                            android:layout_gravity="top|center"
+                            android:contentDescription="@null"/>
+
+                    <TableLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="match_parent" android:orientation="horizontal"
+                            >
+
+                        <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent" android:baselineAligned="false">
+                            <LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent">
+
+                                <TextView android:layout_width="wrap_content" android:layout_height="match_parent"
+                                          android:text="накладная №"
+                                          android:textColor="@drawable/text_selector"
+                                          android:textSize="@dimen/text_margin"
+                                          android:gravity="center" android:layout_margin="@dimen/stroke"
+                                          android:background="@drawable/item_selector"/>
+
+                                <TextView android:layout_width="wrap_content" android:layout_height="fill_parent"
+                                          android:id="@+id/id_row"
+                                          android:textColor="@drawable/text_selector" android:background="@drawable/item_selector"
+                                          android:textStyle="bold"
+                                          android:textSize="@dimen/text_margin"
+                                          android:layout_margin="@dimen/stroke"
+                                          android:gravity="center_vertical|center_horizontal"
+                                        />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                    android:orientation="horizontal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent" android:layout_weight="1"
+                                    android:gravity="right">
+
+                                <TextView android:layout_width="wrap_content" android:layout_height="match_parent"
+                                          android:text="ДАТА:"
+                                          android:textColor="@drawable/text_selector"
+                                          android:textSize="@dimen/text_micro"
+                                          android:gravity="right|center" android:layout_margin="@dimen/stroke"
+                                          android:background="@drawable/item_selector"
+                                          android:layout_weight="1"/>
+
+                                <TextView android:layout_width="wrap_content" android:layout_height="match_parent"
+                                          android:id="@+id/date_row"
+                                          android:textColor="@drawable/text_selector" android:background="@drawable/item_selector"
+                                          android:textStyle="bold"
+                                          android:textSize="@dimen/text_small" android:layout_margin="@dimen/stroke"
+                                          android:gravity="center_vertical|center_horizontal"
+                                          android:layout_weight="1"/>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </TableLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:baselineAligned="false">
+
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="fill_parent"
+                                android:text="АВТО:"
+                                android:textColor="@drawable/text_selector"
+                                android:textSize="@dimen/text_margin"
+                                android:gravity="center"
+                                android:layout_margin="@dimen/stroke"
+                                android:background="@drawable/item_selector"/>
+
+                        <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:id="@+id/number_row"
+                                android:textColor="@drawable/text_selector"
+                                android:background="@drawable/item_selector_w"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/text_large"
+                                android:layout_margin="@dimen/stroke"
+                                android:gravity="center_vertical|center_horizontal"
+                                />
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="Вес:"
+                                android:textColor="@drawable/text_selector"
+                                android:textSize="@dimen/text_margin"
+                                android:gravity="center"
+                                android:layout_margin="@dimen/stroke"
+                                android:background="@drawable/item_selector"/>
+
+                        <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/weight_row"
+                                android:textColor="@drawable/text_selector"
+                                android:background="@drawable/item_selector_w"
+                                android:textStyle="bold|italic"
+                                android:textSize="@dimen/text_large"
+                                android:layout_margin="@dimen/stroke"
+                                android:gravity="center_vertical|center_horizontal"
+                                />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

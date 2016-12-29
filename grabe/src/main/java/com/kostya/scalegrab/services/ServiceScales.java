@@ -169,7 +169,7 @@ public class ServiceScales extends Service {
                 bootModule = (BootModule)module;
                 globals.setBootModule(bootModule);
             }
-            globals.getPreferencesScale().write(getString(R.string.KEY_LAST_SCALES), module.getAddressBluetoothDevice());
+            globals.getPreferencesScale().write(getString(R.string.KEY_LAST_SCALES), scaleModule.getAddressBluetoothDevice());
         }
 
 

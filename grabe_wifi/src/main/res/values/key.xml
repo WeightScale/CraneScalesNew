@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources >
+    <!--<string name="KEY_STEP">key_step</string>-->
+    <!--<string name="KEY_ADDRESS">key_address</string>-->
+    <string name="KEY_NULL">key_null</string>
+    <string name="KEY_AUTO_CAPTURE">key_auto_capture</string>
+    <string name="KEY_SWITCH_LOADING">KEY_SWITCH_LOADING</string>
+    <string name="KEY_WEIGHT_LOADING">KEY_WEIGHT_LOADING</string>
+    <!--<string name="KEY_FILTER">key_filter</string>-->
+    <string name="KEY_ABOUT">key_about</string>
+    <!--<string name="KEY_TIMER">key_timer</string>-->
+    <string name="KEY_LAST_SCALES">key_last_scales</string>
+    <string name="KEY_UPDATE">key_update</string>
+    <string name="KEY_ADMIN">key_admin</string>
+
+    <string name="KEY_POINT1">key_point1</string>
+    <string name="KEY_POINT2">key_point2</string>
+    <string name="KEY_WEIGHT_MAX">key_weight_max</string>
+    <string name="KEY_COEFFICIENT_A">key_coefficient_a</string>
+    <string name="KEY_COEFFICIENT_B">key_coefficient_a</string>
+    <string name="KEY_CALL_TEMP">key_call_temp</string>
+    <string name="KEY_CALL_BATTERY">key_call_battery</string>
+    <string name="KEY_SHEET">key_sheet</string>
+    <string name="KEY_USER">key_user</string>
+    <string name="KEY_PASSWORD">key_password</string>
+    <string name="KEY_PHONE">key_phone</string>
+    <string name="KEY_SENDER">key_sender</string>
+    <string name="KEY_SERVICE_COD">key_service_cod</string>
+    <string name="KEY_PATH_FORM">KEY_PATH_FORM</string>
+    <string name="KEY_DELTA_STAB">key_delta_stab</string>
+    <string name="KEY_CLOSING_INVOICE">KEY_CLOSING_INVOICE</string>
+    <string name="KEY_SCALES">KEY_SCALES</string>
+</resources>

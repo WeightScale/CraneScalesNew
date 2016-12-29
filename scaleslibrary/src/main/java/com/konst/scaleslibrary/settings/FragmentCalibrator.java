@@ -11,6 +11,7 @@ import android.preference.PreferenceFragment;
 import android.widget.Toast;
 import com.konst.scaleslibrary.R;
 import com.konst.scaleslibrary.ScalesView;
+import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 import java.util.Date;
@@ -20,7 +21,7 @@ import java.util.Random;
  * @author Kostya  06.11.2016.
  */
 public class FragmentCalibrator extends PreferenceFragment {
-    public static ScaleModule scaleModule;
+    public static Module scaleModule;
     private static Calibrator calibrator = null;
 
     enum EnumSettings{

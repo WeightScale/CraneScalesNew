@@ -9,7 +9,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/grabe" />
+            <option value="$PROJECT_DIR$/grabe_wifi" />
             <option value="$PROJECT_DIR$/scaleslibrary" />
+            <option value="$PROJECT_DIR$/testwifi" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

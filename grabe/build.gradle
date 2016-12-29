@@ -42,8 +42,8 @@ dependencies {
     provided fileTree(include: ['*.jar'], dir: 'libs')
     //compile files('libs/scalesmodule.jar')
     //compile 'com.konst.weightmodule:weightmodule-release@aar'
-    compile(name: 'scaleslibrary-release', ext: 'aar')
-    //compile project(':scaleslibrary')
+    //compile(name: 'scaleslibrary-release', ext: 'aar')
+    compile project(':scaleslibrary')
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.google.android.gms:play-services-ads:9.6.1'
     compile 'com.android.support:design:24.2.1'

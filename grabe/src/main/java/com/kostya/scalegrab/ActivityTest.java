@@ -22,6 +22,7 @@ import android.view.*;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.konst.scaleslibrary.OnInteractionListener;
 import com.konst.scaleslibrary.ScalesFragment;
 import com.konst.scaleslibrary.ScalesView;
 import com.konst.scaleslibrary.Settings;
@@ -43,14 +44,14 @@ import java.util.Locale;
  * @author Kostya on 02.10.2016.
  */
 public class ActivityTest extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        FragmentInvoice.OnFragmentInvoiceListener, ScalesFragment.OnInteractionListener {
+        FragmentInvoice.OnFragmentInvoiceListener/*, OnInteractionListener*/ {
     private Vibrator vibrator; //вибратор
     private float screenBrightness;
     //private PowerManager.WakeLock wakeLock;
     private DrawerLayout drawer;
     private FloatingActionButton fab;
     private ScalesView scalesView;
-    private ScaleModule scaleModule;
+    private Module scaleModule;
     private FragmentManager fragmentManager;
     private FragmentInvoice fragmentInvoice;
     private FragmentListInvoice fragmentListInvoice;
@@ -120,6 +121,7 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         scalesView.create(globals.getPackageInfo().versionName, new InterfaceCallbackScales(){
             @Override
             public void onCreate(Module obj) {
+                scaleModule = obj;
                 globals.setScaleModule((ScaleModule)obj);
 
             }
@@ -305,15 +307,15 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @Override
+    /*@Override
     public void onUpdateSettings(Settings settings) {
 
     }
 
     @Override
-    public void onScaleModuleCallback(ScaleModule obj) {
+    public void onScaleModuleCallback(Module obj) {
         scaleModule = obj;
-    }
+    }*/
 
     /*@Override
     public boolean dispatchKeyEvent(KeyEvent event) {

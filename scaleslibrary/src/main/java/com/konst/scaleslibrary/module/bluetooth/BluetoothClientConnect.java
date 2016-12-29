@@ -1,6 +1,8 @@
 package com.konst.scaleslibrary.module.bluetooth;
 
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import com.konst.scaleslibrary.module.Commands;
 import com.konst.scaleslibrary.module.ObjectCommand;
@@ -13,24 +15,24 @@ import java.util.concurrent.TimeUnit;
  * @author Kostya on 26.07.2016.
  */
 class BluetoothClientConnect extends Thread implements InterfaceBluetoothClient {
+    private Context mContext;
     private final BluetoothSocket mmSocket;
-    private final BluetoothHandler bluetoothHandler;
     protected final BufferedReader bufferedReader;
     protected final PrintWriter printWriter;
     private ObjectCommand response;
     private boolean isTerminate;
-    private static final String TAG = ScaleModule.class.getName();
+    private static final String TAG = BluetoothClientConnect.class.getName();
 
-    public BluetoothClientConnect(BluetoothSocket socket, BluetoothHandler handler) {
+    public BluetoothClientConnect(Context context, BluetoothSocket socket) {
+        mContext = context;
         mmSocket = socket;
-        bluetoothHandler = handler;
         BufferedReader tmpIn = null;
         PrintWriter tmpOut = null;
 
         try {
             tmpIn = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
             tmpOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8")), true);
-        } catch (IOException e) { }
+        } catch (IOException e) {Log.e(TAG, e.getMessage());}
 
         bufferedReader = tmpIn;
         printWriter = tmpOut;
@@ -38,7 +40,8 @@ class BluetoothClientConnect extends Thread implements InterfaceBluetoothClient 
 
     @Override
     public void run() {
-        bluetoothHandler.obtainMessage(BluetoothHandler.MSG.CONNECT.ordinal()).sendToTarget();
+        mContext.sendBroadcast(new Intent(BluetoothHandler.MSG.CONNECT.name()));
+        //bluetoothHandler.obtainMessage(BluetoothHandler.MSG.CONNECT.ordinal()).sendToTarget();
         try {
             while (!isInterrupted()) {
                 String substring = bufferedReader.readLine();
@@ -57,7 +60,8 @@ class BluetoothClientConnect extends Thread implements InterfaceBluetoothClient 
             }
         }catch (IOException e){
             if(!isTerminate)
-                bluetoothHandler.obtainMessage(BluetoothHandler.MSG.DISCONNECT.ordinal()).sendToTarget();
+                mContext.sendBroadcast(new Intent(BluetoothHandler.MSG.DISCONNECT.name()));
+                //bluetoothHandler.obtainMessage(BluetoothHandler.MSG.DISCONNECT.ordinal()).sendToTarget();
             /*else
                 bluetoothHandler.obtainMessage(BluetoothHandler.MSG.ERROR.ordinal()).sendToTarget();*/
         }finally {
@@ -80,15 +84,13 @@ class BluetoothClientConnect extends Thread implements InterfaceBluetoothClient 
         write(cmd.toString());
         response = new ObjectCommand(cmd, "");
         for (int i = 0; i < cmd.getTimeOut(); i++) {
-            try {
-                TimeUnit.MILLISECONDS.sleep(1);
-            } catch (InterruptedException e) {
-            }
+            try {TimeUnit.MILLISECONDS.sleep(1);} catch (InterruptedException e) {Log.e(TAG, e.getMessage());}
             try {
                 if (response.isResponse()) {
                     return response;
                 }
             } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
             }
         }
         return null;
@@ -107,8 +109,8 @@ class BluetoothClientConnect extends Thread implements InterfaceBluetoothClient 
     }
 
     public void cancel() {
-        try {mmSocket.close();} catch (IOException e) { }
-        try {bufferedReader.close();} catch (IOException e) { }
+        try {mmSocket.close();} catch (IOException e) {Log.e(TAG, e.getMessage()); }
+        try {bufferedReader.close();} catch (IOException e) {Log.e(TAG, e.getMessage());}
         //interrupt();
     }
 

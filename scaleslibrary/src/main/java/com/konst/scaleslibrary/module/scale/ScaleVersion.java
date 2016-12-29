@@ -8,11 +8,13 @@
 
 package com.konst.scaleslibrary.module.scale;
 
+import com.konst.scaleslibrary.module.Module;
+
 /**
  * @author Kostya
  */
-abstract class ScaleVersion {
-    protected ScaleModule scaleModule;
+public abstract class ScaleVersion {
+    protected Module scaleModule;
     /** Текущий вес.  */
     protected int weight;
     /** Максимальный вес для весов. */
@@ -27,24 +29,24 @@ abstract class ScaleVersion {
     protected static final int MIN_TIME_OFF = 10;
 
 
-    /**Загрузить сохраненные параметры из модуля.
+    /**Получить сохраненные параметры из модуля.
      * @throws Exception Ошибка загрузки параметров.
      */
-    abstract void load() throws Exception;
+    public abstract void extract() throws Exception;
     /** Обновить значения веса.
      * Получаем показания сенсора и переводим в занчение веса.
      * @return Значение веса.
      */
-    abstract int updateWeight();
-    abstract boolean writeData();
+    public abstract int updateWeight();
+    public abstract boolean writeData();
     //abstract int getWeight();
-    abstract int getSensor();
-    abstract int getMarginTenzo();
+    public abstract int getSensor();
+    public abstract int getMarginTenzo();
     //abstract int getWeightMax();
     //abstract void setWeightMax(int weightMax);
-    abstract boolean isLimit();
-    abstract boolean isMargin();
-    abstract boolean setOffsetScale();
+    public abstract boolean isLimit();
+    public abstract boolean isMargin();
+    public abstract boolean setOffsetScale();
 
     public int getWeight() { return weight; }
     public int getWeightMax() { return weightMax; }

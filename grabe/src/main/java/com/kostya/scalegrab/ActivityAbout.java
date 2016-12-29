@@ -22,7 +22,7 @@ public class ActivityAbout extends Activity {
         VERSION(R.string.Version_scale){
             @Override
             String getValue() {
-                return String.valueOf(scaleModule.getNumVersion()); }
+                return String.valueOf(scaleModule.getVersionNum()); }
 
             @Override
             int getMeasure() { return -1; }

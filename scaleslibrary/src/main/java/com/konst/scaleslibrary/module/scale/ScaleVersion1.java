@@ -10,27 +10,32 @@ package com.konst.scaleslibrary.module.scale;
 
 import com.konst.scaleslibrary.module.Commands;
 import com.konst.scaleslibrary.module.ErrorModuleException;
+import com.konst.scaleslibrary.module.Module;
 
 /**
  * @author Kostya
  */
 public class ScaleVersion1 extends ScaleVersion {
 
-    ScaleVersion1(ScaleModule module){
+    public ScaleVersion1(Module module){
         scaleModule = module;
     }
 
     @Override
-    public void load() throws Exception {
+    public void extract() throws Exception {
         scaleModule.setFilterADC(Integer.valueOf(Commands.FAD.getParam()));
         if (scaleModule.getFilterADC() < 0 || scaleModule.getFilterADC() > MAX_ADC_FILTER) {
-            if (!scaleModule.setModuleFilterADC(DEFAULT_ADC_FILTER))
+            if (Commands.FAD.setParam(DEFAULT_ADC_FILTER)){
+                scaleModule.setFilterADC(DEFAULT_ADC_FILTER);
+            }else
                 throw new ErrorModuleException("Фильтер АЦП не установлен в настройках");
         }
         //==============================================================================================================
         scaleModule.setTimeOff(Integer.valueOf(Commands.TOF.getParam()));
         if (scaleModule.getTimeOff() < MIN_TIME_OFF || scaleModule.getTimeOff() > MAX_TIME_OFF) {
-            if (!scaleModule.setModuleTimeOff(MIN_TIME_OFF))
+            if (Commands.TOF.setParam(MIN_TIME_OFF)){
+                scaleModule.setTimeOff(MIN_TIME_OFF);
+            }else
                 throw new ErrorModuleException("Таймер выключения не установлен в настройках");
         }
         //==============================================================================================================
@@ -56,7 +61,7 @@ public class ScaleVersion1 extends ScaleVersion {
     }
 
     @Override
-    boolean setOffsetScale() {
+    public boolean setOffsetScale() {
         try {
             scaleModule.setCoefficientB(-scaleModule.getCoefficientA() * Integer.valueOf(Commands.DCH.getParam()));
             //coefficientB = -scaleModule.getCoefficientA() * Integer.valueOf(Commands.CMD_SENSOR.getParam());
@@ -85,7 +90,7 @@ public class ScaleVersion1 extends ScaleVersion {
     }
 
     @Override
-    int getSensor() {
+    public int getSensor() {
         return scaleModule.getSensorTenzo();
     }
 

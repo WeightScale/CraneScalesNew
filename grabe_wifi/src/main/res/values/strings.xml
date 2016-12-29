@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Весы Крановые WiFi </string>
+    <string name="scales_kg">кг</string>
+    <string name="Zeroing">\“Обнуление…\”</string>
+    <string name="preferences_yes">Установлено</string>
+    <string name="preferences_no">Ошибка</string>
+    <string name="The_range_is_from_0_to">"Диапазон от 0 до "</string>
+    <string name="filter_adc">Фильтр АЦП:</string>
+    <string name="sum_filter_adc">Чем больше число тем точнее, но медленей измерения.</string>
+    <string name="Is_new_version">Есть новая версия микропрограммы</string>
+    <string name="Scale_update">"Весы обновлены до последней версии "</string>
+    <string name="Timer_off">Время бездействия:</string>
+    <string name="sum_timer">Выключение весов при баздействии</string>
+    <string name="range">"диапазон от "</string>
+    <string name="minute">мин</string>
+    <string name="to">" до "</string>
+    <string name="Time">Время</string>
+    <string name="second">сек</string>
+    <string name="sum_weight">Предел авто ноля</string>
+    <string name="sum_time_auto_zero">Время после которого весы автоматически обнуляются, максимальное значение</string>
+    <string name="sum_max_null">Вес считается ошибкой ноля, максимальное значение</string>
+    <string name="measuring_step">Шаг взвешивания:</string>
+    <string name="The_range_is_from_1_to">"Диапазон от 1 до "</string>
+    <string name="auto_capture">АВТОЗАХВАТ:</string>
+    <string name="Range_between">"Диапазон между "</string>
+    <string name="and">" и "</string>
+    <string name="version">Версия:</string>
+    <string name="About">О программе</string>
+    <string name="Version_scale">Версия прошивки весов: v.</string>
+    <string name="Name_module_bluetooth">"Имя модуля bluetooth: "</string>
+    <string name="Address_bluetooth">"Адресс модуля bluetooth: "</string>
+    <string name="Battery">"Батарея: "</string>
+    <string name="Temperature">"Температура: "</string>
+    <string name="Coefficient">"Коэффициэнт: "</string>
+    <string name="MLW">"НПВ: "</string>
+    <string name="Off_timer">"Таймер выключения: "</string>
+    <string name="Step_capacity_scale">"Шаг измерения веса: "</string>
+    <string name="Copyright">Авторские права принадлежат 2012–2016 Konst</string>
+    <string name="Reserved">Все права защищены</string>
+
+
+    <!--<string name="discovery_start">НАЧАТЬ ПОИСК</string>-->
+    <string name="discovery_started">Поиск весов…</string>
+    <!--<string name="scales_null">НОЛЬ</string>-->
+    <!--<string name="scales_tuning_no">Требуется настройка весов</string>-->
+    <!--<string name="scales_wait">…</string>-->
+    <string name="device_found">Найдено устройство</string>
+    <!--<string name="tuning">Настройки для администратора</string>-->
+    <!--<string name="output_check">Чек расход</string>-->
+
+    <string name="bluetooth_on">Bluetooth включен</string>
+    <string name="bluetooth_turning_on">Bluetooth включается</string>
+    <string name="bluetooth_off">Bluetooth выключен</string>
+
+    <!--<string name="version_no">Неподдерживаемая версия весов</string>-->
+    <!--<string name="NETTO">НЕТТО:</string>-->
+    <!--<string name="PRICE">ЦЕНА:</string>-->
+    <!--<string name="TOTAL">ИТОГО:</string>-->
+    <!--<string name="Total:">Итого:</string>-->
+    <!--<string name="rrr">Small Text</string>-->
+
+    <!--<string name="checks">чеки</string>-->
+    <!--<string name="search">поиск</string>-->
+    <string name="SEARCH">ПОИСК</string>
+    <!--<string name="back">назад</string>-->
+    <!--<string name="exit">выход</string>-->
+    <!--<string name="Unfreeze">Разморозить</string>-->
+    <!--<string name="NEW_TYPE">НОВЫЙ ТИП</string>-->
+    <!--<string name="NEW_AGENT">НОВЫЙ КОНТАКТ</string>-->
+    <!--<string name="MENU">МЕНЮ</string>-->
+    <string name="image_about">Image About</string>
+    <!--<string name="des_image_battery">Индикатор заряда акумулятора весов</string>-->
+    <!--<string name="des_image_up">Выбор весового чека расхода(длинное нажатие)</string>-->
+    <!--<string name="des_button_check">Просмотр сохраненных чеков</string>-->
+    <!--<string name="des_button_freeze">Нажать чтобы заморозить чек</string>-->
+    <!--<string name="Check_block">Чек заблокирован</string>-->
+    <!--<string name="Do_you_want_to_unlock_a_check">Вы хотите разблокировать чек?</string>-->
+    <!--<string name="Enter_agent">Введите агента</string>-->
+    <!--<string name="sent_to_the_cloud">" отправлен в облако"</string>-->
+    <string name="settings">НАСТРОЙКИ</string>
+
+    <string name="setting_auto_zero">Настройки авто ноль</string>
+    <string name="Auto_zero">Авто ноль</string>
+    <string name="sum_setting_auto_zero">Настройки авто ноль время, вес …</string>
+    <string name="sum_auto_zero">Настройки определения сброса на ноль</string>
+    <string name="weight">Вес</string>
+    <string name="Settings">Настройки</string>
+    <string name="zeroing">Установить Ноль</string>
+    <string name="about">О ПРОГРАММЕ</string>
+    <!--<string name="sum_auto_capture">Авто захват</string>-->
+
+    <!--<string name="file_load">фаил для загрузки</string>-->
+    <string name="start_load">Начать загрузку</string>
+
+    <!--layout scale-->
+    <!--<string name="BLUETOOTH">BLUETOOTH</string>-->
+    <!--<string name="ON">ON</string>-->
+    <!--<string name="OFF">OFF</string>-->
+    <string name="Close">Закрыть</string>
+    <string name="Connecting">"Соединяемся "</string>
+    <string name="OK">OK</string>
+    <!--<string name="search">" поиск…"</string>-->
+    <string name="TEXT_MESSAGE">Выключите весы. На весах нажмите кнопку включения и не отпускайте пока индикатор не
+        погаснет. После этого нажмите ОК
+    </string>
+    <string name="Warning_Loading_settings">Внимание! Загрузка настроек</string>
+    <string name="TEXT_MESSAGE1">На весах нажмине кнопку и отпустите ждите пока индикатор равномерно начнет мигать.
+        После этого нажмите ОК
+    </string>
+    <string name="Warning_Error">Внимание! Ошибка</string>
+    <string name="TEXT_MESSAGE2">Произошла ошибка программирования смотрите текст лога</string>
+    <string name="Warning_Connect">Внимание! Соединение</string>
+    <string name="TEXT_MESSAGE3">"Ищем фаил HEX для этого устройства "</string>
+    <string name="Warning_update">Внимание! Обновление</string>
+    <string name="TEXT_MESSAGE5">На весах нажмите кнопку и отпустите индикатор прекратит мигать. После этого нажмитеОК
+    </string>
+    <string name="Not_programmer">Не программатор</string>
+    <string name="Programmer_defined">Программатор определен</string>
+    <string name="Max_weight">"Максимальный вес: "</string>
+    <string name="ConstantA">Константа А:</string>
+    <!--<string name="Check_sent">Чек отправлен</string>-->
+    <!--<string name="TEXT_MESSAGE8">Запускаем сервис отправки данных</string>-->
+    <!--<string name="TEXT_MESSAGE9">Отправляем данные на сервер</string>-->
+    <!--<string name="TEXT_MESSAGE10">Сервис ServiceSendDateServer остановлен</string>-->
+    <string name="Set_values">Установки значений</string>
+    <string name="TEXT_MESSAGES13">Ограничения, лимиты, прочее</string>
+    <string name="Update_scale">Обновление весов</string>
+    <string name="TEXT_MESSAGE14">Обновление весов до последней версии</string>
+    <!--<string name="Settings_send">Настройки отправлены</string>-->
+    <!--<string name="Mail_sent">Письмо отправлено</string>-->
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_archive">ArchiveActivity</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
