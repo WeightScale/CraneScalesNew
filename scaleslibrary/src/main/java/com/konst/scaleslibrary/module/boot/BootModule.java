@@ -9,8 +9,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 import com.konst.scaleslibrary.module.*;
+import com.konst.scaleslibrary.module.bluetooth.ModuleBluetooth;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 import java.io.*;
 import java.util.UUID;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * Класс для самопрограммирования весового модуля.
  * @author Kostya
  */
-public class BootModule extends ScaleModule {
+public class BootModule extends ModuleBluetooth {
     private static BootModule instance;
     private ThreadBootAttach threadAttach;
     private String versionName = "";

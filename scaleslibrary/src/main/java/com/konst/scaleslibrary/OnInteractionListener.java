@@ -1,7 +1,6 @@
 package com.konst.scaleslibrary;
 
 import com.konst.scaleslibrary.module.Module;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 /**
  * @author Kostya on 26.12.2016.

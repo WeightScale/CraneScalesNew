@@ -14,7 +14,6 @@ import com.konst.scaleslibrary.module.InterfaceModule;
 import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.boot.BootModule;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.konst.scaleslibrary.settings.FragmentSettings;
 
 /** Класс индикатора весового модуля.

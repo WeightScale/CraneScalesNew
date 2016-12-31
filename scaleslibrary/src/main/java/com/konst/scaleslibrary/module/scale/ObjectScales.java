@@ -1,5 +1,7 @@
 package com.konst.scaleslibrary.module.scale;
 
+import com.konst.scaleslibrary.module.Module;
+
 import java.io.Serializable;
 
 /**
@@ -24,15 +26,15 @@ public class ObjectScales implements Serializable {
     /** Флаг вес стабильный. */
     protected boolean flagStab;
 
-    public ScaleModule.ResultWeight getResultWeight() {
+    public Module.ResultWeight getResultWeight() {
         return resultWeight;
     }
 
-    public void setResultWeight(ScaleModule.ResultWeight resultWeight) {
+    public void setResultWeight(Module.ResultWeight resultWeight) {
         this.resultWeight = resultWeight;
     }
 
-    ScaleModule.ResultWeight resultWeight = ScaleModule.ResultWeight.WEIGHT_ERROR;
+    Module.ResultWeight resultWeight = Module.ResultWeight.WEIGHT_ERROR;
 
     public int getTenzoSensor() {return tenzoSensor;}
     public void setTenzoSensor(int tenzoSensor) {this.tenzoSensor = tenzoSensor;}

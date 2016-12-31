@@ -21,9 +21,9 @@ import android.widget.*;
 import com.konst.scaleslibrary.module.ErrorDeviceException;
 import com.konst.scaleslibrary.module.InterfaceModule;
 import com.konst.scaleslibrary.module.Module;
+import com.konst.scaleslibrary.module.bluetooth.ModuleBluetooth;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ObjectScales;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.konst.scaleslibrary.settings.ActivityProperties;
 
 /**
@@ -37,7 +37,7 @@ import com.konst.scaleslibrary.settings.ActivityProperties;
 public class ScalesFragment extends Fragment implements View.OnClickListener/*, View.OnLongClickListener*/ {
     /** Настройки для весов. */
     public Settings settings;
-    private ScaleModule scaleModule;
+    private ModuleBluetooth scaleModule;
     private SpannableStringBuilder textKg;
     private ProgressBar progressBarStable;
     private ProgressBar progressBarWeight;
@@ -62,7 +62,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
 
     public ScalesFragment(){}
 
-    protected void loadModule(ScaleModule scaleModule) {
+    protected void loadModule(ModuleBluetooth scaleModule) {
         this.scaleModule = scaleModule;
     }
 
@@ -165,7 +165,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
                 case ScalesView.REQUEST_BROKEN:
                     /*if (scaleModule != null)
                         scaleModule.dettach();*/
-                    ScaleModule.getInstance().dettach();
+                    ModuleBluetooth.getInstance().dettach();
                     //openSearchDialog("");
                     break;
                 default:
@@ -186,13 +186,13 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
 
     private void createScalesModule(String device){
         try {
-            ScaleModule.create(getActivity(), version, device, new InterfaceCallbackScales() {
+            ModuleBluetooth.create(getActivity(), version, device, new InterfaceCallbackScales() {
                 /** Сообщение о результате соединения.
                  * @param module Модуль с которым соединились. */
                 @Override
                 public void onCreate(Module module) {
-                    if (module instanceof ScaleModule){
-                        scaleModule = (ScaleModule)module;
+                    if (module instanceof ModuleBluetooth){
+                        scaleModule = (ModuleBluetooth) module;
                         onListener.onScaleModuleCallback(scaleModule);
                         scaleModule.scalesProcessEnable(true);
                     }
@@ -221,7 +221,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
         if (scaleModule != null){
             progressBarWeight.setMax(scaleModule.getMarginTenzo());
             progressBarWeight.setSecondaryProgress(scaleModule.getLimitTenzo());
-            progressBarStable.setMax(ScaleModule.STABLE_NUM_MAX);
+            progressBarStable.setMax(ModuleBluetooth.STABLE_NUM_MAX);
         }
 
         progressBarStable.setProgress(0);

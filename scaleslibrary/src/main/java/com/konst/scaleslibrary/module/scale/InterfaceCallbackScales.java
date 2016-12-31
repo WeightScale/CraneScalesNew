@@ -7,9 +7,7 @@ import com.konst.scaleslibrary.module.Module;
  */
 public interface InterfaceCallbackScales {
     /** Результат веса.
-     //* @param what Статус веса {@link ScaleModule.ResultWeight}
      * @param obj Обьект весов с данными.
      */
-    void onCreate(/*ScaleModule.ResultWeight what, */Module obj);
-
+    void onCreate(Module obj);
 }

@@ -10,14 +10,14 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
+import com.konst.scaleslibrary.module.Module;
 
 /*
  * Created by Kostya on 26.04.14.
  */
 public class ActivityAbout extends Activity {
     private static Globals globals;
-    private static ScaleModule scaleModule;
+    private static Module scaleModule;
     enum STROKE{
         VERSION(R.string.Version_scale){
             @Override
@@ -27,7 +27,7 @@ public class ActivityAbout extends Activity {
             @Override
             int getMeasure() { return -1; }
         },
-        NAME_BLUETOOTH(R.string.Name_module_bluetooth) {
+        /*NAME_BLUETOOTH(R.string.Name_module_bluetooth) {
             @Override
             String getValue() {return scaleModule.getNameBluetoothDevice(); }
 
@@ -40,7 +40,7 @@ public class ActivityAbout extends Activity {
 
             @Override
             int getMeasure() { return -1; }
-        },
+        },*/
         BATTERY(R.string.Battery) {
             @Override
             String getValue() { return globals.getBattery() + " %"; }

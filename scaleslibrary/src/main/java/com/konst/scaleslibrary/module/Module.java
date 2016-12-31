@@ -1,28 +1,18 @@
 package com.konst.scaleslibrary.module;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
-import com.konst.scaleslibrary.module.bluetooth.BluetoothHandler;
-import com.konst.scaleslibrary.module.bluetooth.BluetoothProcessManager;
 import com.konst.scaleslibrary.module.scale.*;
 import com.konst.scaleslibrary.module.wifi.ClientWiFi;
 import com.konst.scaleslibrary.module.wifi.WifiBaseManager;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
 
 /**
  * Весовой модуль
@@ -31,21 +21,23 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class Module implements InterfaceModule{
     private final Context mContext;
-
     protected WifiBaseManager wifiBaseManager;
-    protected ClientWiFi clientWiFi;
     protected ScaleVersion version;
     protected ObjectScales objectScales = new ObjectScales();
     private ThreadScalesProcess threadScalesProcess;
     //private Thread moduleThreadProcess;
-    private BaseModuleReceiver baseModuleReceiver;
-    protected BluetoothProcessManager bluetoothProcessManager;
+    public final BaseModuleReceiver baseModuleReceiver;
+    //protected BluetoothProcessManager bluetoothProcessManager;
 
     /** Bluetooth адаптер терминала. */
-    protected BluetoothAdapter bluetoothAdapter;
-    private final Handler handler = new Handler();
+    //protected BluetoothAdapter bluetoothAdapter;
     public static final String TAG = Module.class.getName();
+    public static final String RECEIVE = Module.class.getSimpleName() + "RECEIVE";
+    public static final String CONNECT = Module.class.getSimpleName() + "CONNECT";
+    public static final String DISCONNECT = Module.class.getSimpleName() + "DISCONNECT";
+    public static final String ERROR = Module.class.getSimpleName() + "ERROR";
     protected InterfaceCallbackScales resultCallback;
+    /** Имя версии программы */
     protected String versionName;
     /** Номер версии программы. */
     protected int versionNum;
@@ -87,14 +79,23 @@ public abstract class Module implements InterfaceModule{
     private int deltaStab = 10;
     /** Количество стабильных показаний веса для авто сохранения. */
     public static final int STABLE_NUM_MAX = 15;
-    /** Константа время задержки для получения байта. */
-    private static final int TIMEOUT_GET_BYTE = 1000;
     /** Флаг использования авто обнуленияю. */
     private boolean enableAutoNull = true;
     /** Флаг обнаружения стабильного веса. */
     private boolean enableProcessStable = true;
-    private boolean flagTimeout;
     protected boolean isAttach;
+
+    /** Константы результата взвешивания. */
+    public enum ResultWeight {
+        /** Значение веса неправильное. */
+        WEIGHT_ERROR,
+        /** Значение веса в диапазоне весового модуля. */
+        WEIGHT_NORMAL,
+        /** Значение веса в диапазоне лилита взвешивания. */
+        WEIGHT_LIMIT,
+        /** Значение веса в диапазоне перегрузки. */
+        WEIGHT_MARGIN
+    }
 
     /** Константы результат соединения.  */
     public enum ResultConnect {
@@ -114,19 +115,16 @@ public abstract class Module implements InterfaceModule{
         CONNECT_ERROR
     }
 
-    protected abstract void dettach();
-    //protected abstract void attach();
-    //protected abstract void attachWiFi();
-    protected abstract boolean isVersion() throws Exception;
+    /*public enum MSG {
+        RECEIVE,
+        CONNECT,
+        DISCONNECT,
+        ERROR
+    }*/
     protected abstract void connect();
     protected abstract void reconnect();
     protected abstract void load();
-    /** Получаем соединение с bluetooth весовым модулем.
-     * @throws IOException Ошибка сокета соединения.
-     * @throws NullPointerException Нулевое значение.
-     */
-    //protected abstract void connect() throws IOException, NullPointerException;
-    //protected abstract void connectWiFi();
+
     protected Module(Context context) {
         mContext = context;
         baseModuleReceiver = new BaseModuleReceiver(mContext);
@@ -142,17 +140,14 @@ public abstract class Module implements InterfaceModule{
      * @param context Контекст.
      * @param event Интерфейс обратного вызова.
      * @throws Exception Ошибка при создании модуля.
-     * @throws ErrorDeviceException Ошибка bluetooth утройства.
      */
     protected Module(Context context, InterfaceCallbackScales event) throws Exception {
         this(context);
-        /* Проверяем и включаем bluetooth. */
-        isEnableBluetooth();
         resultCallback = event;
         Commands.setInterfaceCommand(this);
     }
 
-    protected Module(Context context, final WifiManager wifiManager, InterfaceCallbackScales event) throws Exception {
+    /*protected Module(Context context, final WifiManager wifiManager, InterfaceCallbackScales event) throws Exception {
         this(context, event);
 
         wifiBaseManager = new WifiBaseManager(context,"SCALES.ESP.36.6.4","12345678", new WifiBaseManager.OnWifiBaseManagerListener() {
@@ -167,34 +162,7 @@ public abstract class Module implements InterfaceModule{
             @Override
             public void onDisconnect() {clientWiFi.killWorkingThread();}
         });
-        /*WifiConfiguration wc = new WifiConfiguration();
-        wc.SSID = "\"WeightScale\"";
-        wc.preSharedKey = "\"12345678\"";
-        wc.status = WifiConfiguration.Status.ENABLED;
-        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-        wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-        wc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
-        wc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-        wc.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-        // connect to and enable the connection
-        this.wifiManager.setWifiEnabled(true);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!wifiManager.isWifiEnabled())
-                    flagTimeout = true;
-            }
-        }, 5000);
-        while (!wifiManager.isWifiEnabled() && !flagTimeout) ;//ждем включения bluetooth
-        if(flagTimeout)
-            throw new Exception("Timeout enabled wifi");
-        int netId = wifiManager.addNetwork(wc);
-        this.wifiManager.disconnect();
-        this.wifiManager.enableNetwork(netId, true);
-        this.wifiManager.reconnect();
-        resultCallback = event;*/
-    }
+    }*/
 
     /** Установить значение фильтра АЦП.
      * @param filterADC Значение АЦП.*/
@@ -477,35 +445,42 @@ public abstract class Module implements InterfaceModule{
      * @return Номер версии.  */
     public int getVersionNum() { return versionNum; }
 
+    /** Определяем после соединения это весовой модуль и какой версии.
+     * Проверяем версию указаной при инициализации класса com.kostya.module.ScaleModule.
+     * @return true - Версия правильная.
+     */
+    protected boolean isVersion() throws Exception {
+        Commands.setInterfaceCommand(this);
+        String vrs = getModuleVersion(); //Получаем версию весов
+        if (vrs.startsWith(versionName)) {
+            try {
+                String s = vrs.replace(versionName, "");
+                versionNum = Integer.valueOf(s);
+                version = fetchVersion(versionNum);
+            } catch (Exception e) {
+                throw new Exception(e);
+            }
+            /* Если версия правильная создаем обьек и посылаем сообщения. */
+            objectScales = new ObjectScales();
+            return true;
+        }
+        throw new Exception("Это не весы или неправильная версия!!!");
+    }
+
     /** Выключить питание модуля.
      * @return true - питание модкля выключено.
      */
     public boolean powerOff() {return Commands.POF.getParam().equals(Commands.POF.getName());}
 
-    /** Проверяем адаптер bluetooth и включаем.
-     * @return true все прошло без ошибок.
-     * @throws Exception Ошибки при выполнении.
-     */
-    private boolean isEnableBluetooth() throws Exception {
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if(bluetoothAdapter == null)
-            throw new Exception("Bluetooth adapter missing");
-        bluetoothAdapter.enable();
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!bluetoothAdapter.isEnabled())
-                    flagTimeout = true;
-            }
-        }, 5000);
-        while (!bluetoothAdapter.isEnabled() && !flagTimeout) ;//ждем включения bluetooth
-        if(flagTimeout)
-            throw new Exception("Timeout enabled bluetooth");
-        return true;
-    }
-
     public boolean isAttach() { return isAttach; }
+
+    public void dettach() {
+        isAttach = false;
+        scalesProcessEnable(false);
+        if (baseModuleReceiver != null){
+            baseModuleReceiver.unregister();
+        }
+    }
 
     public void setEnableAutoNull(boolean enableAutoNull) {this.enableAutoNull = enableAutoNull;}
 
@@ -528,11 +503,6 @@ public abstract class Module implements InterfaceModule{
     public Context getContext() {
         return mContext;
     }
-
-    /** Получить bluetooth адаптер терминала.
-     * @return bluetooth адаптер.
-     */
-    protected BluetoothAdapter getAdapter() {return bluetoothAdapter;}
 
     /** Получаем версию программы из весового модуля.
      * @return Версия весового модуля в текстовом виде.
@@ -557,92 +527,59 @@ public abstract class Module implements InterfaceModule{
 
     public void resetAutoNull(){ autoNull = 0; }
 
-
-
-    /*private final BluetoothHandler bluetoothHandler = new BluetoothHandler(){
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (MSG.values()[msg.what]){
-                case RECEIVE:
-                    ObjectCommand cmd = (ObjectCommand)msg.obj;
-                    break;
-                case CONNECT:
-                    try {
-                        if (isVersion()){
-                            load();
-                            if (!isAttach){
-                                isAttach = true;
-                                mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_LOAD_OK)*//*.putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales())*//*);
-                            }else {
-                                mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_RECONNECT_OK)*//*.putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales())*//*);
-                            }
-                        }else {
-                            throw new Exception("Ошибка проверки версии.");
-                        }
-                    } catch (Exception e) {
-                        dettach();
-                        mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_CONNECT_ERROR).putExtra(InterfaceModule.EXTRA_MESSAGE, e.getMessage()));
-                    }
-                    break;
-                case DISCONNECT:
-                    if (isAttach)
-                        reconnect();
-                    break;
-                case ERROR:
-                    //resultCallback.resultConnect(ResultConnect.CONNECT_ERROR,"Не включен модуль или большое растояние. Если не помогает просто перегрузите телефон.", null);
-                    mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_CONNECT_ERROR)
-                            .putExtra(InterfaceModule.EXTRA_MESSAGE, "Не включен модуль или большое растояние. Если не помогает просто перегрузите телефон."));
-                    break;
-                default:
-            }
-        }
-    };*/
-
-    class BaseModuleReceiver extends BroadcastReceiver{
-        private Context mContext;
-        private IntentFilter intentFilter;
+    public class BaseModuleReceiver extends BroadcastReceiver{
+        private final Context mContext;
+        private final IntentFilter intentFilter;
         private boolean isRegistered;
 
         BaseModuleReceiver(Context context){
             mContext = context;
-            intentFilter = new IntentFilter(BluetoothHandler.MSG.CONNECT.name());
-            intentFilter.addAction(BluetoothHandler.MSG.DISCONNECT.name());
-            intentFilter.addAction(BluetoothHandler.MSG.ERROR.name());
+            intentFilter = new IntentFilter(CONNECT);
+            intentFilter.addAction(DISCONNECT);
+            intentFilter.addAction(ERROR);
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            switch (BluetoothHandler.MSG.valueOf(action)){
-                case CONNECT:
-                    try {
-                        if (isVersion()){
-                            load();
-                            if (!isAttach){
-                                isAttach = true;
-                                mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_LOAD_OK)/*.putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales())*/);
-                            }else {
-                                mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_RECONNECT_OK)/*.putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales())*/);
-                            }
-                        }else {
-                            throw new Exception("Ошибка проверки версии.");
+            if (CONNECT.equals(action)){
+                try {
+                    if (isVersion()){
+                        load();
+                        if (isAttach) {
+                            mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_RECONNECT_OK)/*.putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales())*/);
+                        } else {
+                            isAttach = true;
+                            mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_LOAD_OK)/*.putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales())*/);
                         }
-                    } catch (Exception e) {
-                        dettach();
-                        mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_CONNECT_ERROR).putExtra(InterfaceModule.EXTRA_MESSAGE, e.getMessage()));
+                    }else {
+                        throw new Exception("Ошибка проверки версии.");
                     }
+                } catch (Exception e) {
+                    //dettach();
+                    mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_CONNECT_ERROR).putExtra(InterfaceModule.EXTRA_MESSAGE, e.getMessage()));
+                }finally {
+                    getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_ATTACH_FINISH));
+                }
+            }else if (DISCONNECT.equals(action)){
+                if (isAttach)
+                    reconnect();
+            }else if (ERROR.equals(action)){
+                mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_CONNECT_ERROR)
+                        .putExtra(InterfaceModule.EXTRA_MESSAGE, "Не включен модуль или большое растояние. Если не помогает просто перегрузите телефон."));
+            }
+            /*switch (action){
+                case CONNECT:
+
                 break;
                 case DISCONNECT:
-                    if (isAttach)
-                        reconnect();
+
                 break;
                 case ERROR:
-                    mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_CONNECT_ERROR)
-                            .putExtra(InterfaceModule.EXTRA_MESSAGE, "Не включен модуль или большое растояние. Если не помогает просто перегрузите телефон."));
+
                 break;
                 default:
-            }
+            }*/
         }
 
         public void register() {
@@ -679,14 +616,14 @@ public abstract class Module implements InterfaceModule{
                 try{
                     /* Секция вес. */
                     int temp = version.updateWeight();
-                    ScaleModule.ResultWeight resultWeight;
+                    ResultWeight resultWeight;
                     if (temp == Integer.MIN_VALUE) {
-                        resultWeight = ScaleModule.ResultWeight.WEIGHT_ERROR;
+                        resultWeight = ResultWeight.WEIGHT_ERROR;
                     } else {
                         if (version.isLimit())
-                            resultWeight = version.isMargin() ? ScaleModule.ResultWeight.WEIGHT_MARGIN : ScaleModule.ResultWeight.WEIGHT_LIMIT;
+                            resultWeight = version.isMargin() ? ResultWeight.WEIGHT_MARGIN : ResultWeight.WEIGHT_LIMIT;
                         else {
-                            resultWeight = ScaleModule.ResultWeight.WEIGHT_NORMAL;
+                            resultWeight = ResultWeight.WEIGHT_NORMAL;
                         }
                     }
                     objectScales.setWeight(getWeightToStepMeasuring(temp));
@@ -752,6 +689,7 @@ public abstract class Module implements InterfaceModule{
             cancel = true;
         }
     }
+
     public void scalesProcessEnable(boolean process){
         try {
             if (process){
@@ -767,6 +705,9 @@ public abstract class Module implements InterfaceModule{
             Log.e(TAG, e.getMessage());
         }
     }
+    /* Включаем выключаем процесс определения стабильного веса.
+      @param stable true - процесс запускается, false - процесс останавливается.
+     */
     public void setEnableProcessStable(boolean stable) {
         objectScales.setStableNum(0);
         enableProcessStable = stable;

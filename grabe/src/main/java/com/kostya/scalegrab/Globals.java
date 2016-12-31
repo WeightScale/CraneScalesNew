@@ -6,8 +6,8 @@ import android.content.pm.PackageManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.boot.BootModule;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 import java.io.File;
 
@@ -19,7 +19,7 @@ public class Globals {
     public static File pathLocalForms;
     /** Папка для хранения локальных данных программы. */
     public static final String FOLDER_LOCAL_FORMS = "forms";
-    private ScaleModule scaleModule;
+    private Module scaleModule;
     private BootModule bootModule;
     /** Настройки для весов. */
     public Preferences preferencesScale;
@@ -48,11 +48,11 @@ public class Globals {
         return packageInfo;
     }
 
-    public ScaleModule getScaleModule() {
+    public Module getScaleModule() {
         return scaleModule;
     }
 
-    public void setScaleModule(ScaleModule scaleModule) {
+    public void setScaleModule(Module scaleModule) {
         this.scaleModule = scaleModule;
     }
 

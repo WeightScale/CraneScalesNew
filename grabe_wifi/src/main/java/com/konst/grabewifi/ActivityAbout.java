@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.konst.scaleslibrary.module.Module;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 /*
  * Created by Kostya on 26.04.14.

@@ -16,7 +16,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.common.io.ByteStreams;
 import com.konst.scaleslibrary.Settings;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
+import com.konst.scaleslibrary.module.Module;
 import com.kostya.scalegrab.ActivityAbout;
 import com.kostya.scalegrab.ActivityTest;
 import com.kostya.scalegrab.Globals;
@@ -30,7 +30,7 @@ import java.io.InputStream;
 public class ActivityPreferences extends PreferenceActivity {
     private static Settings settings;
     private static Globals globals;
-    private static ScaleModule scaleModule;
+    private static Module scaleModule;
     public enum KEY{
         DELTA_STAB(R.string.KEY_DELTA_STAB){
             @Override

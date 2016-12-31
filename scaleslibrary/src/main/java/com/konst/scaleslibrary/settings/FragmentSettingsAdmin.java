@@ -11,7 +11,6 @@ import com.konst.scaleslibrary.R;
 import com.konst.scaleslibrary.ScalesView;
 import com.konst.scaleslibrary.module.InterfaceModule;
 import com.konst.scaleslibrary.module.Module;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 /**
  * @author Kostya 26.10.2016.

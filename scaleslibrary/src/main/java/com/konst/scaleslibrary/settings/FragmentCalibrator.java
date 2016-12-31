@@ -12,7 +12,6 @@ import android.widget.Toast;
 import com.konst.scaleslibrary.R;
 import com.konst.scaleslibrary.ScalesView;
 import com.konst.scaleslibrary.module.Module;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 import java.util.Date;
 import java.util.Random;

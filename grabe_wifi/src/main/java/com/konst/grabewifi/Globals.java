@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.boot.BootModule;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 import java.io.File;
 

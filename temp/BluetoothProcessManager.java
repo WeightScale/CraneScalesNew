@@ -3,6 +3,7 @@ package com.konst.scaleslibrary.module.bluetooth;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import com.konst.scaleslibrary.module.Commands;
+import com.konst.scaleslibrary.module.InterfaceTransferClient;
 import com.konst.scaleslibrary.module.ObjectCommand;
 
 /**
@@ -12,7 +13,7 @@ public class BluetoothProcessManager {
     private final BluetoothSocket mmSocket;
     private BluetoothClientConnect bluetoothClientConnect;
     private Context mContext;
-    final InterfaceBluetoothClient interfaceBluetoothClient;
+    final InterfaceTransferClient interfaceBluetoothClient;
 
     public BluetoothProcessManager(Context context, BluetoothSocket socket){
         mContext = context;

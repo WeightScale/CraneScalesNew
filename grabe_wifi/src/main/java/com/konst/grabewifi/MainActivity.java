@@ -34,7 +34,7 @@ import com.konst.scaleslibrary.Settings;
 import com.konst.scaleslibrary.internet.Internet;
 import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
+import com.konst.scaleslibrary.module.wifi.ModuleWiFi;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private FloatingActionButton fab;
     private ScalesView scalesView;
-    private ScaleModule scaleModule;
+    private ModuleWiFi scaleModule;
     private FragmentManager fragmentManager;
     private FragmentInvoice fragmentInvoice;
     private FragmentListInvoice fragmentListInvoice;

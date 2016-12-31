@@ -8,7 +8,6 @@ import android.widget.EditText;
 import com.konst.scaleslibrary.R;
 import com.konst.scaleslibrary.ScalesView;
 import com.konst.scaleslibrary.module.Module;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 
 /**

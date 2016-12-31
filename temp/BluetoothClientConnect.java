@@ -5,8 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import com.konst.scaleslibrary.module.Commands;
+import com.konst.scaleslibrary.module.InterfaceTransferClient;
+import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.ObjectCommand;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 import java.io.*;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Kostya on 26.07.2016.
  */
-class BluetoothClientConnect extends Thread implements InterfaceBluetoothClient {
+class BluetoothClientConnect extends Thread implements InterfaceTransferClient {
     private Context mContext;
     private final BluetoothSocket mmSocket;
     protected final BufferedReader bufferedReader;
@@ -40,7 +41,7 @@ class BluetoothClientConnect extends Thread implements InterfaceBluetoothClient 
 
     @Override
     public void run() {
-        mContext.sendBroadcast(new Intent(BluetoothHandler.MSG.CONNECT.name()));
+        mContext.sendBroadcast(new Intent(Module.CONNECT));
         //bluetoothHandler.obtainMessage(BluetoothHandler.MSG.CONNECT.ordinal()).sendToTarget();
         try {
             while (!isInterrupted()) {
@@ -60,7 +61,7 @@ class BluetoothClientConnect extends Thread implements InterfaceBluetoothClient 
             }
         }catch (IOException e){
             if(!isTerminate)
-                mContext.sendBroadcast(new Intent(BluetoothHandler.MSG.DISCONNECT.name()));
+                mContext.sendBroadcast(new Intent(Module.DISCONNECT));
                 //bluetoothHandler.obtainMessage(BluetoothHandler.MSG.DISCONNECT.ordinal()).sendToTarget();
             /*else
                 bluetoothHandler.obtainMessage(BluetoothHandler.MSG.ERROR.ordinal()).sendToTarget();*/

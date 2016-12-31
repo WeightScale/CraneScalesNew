@@ -27,8 +27,8 @@ import com.konst.scaleslibrary.ScalesFragment;
 import com.konst.scaleslibrary.ScalesView;
 import com.konst.scaleslibrary.Settings;
 import com.konst.scaleslibrary.module.Module;
+import com.konst.scaleslibrary.module.bluetooth.ModuleBluetooth;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.kostya.scalegrab.internet.Internet;
 import com.kostya.scalegrab.provider.InvoiceTable;
 import com.kostya.scalegrab.provider.WeighingTable;
@@ -122,7 +122,7 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
             @Override
             public void onCreate(Module obj) {
                 scaleModule = obj;
-                globals.setScaleModule((ScaleModule)obj);
+                globals.setScaleModule(obj);
 
             }
         });

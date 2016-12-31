@@ -2,15 +2,13 @@ package com.konst.scaleslibrary.module.wifi;
 
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.usb.UsbRequest;
 import android.util.Log;
 import com.konst.scaleslibrary.module.Commands;
+import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.ObjectCommand;
-import com.konst.scaleslibrary.module.bluetooth.BluetoothHandler;
-import com.konst.scaleslibrary.module.bluetooth.InterfaceBluetoothClient;
+import com.konst.scaleslibrary.module.InterfaceTransferClient;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * @author Kostya 20.12.2016.
  */
-public class ClientWiFi implements InterfaceBluetoothClient {
+public class ClientWiFi implements InterfaceTransferClient {
     private Context mContext;
     private Socket mSocket;
     private WorkerThread workerThread;
@@ -119,7 +117,7 @@ public class ClientWiFi implements InterfaceBluetoothClient {
                 bufferedReader = new BufferedReader(new InputStreamReader(mSocket.getInputStream(), "UTF-8"));
                 printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream(), "UTF-8")), true);
                 printWriter.flush();
-                mContext.sendBroadcast(new Intent(BluetoothHandler.MSG.CONNECT.name()));
+                mContext.sendBroadcast(new Intent(Module.CONNECT));
                 while(working.get()) {
                     String substring = bufferedReader.readLine();
                     try {
@@ -137,7 +135,6 @@ public class ClientWiFi implements InterfaceBluetoothClient {
             }finally {
                 stopWorkingThread();
             }
-
         }
 
         public void stopWorkingThread() {

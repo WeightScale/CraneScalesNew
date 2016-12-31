@@ -1,7 +1,6 @@
 package com.konst.scaleslibrary.module;
 
 import com.konst.scaleslibrary.module.scale.ObjectScales;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 /** Интерфейс обратного вызова при соеденении с модулем.
  * @author Kostya
@@ -17,5 +16,5 @@ public interface InterfaceResultCallback {
      */
     void resultConnect(Module.ResultConnect what, String msg, Object module);
 
-    void eventData(ScaleModule.ResultWeight what, ObjectScales obj);
+    void eventData(Module.ResultWeight what, ObjectScales obj);
 }

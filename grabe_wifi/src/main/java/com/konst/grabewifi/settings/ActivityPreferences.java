@@ -19,7 +19,6 @@ import com.konst.grabewifi.R;
 import com.konst.grabewifi.filedialog.FileChooserDialog;
 import com.konst.scaleslibrary.Settings;
 import com.konst.scaleslibrary.module.Module;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
 
 import java.io.File;
 import java.io.FileOutputStream;

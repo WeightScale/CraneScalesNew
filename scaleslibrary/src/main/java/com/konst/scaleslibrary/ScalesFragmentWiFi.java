@@ -29,7 +29,6 @@ import com.konst.scaleslibrary.module.InterfaceModule;
 import com.konst.scaleslibrary.module.Module;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ObjectScales;
-import com.konst.scaleslibrary.module.scale.ScaleModule;
 import com.konst.scaleslibrary.module.wifi.ModuleWiFi;
 import com.konst.scaleslibrary.settings.ActivityProperties;
 
@@ -162,7 +161,7 @@ public class ScalesFragmentWiFi extends Fragment implements View.OnClickListener
                 case ScalesView.REQUEST_BROKEN:
                     /*if (scaleModule != null)
                         scaleModule.dettach();*/
-                    ScaleModule.getInstance().dettach();
+                    ModuleWiFi.getInstance().dettach();
                     //openSearchDialog("");
                     break;
                 default:
@@ -198,7 +197,7 @@ public class ScalesFragmentWiFi extends Fragment implements View.OnClickListener
                     //settings.write(R.string.KEY_ADDRESS, module.getAddressBluetoothDevice());
                 }
             });
-        }catch (Exception | ErrorDeviceException e) {
+        }catch (Exception e) {
             getActivity().sendBroadcast(new Intent(InterfaceModule.ACTION_CONNECT_ERROR).putExtra(InterfaceModule.EXTRA_MESSAGE, e.getMessage()));
             //openSearchDialog(e.getMessage());
         }
@@ -221,7 +220,7 @@ public class ScalesFragmentWiFi extends Fragment implements View.OnClickListener
         if (scaleModule != null){
             progressBarWeight.setMax(scaleModule.getMarginTenzo());
             progressBarWeight.setSecondaryProgress(scaleModule.getLimitTenzo());
-            progressBarStable.setMax(ScaleModule.STABLE_NUM_MAX);
+            progressBarStable.setMax(Module.STABLE_NUM_MAX);
         }
 
         progressBarStable.setProgress(0);
