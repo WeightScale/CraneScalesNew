@@ -19,7 +19,7 @@ public class ModuleWiFi extends Module {
     private static final String KEY = "12345678";
 
     protected ModuleWiFi(Context context, String version, InterfaceCallbackScales event) throws Exception{
-        super(context, event);
+        super(context,version,event);
         versionName = version;
         wifiBaseManager = new WifiBaseManager(context,SSID,KEY, onWifiBaseManagerListener);
     }
@@ -41,13 +41,15 @@ public class ModuleWiFi extends Module {
     @Override
     public void dettach() {
         super.dettach();
-        wifiBaseManager.terminate();
+        isAttach = false;
+        scalesProcessEnable(false);
         if (clientWiFi != null){
             clientWiFi.killWorkingThread();
         }
     }
 
-    protected void attach(InetSocketAddress ipAddress) {
+    public void attach(InetSocketAddress ipAddress) {
+        super.attach();
         if (clientWiFi !=null){
             clientWiFi.killWorkingThread();
         }
@@ -65,20 +67,20 @@ public class ModuleWiFi extends Module {
     }
 
     @Override
-    protected void load() {
-        try {
-            version.extract();
-            resultCallback.onCreate(instance);
-        }  catch (ErrorTerminalException e) {
-            getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_TERMINAL_ERROR)/*.putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales())*/);
-        } catch (Exception e) {
-            getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_MODULE_ERROR)/*.putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales())*/);
-        }
+    protected void connect() {
+
     }
 
     @Override
-    protected void connect() {
-
+    public void scalesProcessEnable(boolean process) {
+        try {
+            if (process)
+                Commands.SPE.setParam(1);
+            else
+                Commands.SPE.setParam(0);
+        }catch (NullPointerException e){
+            Log.e(TAG, " "+e.getMessage());
+        }
     }
 
     public static ModuleWiFi getInstance() {return instance;}

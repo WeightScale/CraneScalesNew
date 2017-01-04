@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Главный класс для работы с весовым модулем. Инициализируем в теле программы. В абстрактных методах используем
- * возвращеные результаты после запуска метода {@link ModuleBluetooth#create(Context, String, BluetoothDevice, InterfaceCallbackScales)}}.
+ * возвращеные результаты после запуска метода {@link ModuleBluetooth#create(Context, String, String, InterfaceCallbackScales)}}.
  * Пример:
  * com.kostya.module.ScaleModule scaleModule = new com.kostya.module.ScaleModule("version module");
  * scaleModule.init("bluetooth device");
@@ -40,17 +40,8 @@ public class ModuleBluetooth extends Module {
      * @param moduleVersion Имя и номер версии в формате [[Имя][Номер]].
      * @throws Exception Ошибка при создании модуля.
      */
-    protected ModuleBluetooth(Context context, String moduleVersion, BluetoothDevice device, InterfaceCallbackScales event) throws Exception, ErrorDeviceException {
-        super(context, event);
-        versionName = moduleVersion;
-        /* Проверяем и включаем bluetooth. */
-        try {onEnableBluetooth(BluetoothAdapter.getDefaultAdapter());} catch (Exception e) {throw new ErrorDeviceException(e.getMessage());}
-        init(device);
-    }
-
     protected ModuleBluetooth(Context context, String moduleVersion, String device, InterfaceCallbackScales event) throws Exception, ErrorDeviceException {
-        super(context, event);
-        versionName = moduleVersion;
+        super(context,moduleVersion,event);
         /* Проверяем и включаем bluetooth. */
         try {onEnableBluetooth(BluetoothAdapter.getDefaultAdapter());} catch (Exception e) {throw new ErrorDeviceException(e.getMessage());}
         try{
@@ -58,6 +49,11 @@ public class ModuleBluetooth extends Module {
         }catch (Exception e){
             throw new ErrorDeviceException(e.getMessage());
         }
+    }
+
+    public static void create(Context context, String moduleVersion, String bluetoothDevice, InterfaceCallbackScales event) throws Exception, ErrorDeviceException {
+        instance = new ModuleBluetooth(context, moduleVersion, bluetoothDevice, event);
+        instance.attach();
     }
 
     @Override
@@ -99,18 +95,6 @@ public class ModuleBluetooth extends Module {
     }
 
     @Override
-    protected void load() {
-        try {
-            version.extract();
-            resultCallback.onCreate(instance);
-        }  catch (ErrorTerminalException e) {
-            getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_TERMINAL_ERROR)/*.putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales())*/);
-        } catch (Exception e) {
-            getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_MODULE_ERROR)/*.putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales())*/);
-        }
-    }
-
-    @Override
     protected void connect() {
 
     }
@@ -126,16 +110,6 @@ public class ModuleBluetooth extends Module {
         if (clientBluetooth != null){
             clientBluetooth.killWorkingThread();
         }
-    }
-
-    public static void create(Context context, String moduleVersion, BluetoothDevice device, InterfaceCallbackScales event) throws Exception, ErrorDeviceException {
-        instance = new ModuleBluetooth(context, moduleVersion, device, event);
-        instance.attach();
-    }
-
-    public static void create(Context context, String moduleVersion, String bluetoothDevice, InterfaceCallbackScales event) throws Exception, ErrorDeviceException {
-        instance = new ModuleBluetooth(context, moduleVersion, bluetoothDevice, event);
-        instance.attach();
     }
 
     /** Инициализация bluetooth адаптера и модуля.
@@ -177,7 +151,9 @@ public class ModuleBluetooth extends Module {
     public static ModuleBluetooth getInstance() { return instance; }
 
     /** Соединится с модулем. */
+    @Override
     public void attach() /*throws InterruptedException*/ {
+        super.attach();
         if (clientBluetooth !=null){
             clientBluetooth.killWorkingThread();
         }
@@ -187,16 +163,6 @@ public class ModuleBluetooth extends Module {
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
         }
-
-        /*if (threadAttach !=null){
-            threadAttach.interrupt();
-        }
-        try {
-            threadAttach = new Thread(new RunnableAttach());
-            threadAttach.start();
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-        }*/
     }
 
     /** Получить bluetooth устройство модуля.
@@ -329,7 +295,7 @@ public class ModuleBluetooth extends Module {
         public BluetoothConnectReceiver(Context context){
             mContext = context;
             intentFilter = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-            //intentFilter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+            intentFilter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
         }
 
         @Override
@@ -339,11 +305,10 @@ public class ModuleBluetooth extends Module {
                 switch (action){
                     case BluetoothDevice.ACTION_ACL_DISCONNECTED:
                         try{clientBluetooth.closeSocket();}catch (Exception e){}
-                        //try{bluetoothProcessManager.closeSocket();}catch (Exception e){}
                         break;
-                    /*case BluetoothDevice.ACTION_ACL_CONNECTED:
-
-                    break;*/
+                    case BluetoothDevice.ACTION_ACL_CONNECTED:
+                        //mContext.sendBroadcast(new Intent(Module.CONNECT));
+                    break;
                     default:
                 }
             }

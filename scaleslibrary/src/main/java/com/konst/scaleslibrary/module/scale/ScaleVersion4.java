@@ -22,8 +22,7 @@ import java.util.Set;
  * @author Kostya
  */
 public class ScaleVersion4 extends ScaleVersion {
-    /** Показание датчика веса с учетом offset.  */
-    private int sensorTenzoOffset;
+
     /** Разница знечений между значение ноля до и после. */
     private int offset;
     /** Предельное показани датчика. */

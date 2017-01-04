@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import com.google.common.base.Splitter;
 import com.konst.scaleslibrary.module.scale.*;
 import com.konst.scaleslibrary.module.wifi.ClientWiFi;
 import com.konst.scaleslibrary.module.wifi.WifiBaseManager;
 
 import java.net.InetSocketAddress;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
@@ -36,6 +38,7 @@ public abstract class Module implements InterfaceModule{
     public static final String CONNECT = Module.class.getSimpleName() + "CONNECT";
     public static final String DISCONNECT = Module.class.getSimpleName() + "DISCONNECT";
     public static final String ERROR = Module.class.getSimpleName() + "ERROR";
+    public static final String COMMAND = Module.class.getSimpleName() + "COMMAND";
     protected InterfaceCallbackScales resultCallback;
     /** Имя версии программы */
     protected String versionName;
@@ -123,27 +126,27 @@ public abstract class Module implements InterfaceModule{
     }*/
     protected abstract void connect();
     protected abstract void reconnect();
-    protected abstract void load();
 
     protected Module(Context context) {
         mContext = context;
         baseModuleReceiver = new BaseModuleReceiver(mContext);
-        baseModuleReceiver.register();
+
     }
 
-    protected Module(Context context, String version) throws Exception {
+    /*protected Module(Context context, String version) throws Exception {
         this(context);
         versionName = version;
-    }
+    }*/
 
     /** Конструктор модуля.
      * @param context Контекст.
      * @param event Интерфейс обратного вызова.
      * @throws Exception Ошибка при создании модуля.
      */
-    protected Module(Context context, InterfaceCallbackScales event) throws Exception {
+    protected Module(Context context, String version, InterfaceCallbackScales event) throws Exception {
         this(context);
         resultCallback = event;
+        versionName = version;
         Commands.setInterfaceCommand(this);
     }
 
@@ -384,10 +387,9 @@ public abstract class Module implements InterfaceModule{
      * @return Температура в градусах.
      * @see Commands#DTM
      */
-    private int getModuleTemperature() {
+    private int getModuleTemperature(int data) {
         try {
-            int temp = Integer.valueOf(Commands.DTM.getParam());
-            return (int) ((double) (float) (( temp - 0x800000) / 7169) / 0.81) - 273;
+            return (int) ((double) (float) (( data - 0x800000) / 7169) / 0.81) - 273;
         } catch (Exception e) {
             return -273;
         }
@@ -474,12 +476,27 @@ public abstract class Module implements InterfaceModule{
 
     public boolean isAttach() { return isAttach; }
 
+    public void attach(){
+        baseModuleReceiver.register();
+    }
+
     public void dettach() {
         isAttach = false;
         scalesProcessEnable(false);
         if (baseModuleReceiver != null){
             baseModuleReceiver.unregister();
         }
+    }
+
+    public void load() {
+        try {
+            version.extract();
+        }  catch (ErrorTerminalException e) {
+            getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_TERMINAL_ERROR)/*.putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales())*/);
+        } catch (Exception e) {
+            getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_MODULE_ERROR)/*.putExtra(InterfaceModule.EXTRA_MODULE, new ObjectScales())*/);
+        }
+        resultCallback.onCreate(this);
     }
 
     public void setEnableAutoNull(boolean enableAutoNull) {this.enableAutoNull = enableAutoNull;}
@@ -531,12 +548,16 @@ public abstract class Module implements InterfaceModule{
         private final Context mContext;
         private final IntentFilter intentFilter;
         private boolean isRegistered;
+        private int numTimeTemp;
+        /** Временная переменная для хранения веса. */
+        private int tempWeight;
 
         BaseModuleReceiver(Context context){
             mContext = context;
             intentFilter = new IntentFilter(CONNECT);
             intentFilter.addAction(DISCONNECT);
             intentFilter.addAction(ERROR);
+            intentFilter.addAction(COMMAND);
         }
 
         @Override
@@ -556,7 +577,7 @@ public abstract class Module implements InterfaceModule{
                         throw new Exception("Ошибка проверки версии.");
                     }
                 } catch (Exception e) {
-                    //dettach();
+                    dettach();
                     mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_CONNECT_ERROR).putExtra(InterfaceModule.EXTRA_MESSAGE, e.getMessage()));
                 }finally {
                     getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_ATTACH_FINISH));
@@ -567,19 +588,66 @@ public abstract class Module implements InterfaceModule{
             }else if (ERROR.equals(action)){
                 mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_CONNECT_ERROR)
                         .putExtra(InterfaceModule.EXTRA_MESSAGE, "Не включен модуль или большое растояние. Если не помогает просто перегрузите телефон."));
+            }else if (COMMAND.equals(action)){
+                ObjectCommand obj = (ObjectCommand) intent.getSerializableExtra(InterfaceModule.EXTRA_SCALES);
+                if (obj == null)
+                    return;
+                try{
+                    Map<String, String> map = Splitter.on( " " ).withKeyValueSeparator( '=' ).split( obj.getValue() );
+                    /* Секция вес. */
+                    int temp = (int) (Integer.valueOf(map.get("d")) * getCoefficientA());
+                    version.setSensorTenzoOffset(Integer.valueOf(map.get("d")));
+                    ResultWeight resultWeight;
+                    if (temp == Integer.MIN_VALUE) {
+                        resultWeight = ResultWeight.WEIGHT_ERROR;
+                    } else {
+                        if (version.isLimit())
+                            resultWeight = version.isMargin() ? ResultWeight.WEIGHT_MARGIN : ResultWeight.WEIGHT_LIMIT;
+                        else {
+                            resultWeight = ResultWeight.WEIGHT_NORMAL;
+                        }
+                    }
+                    objectScales.setWeight(getWeightToStepMeasuring(temp));
+                    objectScales.setResultWeight(resultWeight);
+                    objectScales.setTenzoSensor(version.getSensor());
+                    /* Секция авто ноль. */
+                    if (enableAutoNull){
+                        if (version.getWeight() != Integer.MIN_VALUE && Math.abs(version.getWeight()) < weightError) { //автоноль
+                            autoNull += 1;
+                            if (autoNull > timerZero * (ThreadScalesProcess.DIVIDER_AUTO_NULL / (filterADC==0?1:filterADC))) {
+                                setOffsetScale();
+                                autoNull = 0;
+                            }
+                        } else {
+                            autoNull = 0;
+                        }
+                    }
+                    /* Секция определения стабильного веса. */
+                    if (enableProcessStable){
+                        if (tempWeight - getDeltaStab() <= objectScales.getWeight() && tempWeight + getDeltaStab() >= objectScales.getWeight()) {
+                            if (objectScales.getStableNum() <= STABLE_NUM_MAX){
+                                if (objectScales.getStableNum() == STABLE_NUM_MAX) {
+                                    getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_WEIGHT_STABLE).putExtra(InterfaceModule.EXTRA_SCALES, objectScales));
+                                    //objectScales.setFlagStab(true);
+                                }
+                                objectScales.setStableNum(objectScales.getStableNum()+1);
+                            }
+                        } else {
+                            objectScales.setStableNum(0);
+                            //objectScales.setFlagStab(false);
+                        }
+                        tempWeight = objectScales.getWeight();
+                    }
+                    /* Секция батарея температура. */
+                    if (numTimeTemp == 0){
+                        numTimeTemp = 250;
+                        objectScales.setBattery(Integer.valueOf(map.get("b")));
+                        objectScales.setTemperature(getModuleTemperature(Integer.valueOf(map.get("t"))));
+                    }
+                    getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_SCALES_RESULT).putExtra(InterfaceModule.EXTRA_SCALES, objectScales));
+                }catch (Exception e){}
+                numTimeTemp--;
             }
-            /*switch (action){
-                case CONNECT:
-
-                break;
-                case DISCONNECT:
-
-                break;
-                case ERROR:
-
-                break;
-                default:
-            }*/
         }
 
         public void register() {
@@ -661,7 +729,7 @@ public abstract class Module implements InterfaceModule{
                     if (numTimeTemp == 0){
                         numTimeTemp = 250;
                         objectScales.setBattery(getModuleBatteryCharge());
-                        objectScales.setTemperature(getModuleTemperature());
+                        objectScales.setTemperature(getModuleTemperature(Integer.valueOf(Commands.DTM.getParam())));
 
                     }
                     getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_SCALES_RESULT).putExtra(InterfaceModule.EXTRA_SCALES, objectScales));
@@ -672,22 +740,22 @@ public abstract class Module implements InterfaceModule{
             Log.i(TAG, "interrupt");
         }
 
-        /**
-         * Преобразовать вес в шкалу шага веса.
-         * Шаг измерения установливается в настройках.
-         *
-         * @param weight Вес для преобразования.
-         * @return Преобразованый вес. */
-        private int getWeightToStepMeasuring(int weight) {
-            return (weight / stepScale) * stepScale;
-            //return weight / globals.getStepMeasuring() * globals.getStepMeasuring();
-        }
-
         @Override
         public void interrupt() {
             super.interrupt();
             cancel = true;
         }
+    }
+
+    /**
+     * Преобразовать вес в шкалу шага веса.
+     * Шаг измерения установливается в настройках.
+     *
+     * @param weight Вес для преобразования.
+     * @return Преобразованый вес. */
+    private int getWeightToStepMeasuring(int weight) {
+        return (weight / stepScale) * stepScale;
+        //return weight / globals.getStepMeasuring() * globals.getStepMeasuring();
     }
 
     public void scalesProcessEnable(boolean process){

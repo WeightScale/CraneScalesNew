@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private FloatingActionButton fab;
     private ScalesView scalesView;
-    private ModuleWiFi scaleModule;
+    private Module scaleModule;
     private FragmentManager fragmentManager;
     private FragmentInvoice fragmentInvoice;
     private FragmentListInvoice fragmentListInvoice;
@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         scalesView.createWiFi(globals.getVersion(), new InterfaceCallbackScales(){
             @Override
             public void onCreate(Module obj) {
+                scaleModule = obj;
                 globals.setScaleModule(obj);
 
             }

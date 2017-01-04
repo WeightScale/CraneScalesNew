@@ -366,6 +366,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
                         openSearchProgress(msg);
                         break;
                     case InterfaceModule.ACTION_CONNECT_ERROR:
+                        try {ModuleBluetooth.getInstance().dettach();}catch (Exception e){};
                         SpannableStringBuilder text = new SpannableStringBuilder("нет соединения");
                         text.setSpan(new TextAppearanceSpan(getActivity(), R.style.SpanTextKgMini),0,text.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                         weightTextView.setText(text, TextView.BufferType.SPANNABLE);

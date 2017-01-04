@@ -3,14 +3,14 @@ package com.konst.scaleslibrary.module.wifi;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import com.konst.scaleslibrary.module.Commands;
-import com.konst.scaleslibrary.module.Module;
-import com.konst.scaleslibrary.module.ObjectCommand;
-import com.konst.scaleslibrary.module.InterfaceTransferClient;
+import com.google.common.base.Splitter;
+import com.konst.scaleslibrary.module.*;
+import com.konst.scaleslibrary.module.scale.ObjectScales;
 
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -76,7 +76,7 @@ public class ClientWiFi implements InterfaceTransferClient {
         write(cmd.toString());
         response = new ObjectCommand(cmd, "");
         for (int i = 0; i < cmd.getTimeOut(); i++) {
-            try { TimeUnit.MILLISECONDS.sleep(1);} catch (InterruptedException e) {Log.e(TAG, e.getMessage());}
+            try { TimeUnit.MILLISECONDS.sleep(1);} catch (InterruptedException e) {e.printStackTrace();}
             try {
                 if (response.isResponse()) {
                     return response;
@@ -122,10 +122,31 @@ public class ClientWiFi implements InterfaceTransferClient {
                     String substring = bufferedReader.readLine();
                     try {
                         Commands cmd = Commands.valueOf(substring.substring(0, 3));
-                        if (cmd == response.getCommand()){
+                        try {
+                            if (cmd == response.getCommand()){
+                                response.setValue(substring.replace(cmd.name(),""));
+                                response.setResponse(true);
+                            }else {
+                                //ObjectCommand obj = new ObjectCommand(cmd, substring.replace(cmd.name(),""));
+                                throw new Exception(" ");
+                            }
+                        }catch (Exception e){
+                            ObjectCommand obj = new ObjectCommand(cmd, substring.replace(cmd.name(),""));
+                            mContext.sendBroadcast(new Intent(Module.COMMAND).putExtra(InterfaceModule.EXTRA_SCALES, obj));
+                        }
+
+                        /*if ("SDO".equals(cmd.getName())){
+                            String s = substring.replace(cmd.name(),"");
+                            Map<String, String> map = Splitter.on( " " ).withKeyValueSeparator( '=' ).split( s );
+                            ObjectScales objectScales = new ObjectScales();
+                            objectScales.setWeight(Integer.valueOf(map.get("d")));
+                            objectScales.setTemperature(Integer.valueOf(map.get("t")));
+                            objectScales.setBattery(Integer.valueOf(map.get("b")));
+                            String[] s1 = s.split(" ");
+                        }else if (cmd == response.getCommand()){
                             response.setValue(substring.replace(cmd.name(),""));
                             response.setResponse(true);
-                        }
+                        }*/
                     } catch (Exception e) {
                         Log.i(TAG, e.getMessage());
                     }
@@ -139,9 +160,9 @@ public class ClientWiFi implements InterfaceTransferClient {
 
         public void stopWorkingThread() {
             working.set(false);
-            try {mSocket.close();} catch (IOException e) { }
-            try {bufferedReader.close();} catch (IOException e) { }
-            printWriter.close();
+            try {mSocket.close();} catch (Exception e) { }
+            try {bufferedReader.close();} catch (Exception e) { }
+            try {printWriter.close();}catch (Exception e){}
             Thread.currentThread().interrupt();
         }
     }

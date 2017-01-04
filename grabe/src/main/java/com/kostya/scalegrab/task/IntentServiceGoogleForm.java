@@ -1,19 +1,24 @@
 package com.kostya.scalegrab.task;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.*;
+import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
+import com.konst.scaleslibrary.settings.ActivityProperties;
 import com.kostya.scalegrab.Globals;
+import com.kostya.scalegrab.R;
 import com.kostya.scalegrab.internet.Internet;
 import com.kostya.scalegrab.provider.InvoiceTable;
+import com.kostya.scalegrab.settings.ActivityPreferences;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.entity.UrlEncodedFormEntity;
@@ -27,11 +32,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -49,6 +56,8 @@ import java.util.List;
 public class IntentServiceGoogleForm extends IntentService {
     //private SystemTable systemTable;
     private Internet internet;
+    NotificationManager notificationManager;
+    //private Toast toast;
     public static final String filePath = "forms/kolosok.xml";
     public static final String nameForm = "EventsForm";
     public static final String TAG = IntentServiceGoogleForm.class.getName();
@@ -58,6 +67,12 @@ public class IntentServiceGoogleForm extends IntentService {
 
     public IntentServiceGoogleForm(String name) { super(name);  }
     public IntentServiceGoogleForm() { super(IntentServiceGoogleForm.class.getName());  }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    }
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -77,9 +92,28 @@ public class IntentServiceGoogleForm extends IntentService {
                     submitData(http, results);
                 }
             }
-        }catch (Exception e){Log.e(TAG, e.getMessage());}
-
+        } catch (FileNotFoundException e){
+            onNotificationFileNotFound("Не выбран файл Google", "Выберите в настройках файл.");
+        } catch (SAXParseException e){
+            onNotificationFileNotFound("Не правельный файл Google", "Выберите в настройках файл.");
+        } catch (Exception e){
+            sendNotification("Уведомление","Ошибка при отправке", e.getMessage());
+        }
     }
+
+    /*@Override
+    public void onDestroy() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (toast != null)
+                    toast.cancel();
+                IntentServiceGoogleForm.super.onDestroy();
+            }
+        }, 1000);
+        //super.onDestroy();
+    }*/
 
     /*void sendServerEventTable(){
         if (!Internet.getConnection(10000, 10)) {return;}
@@ -115,64 +149,59 @@ public class IntentServiceGoogleForm extends IntentService {
         }
     }*/
 
-    void runSendEventTable(){
+    void runSendEventTable() throws Exception {
 
         if (!internet.getConnection(10000, 10)) {return;}
-
-        try {
             /* Класс формы для передачи данных весового чека.*/
-            //String path = new SystemTable(getApplicationContext()).getProperty(SystemTable.Name.PATH_FORM);
-            //GoogleForms.Form form = new GoogleForms(getApplicationContext().getAssets().open(filePath)).createForm(nameForm);
-            //InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(Uri.parse(path));
-            //String FilePath = getApplicationContext().getFilesDir() + File.separator + "forms" + File.separator + "form.xml";
-            File file = new File(Globals.getInstance().pathLocalForms,"form.xml");
-            //Uri uri = Uri.parse(FilePath);
-            InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(Uri.fromFile(file));
-            //InputStream inputStream = new FileInputStream(path);
-            GoogleForms.Form form = new GoogleForms(inputStream).createForm(nameForm);
-            Cursor invoice = new InvoiceTable(getApplicationContext()).getPreliminary(new Date());
-            if (invoice.getCount() > 0) {
-                invoice.moveToFirst();
-                if (!invoice.isAfterLast()) {
-                    do {
-                        int weight = invoice.getInt(invoice.getColumnIndex(InvoiceTable.KEY_TOTAL_WEIGHT));
-                        if (weight == 0){
-                            continue;
-                        }
-                        String http = form.getHttp();
+        //String path = new SystemTable(getApplicationContext()).getProperty(SystemTable.Name.PATH_FORM);
+        //GoogleForms.Form form = new GoogleForms(getApplicationContext().getAssets().open(filePath)).createForm(nameForm);
+        //InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(Uri.parse(path));
+        //String FilePath = getApplicationContext().getFilesDir() + File.separator + "forms" + File.separator + "form.xml";
+        File file = new File(Globals.getInstance().pathLocalForms,"form.xml");
+        //Uri uri = Uri.parse(FilePath);
+        InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(Uri.fromFile(file));
+        //InputStream inputStream = new FileInputStream(path);
+        GoogleForms.Form form = new GoogleForms(inputStream).createForm(nameForm);
+        Cursor invoice = new InvoiceTable(getApplicationContext()).getPreliminary(new Date());
+        if (invoice.getCount() > 0) {
+            invoice.moveToFirst();
+            if (!invoice.isAfterLast()) {
+                do {
+                    int weight = invoice.getInt(invoice.getColumnIndex(InvoiceTable.KEY_TOTAL_WEIGHT));
+                    if (weight == 0){
+                        continue;
+                    }
+                    String http = form.getHttp();
 
-                        Collection<BasicNameValuePair> values = form.getEntrys();
-                        List<ValuePair> results = new ArrayList<>();
+                    Collection<BasicNameValuePair> values = form.getEntrys();
+                    List<ValuePair> results = new ArrayList<>();
 
-                        for (BasicNameValuePair valuePair : values){
-                            try {
-                                if(valuePair.getValue().equals(InvoiceTable.KEY_IS_READY)){
-                                    int i = invoice.getInt(invoice.getColumnIndex(InvoiceTable.KEY_IS_READY));
-                                    if (i == InvoiceTable.READY){
-                                        results.add(new ValuePair(valuePair.getName(), ""));
-                                    }else {
-                                        results.add(new ValuePair(valuePair.getName(), "НЕ ЗАКРЫТА"));
-                                    }
-                                }else
-                                    results.add(new ValuePair(valuePair.getName(), invoice.getString(invoice.getColumnIndex(valuePair.getValue()))));
-                            } catch (Exception e) {}
-                        }
+                    for (BasicNameValuePair valuePair : values){
                         try {
-                            submitData(http, results);
-                            int id = invoice.getInt(invoice.getColumnIndex(InvoiceTable.KEY_ID));
-                            new InvoiceTable(getApplicationContext()).updateEntry(id, InvoiceTable.KEY_IS_CLOUD, InvoiceTable.READY);
-                        }catch (Exception e){
-                            Log.e(TAG, e.getMessage());
-                        }
+                            if(valuePair.getValue().equals(InvoiceTable.KEY_IS_READY)){
+                                int i = invoice.getInt(invoice.getColumnIndex(InvoiceTable.KEY_IS_READY));
+                                if (i == InvoiceTable.READY){
+                                    results.add(new ValuePair(valuePair.getName(), ""));
+                                }else {
+                                    results.add(new ValuePair(valuePair.getName(), "НЕ ЗАКРЫТА"));
+                                }
+                            }else
+                                results.add(new ValuePair(valuePair.getName(), invoice.getString(invoice.getColumnIndex(valuePair.getValue()))));
+                        } catch (Exception e) {}
+                    }
+                    try {
+                        submitData(http, results);
+                        int id = invoice.getInt(invoice.getColumnIndex(InvoiceTable.KEY_ID));
+                        new InvoiceTable(getApplicationContext()).updateEntry(id, InvoiceTable.KEY_IS_CLOUD, InvoiceTable.READY);
+                    }catch (Exception e){
+                        Log.e(TAG, e.getMessage());
+                    }
 
-                    } while (invoice.moveToNext());
-                }
+                } while (invoice.moveToNext());
             }
-            invoice.close();
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+        invoice.close();
+
     }
 
     public void submitData(String http_post, List<ValuePair> results) throws Exception {
@@ -315,5 +344,41 @@ public class IntentServiceGoogleForm extends IntentService {
             }
 
         }
+    }
+
+    private void onNotificationFileNotFound(String title, String text){
+        Intent notificationIntent = new Intent(this, ActivityPreferences.class);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setContentIntent(contentIntent)
+                //.setOngoing(true)   //Can't be swiped out
+                .setSmallIcon(R.drawable.ic_info)
+                .setAutoCancel(true)
+                //.setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.large))   // большая картинка
+                .setTicker("Уведомление!")
+                .setContentTitle(title) //Заголовок
+                .setContentText(text) // Текст уведомления
+                .setWhen(System.currentTimeMillis());
+
+        Notification notification = Build.VERSION.SDK_INT <= 15 ? builder.getNotification() : builder.build();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(1, notification);
+    }
+
+    public void sendNotification(String Ticker, String Title, String Text) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder/*.setContentIntent(contentIntent)*/
+                //.setOngoing(true)   //Can't be swiped out
+                .setSmallIcon(R.drawable.ic_info)
+                //.setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.large))   // большая картинка
+                .setTicker(Ticker)
+                .setContentTitle(Title) //Заголовок
+                .setContentText(Text) // Текст уведомления
+                .setWhen(System.currentTimeMillis());
+
+        Notification notification = Build.VERSION.SDK_INT <= 15 ? builder.getNotification() : builder.build();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(1, notification);
     }
 }

@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class BootModule extends ModuleBluetooth {
     private static BootModule instance;
     private ThreadBootAttach threadAttach;
-    private String versionName = "";
+    //private String versionName = "";
     private int versionNumber;
     private static final String TAG = BootModule.class.getSimpleName();
 
@@ -33,30 +33,29 @@ public class BootModule extends ModuleBluetooth {
     private BootModule(Context context, String version, String address, InterfaceCallbackScales event) throws Exception, ErrorDeviceException {
         super(context, version, address, event);
         //runnableBootConnect = new RunnableBootConnect();
-        versionName = version;
         attach();
     }
 
     /** Конструктор модуля бутлодера.
      * @param version Верситя бутлодера.
      */
-    private BootModule(Context context, String version, BluetoothDevice device, InterfaceCallbackScales event) throws Exception, ErrorDeviceException {
+    /*private BootModule(Context context, String version, BluetoothDevice device, InterfaceCallbackScales event) throws Exception, ErrorDeviceException {
         super(context, version, device, event);
         //runnableBootConnect = new RunnableBootConnect();
-        versionName = version;
         attach();
-    }
+    }*/
 
     public static void create(Context context, String version, String address, InterfaceCallbackScales event) throws Exception, ErrorDeviceException {
         instance = new BootModule(context, version, address, event);
     }
 
-    public static void create(Context context, String version, BluetoothDevice device, InterfaceCallbackScales event) throws Exception, ErrorDeviceException {
+    /*public static void create(Context context, String version, BluetoothDevice device, InterfaceCallbackScales event) throws Exception, ErrorDeviceException {
         instance = new BootModule(context, version, device, event);
-    }
+    }*/
 
     public static BootModule getInstance() { return instance; }
 
+    @Override
     public void attach(){
         /*getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_ATTACH_START).putExtra(InterfaceModule.EXTRA_DEVICE_NAME, getNameBluetoothDevice()));
         //resultCallback.resultConnect(ResultConnect.STATUS_ATTACH_START, getNameBluetoothDevice(), null);
@@ -108,7 +107,7 @@ public class BootModule extends ModuleBluetooth {
     }
 
     @Override
-    protected void load() {
+    public void load() {
         resultCallback.onCreate(instance);
     }
 
@@ -160,7 +159,6 @@ public class BootModule extends ModuleBluetooth {
             mmSocket = tmp;
         }
 
-
         @Override
         public void run() {
             getContext().sendBroadcast(new Intent(InterfaceModule.ACTION_ATTACH_START).putExtra(InterfaceModule.EXTRA_DEVICE_NAME,getNameBluetoothDevice()));
@@ -169,12 +167,7 @@ public class BootModule extends ModuleBluetooth {
                 mmSocket.connect();
                 outputStream = mmSocket.getOutputStream();
                 inputStream = mmSocket.getInputStream();
-                //printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8")), false);
-                //printWriter.flush();
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-                //bluetoothHandler.obtainMessage(BluetoothHandler.MSG.CONNECT.ordinal()).sendToTarget();
-
                 if(isVersion()){
                     isAttach = true;
                     resultCallback.onCreate(instance);
@@ -250,7 +243,6 @@ public class BootModule extends ModuleBluetooth {
      */
     public boolean startProgramming() {
         return Commands.STR.setParam("");
-
     }
 
     /**
@@ -264,7 +256,6 @@ public class BootModule extends ModuleBluetooth {
 
     /**
      * Получить версию загрузчика.
-     *
      * @return Номер версии.
      */
     public int getBootVersion() {
@@ -282,30 +273,6 @@ public class BootModule extends ModuleBluetooth {
     public int getVersionNumber() {
         return versionNumber;
     }
-
-
-    /*private BluetoothHandler bluetoothHandler = new BluetoothHandler(){
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (MSG.values()[msg.what]){
-                case RECEIVE:
-                    ObjectCommand cmd = (ObjectCommand)msg.obj;
-                    String value = cmd.getValue();
-                    break;
-                case CONNECT:
-                    if(isVersion()){
-                        resultCallback.resultConnect(ResultConnect.STATUS_LOAD_OK, "", instance);
-
-                    }else {
-                        threadBootAttach.cancel();
-                        resultCallback.resultConnect(ResultConnect.STATUS_VERSION_UNKNOWN, "", null);
-                    }
-                    break;
-                default:
-            }
-        }
-    };*/
 
     public void sendByte(byte ch) {
         threadAttach.sendByte(ch);

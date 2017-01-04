@@ -58,14 +58,13 @@ public class ClientBluetooth implements InterfaceTransferClient {
         write(cmd.toString());
         response = new ObjectCommand(cmd, "");
         for (int i = 0; i < cmd.getTimeOut(); i++) {
-            try { TimeUnit.MILLISECONDS.sleep(1);} catch (InterruptedException e) {
-                Log.e(TAG, e.getMessage());}
+            try { TimeUnit.MILLISECONDS.sleep(1);} catch (InterruptedException e) {e.printStackTrace();}
             try {
                 if (response.isResponse()) {
                     return response;
                 }
             } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, "" + e.getMessage());
             }
         }
         return null;
@@ -94,12 +93,6 @@ public class ClientBluetooth implements InterfaceTransferClient {
         if(workerThread == null) {
             workerThread = new WorkerThread();
             workerThread.start();
-
-            /*while(true) {
-                if(!workerThread.isAlive()) {
-                    continue;
-                }
-            }*/
         }
     }
 
@@ -128,9 +121,9 @@ public class ClientBluetooth implements InterfaceTransferClient {
                 printWriter.flush();
                 mContext.sendBroadcast(new Intent(Module.CONNECT));
             } catch (IOException e) {
-                Log.e(TAG, e.getMessage());
                 mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_ATTACH_FINISH));
                 mContext.sendBroadcast(new Intent(InterfaceModule.ACTION_CONNECT_ERROR).putExtra(InterfaceModule.EXTRA_MESSAGE, e.getMessage()));
+                Log.e(TAG, e.getMessage());
                 return;
             }
 

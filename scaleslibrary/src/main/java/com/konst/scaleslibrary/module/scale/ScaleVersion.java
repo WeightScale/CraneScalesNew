@@ -15,6 +15,8 @@ import com.konst.scaleslibrary.module.Module;
  */
 public abstract class ScaleVersion {
     protected Module scaleModule;
+    /** Показание датчика веса с учетом offset.  */
+    protected int sensorTenzoOffset;
     /** Текущий вес.  */
     protected int weight;
     /** Максимальный вес для весов. */
@@ -48,8 +50,10 @@ public abstract class ScaleVersion {
     public abstract boolean isMargin();
     public abstract boolean setOffsetScale();
 
+    public void setSensorTenzoOffset(int sensorTenzoOffset) {this.sensorTenzoOffset = sensorTenzoOffset;}
     public int getWeight() { return weight; }
     public int getWeightMax() { return weightMax; }
     public void setWeightMax(int weightMax) { this.weightMax = weightMax;}
+
 
 }
