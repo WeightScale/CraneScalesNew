@@ -9,11 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
-import com.konst.scaleslibrary.module.ErrorDeviceException;
 import com.konst.scaleslibrary.module.InterfaceModule;
 import com.konst.scaleslibrary.module.Module;
+import com.konst.scaleslibrary.module.bluetooth.FragmentBluetooth;
 import com.konst.scaleslibrary.module.boot.BootModule;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
+import com.konst.scaleslibrary.module.usb.FragmentComPort;
+import com.konst.scaleslibrary.module.wifi.FragmentWiFi;
 import com.konst.scaleslibrary.settings.FragmentSettings;
 
 /** Класс индикатора весового модуля.
@@ -25,7 +27,7 @@ public class ScalesView extends LinearLayout implements OnInteractionListener/*,
     public Settings settings;
     private Module scaleModule;
     private BootModule bootModule;
-    private ScalesFragment scalesFragment;
+    private FragmentBluetooth fragmentBluetooth;
     //private SearchFragment searchFragment;
     private FragmentManager fragmentManager;
     private BaseReceiver baseReceiver;
@@ -108,8 +110,8 @@ public class ScalesView extends LinearLayout implements OnInteractionListener/*,
     }
 
     public void openSearchScales(){
-        if (scalesFragment != null){
-            scalesFragment.openSearchDialog("Выбор устройства для соединения.");
+        if (fragmentBluetooth != null){
+            fragmentBluetooth.openSearchDialog("Выбор устройства для соединения.");
         }
     }
 
@@ -148,18 +150,28 @@ public class ScalesView extends LinearLayout implements OnInteractionListener/*,
     public void createWiFi(String version, InterfaceCallbackScales listener) {
         this.version = version;
         interfaceCallbackScales = listener;
-        Fragment fragment = ScalesFragmentWiFi.newInstance(version, this);
+        Fragment fragment = FragmentWiFi.newInstance(version, this);
         fragmentManager.beginTransaction().replace(R.id.fragment, fragment, fragment.getClass().getName()).commit();
     }
 
     /** Создаем обьект весовой модуль.
      * @param version Имя версии весового модуля.
      */
-    public void create(String version, InterfaceCallbackScales listener) {
+    public void createBluetooth(String version, InterfaceCallbackScales listener) {
         this.version = version;
         interfaceCallbackScales = listener;
-        scalesFragment = ScalesFragment.newInstance(version, addressDevice, this);
-        fragmentManager.beginTransaction().replace(R.id.fragment, scalesFragment, scalesFragment.getClass().getName()).commit();
+        fragmentBluetooth = FragmentBluetooth.newInstance(version, addressDevice, this);
+        fragmentManager.beginTransaction().replace(R.id.fragment, fragmentBluetooth, fragmentBluetooth.getClass().getName()).commit();
+    }
+
+    /** Создаем обьект весовой модуль Com Port.
+     * @param version Имя версии весового модуля.
+     */
+    public void createComPort(String version, InterfaceCallbackScales listener) {
+        this.version = version;
+        interfaceCallbackScales = listener;
+        Fragment fragment = FragmentComPort.newInstance(version, addressDevice, this);
+        fragmentManager.beginTransaction().replace(R.id.fragment, fragment, fragment.getClass().getName()).commit();
     }
 
     /** Устанавливаем необходимую дискретность отображения значения веса.

@@ -28,7 +28,6 @@ import com.konst.grabewifi.provider.InvoiceTable;
 import com.konst.grabewifi.provider.WeighingTable;
 import com.konst.grabewifi.settings.ActivityPreferences;
 import com.konst.grabewifi.task.IntentServiceGoogleForm;
-import com.konst.scaleslibrary.ScalesFragment;
 import com.konst.scaleslibrary.ScalesView;
 import com.konst.scaleslibrary.Settings;
 import com.konst.scaleslibrary.internet.Internet;

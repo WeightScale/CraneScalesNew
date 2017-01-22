@@ -106,8 +106,7 @@ public class WifiBaseManager {
             if (networkInfo.isConnected() && wifiInfo.getSSID().replace("\"", "").equals(ssid)) {
                 onAttachNetwork();
                 return;
-            }
-            else {
+            }else {
                 wifiManager.disconnect();
             }
         } catch (Exception e) {

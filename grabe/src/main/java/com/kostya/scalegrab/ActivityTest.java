@@ -22,12 +22,8 @@ import android.view.*;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.konst.scaleslibrary.OnInteractionListener;
-import com.konst.scaleslibrary.ScalesFragment;
 import com.konst.scaleslibrary.ScalesView;
-import com.konst.scaleslibrary.Settings;
 import com.konst.scaleslibrary.module.Module;
-import com.konst.scaleslibrary.module.bluetooth.ModuleBluetooth;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.kostya.scalegrab.internet.Internet;
 import com.kostya.scalegrab.provider.InvoiceTable;
@@ -118,7 +114,7 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         fragmentManager.beginTransaction().add(R.id.fragmentInvoice, fragmentListInvoice, FragmentListInvoice.class.getSimpleName()).commit();
 
         scalesView = (ScalesView)findViewById(R.id.scalesView);
-        scalesView.create(globals.getPackageInfo().versionName, new InterfaceCallbackScales(){
+        scalesView.createBluetooth(globals.getPackageInfo().versionName, new InterfaceCallbackScales(){
             @Override
             public void onCreate(Module obj) {
                 scaleModule = obj;

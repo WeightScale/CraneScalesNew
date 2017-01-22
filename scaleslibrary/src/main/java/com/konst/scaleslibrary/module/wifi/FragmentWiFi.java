@@ -1,8 +1,14 @@
-package com.konst.scaleslibrary;
+package com.konst.scaleslibrary.module.wifi;
 
-import android.app.*;
+import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -18,10 +24,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import com.konst.scaleslibrary.module.ErrorDeviceException;
+import com.konst.scaleslibrary.*;
 import com.konst.scaleslibrary.module.InterfaceModule;
 import com.konst.scaleslibrary.module.Module;
-import com.konst.scaleslibrary.module.bluetooth.ModuleBluetooth;
 import com.konst.scaleslibrary.module.scale.InterfaceCallbackScales;
 import com.konst.scaleslibrary.module.scale.ObjectScales;
 import com.konst.scaleslibrary.settings.ActivityProperties;
@@ -31,13 +36,14 @@ import com.konst.scaleslibrary.settings.ActivityProperties;
  * Activities that contain this fragment must implement the
  * {@link OnInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ScalesFragment#newInstance} factory method to
+ * Use the {@link FragmentWiFi#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ScalesFragment extends Fragment implements View.OnClickListener/*, View.OnLongClickListener*/ {
+public class FragmentWiFi extends Fragment implements View.OnClickListener/*, View.OnLongClickListener*/ {
     /** Настройки для весов. */
     public Settings settings;
-    private ModuleBluetooth scaleModule;
+    //private Module scaleModuleWiFi;
+    private ModuleWiFi scaleModule;
     private SpannableStringBuilder textKg;
     private ProgressBar progressBarStable;
     private ProgressBar progressBarWeight;
@@ -49,9 +55,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
     private Vibrator vibrator; //вибратор
     private BaseReceiver baseReceiver; //приёмник намерений
     private static final String ARG_VERSION = BootFragment.class.getSimpleName()+"VERSION";
-    private static final String ARG_DEVICE = BootFragment.class.getSimpleName()+"DEVICE";
     private String version;
-    private String device;
     private int moduleWeight;
     private boolean touchWeightView;
     private boolean weightViewIsSwipe;
@@ -60,22 +64,19 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
     //private OnInteractionListener onInteractionListener;
     private static OnInteractionListener onListener;
 
-    public ScalesFragment(){}
+    public FragmentWiFi(){}
 
-    protected void loadModule(ModuleBluetooth scaleModule) {
-        this.scaleModule = scaleModule;
-    }
+    //protected void loadModule(ScaleModule scaleModule) {this.scaleModule = scaleModule;}
 
     /*public void setOnInteractionListener(OnInteractionListener listener){
         onInteractionListener = listener;
     }*/
 
-    public static ScalesFragment newInstance(String version, String device, OnInteractionListener listener) {
+    public static FragmentWiFi newInstance(String version, OnInteractionListener listener) {
         onListener = listener;
-        ScalesFragment fragment = new ScalesFragment();
+        FragmentWiFi fragment = new FragmentWiFi();
         Bundle args = new Bundle();
         args.putString(ARG_VERSION, version);
-        args.putString(ARG_DEVICE, device);
         fragment.setArguments(args);
         return fragment;
     }
@@ -85,7 +86,6 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             version = getArguments().getString(ARG_VERSION);
-            device = getArguments().getString(ARG_DEVICE);
         }
         settings = new Settings(getActivity(), ScalesView.SETTINGS);
         vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
@@ -94,7 +94,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
         baseReceiver = new BaseReceiver(getActivity());
         baseReceiver.register();
 
-        createScalesModule(device);
+        createScalesModule();
     }
 
     @Override
@@ -103,11 +103,6 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
         progressBarWeight = (ProgressBar)view.findViewById(R.id.progressBarWeight);
         progressBarStable = (ProgressBar)view.findViewById(R.id.progressBarStable);
         weightTextView = (TextView)view.findViewById(R.id.weightTextView);
-        //weightTextView.setOnLongClickListener(this);
-        //weightTextView.setCompoundDrawablesWithIntrinsicBounds( R.drawable.stroke, 0, 0, 0);
-        //weightTextView.setShadowLayer(10, 0, 0,   getResources().getColor(R.color.text));
-
-        //imageViewWait = (ImageView)view.findViewById(R.id.imageViewWait);
 
         view.findViewById(R.id.buttonSettings).setOnClickListener(this);
         //view.findViewById(R.id.buttonSearch).setOnClickListener(this);
@@ -160,12 +155,12 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
                     String device = data.getStringExtra(SearchDialogFragment.ARG_DEVICE);
                     if (scaleModule != null)
                         scaleModule.dettach();
-                    createScalesModule(device);
+                    createScalesModule();
                     break;
                 case ScalesView.REQUEST_BROKEN:
                     /*if (scaleModule != null)
                         scaleModule.dettach();*/
-                    ModuleBluetooth.getInstance().dettach();
+                    ModuleWiFi.getInstance().dettach();
                     //openSearchDialog("");
                     break;
                 default:
@@ -184,23 +179,26 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
         }
     }
 
-    private void createScalesModule(String device){
+    private void createScalesModule(){
         try {
-            ModuleBluetooth.create(getActivity(), version, device, new InterfaceCallbackScales() {
+            ModuleWiFi.create(getActivity(), version, new InterfaceCallbackScales() {
                 /** Сообщение о результате соединения.
                  * @param module Модуль с которым соединились. */
                 @Override
                 public void onCreate(Module module) {
-                    if (module instanceof ModuleBluetooth){
-                        scaleModule = (ModuleBluetooth) module;
-                        onListener.onScaleModuleCallback(scaleModule);
+                    if (module instanceof ModuleWiFi){
+                        scaleModule = (ModuleWiFi) module;
+                        onListener.onScaleModuleCallback(module);
+                        //onListener.onUpdateSettings(settings);
                         scaleModule.scalesProcessEnable(true);
+
                     }
-                    settings.write(R.string.KEY_ADDRESS, scaleModule.getAddressBluetoothDevice());
+                    //settings.write(R.string.KEY_ADDRESS, module.getAddressBluetoothDevice());
                 }
             });
-        }catch (Exception | ErrorDeviceException e) {
+        }catch (Exception e) {
             getActivity().sendBroadcast(new Intent(InterfaceModule.ACTION_CONNECT_ERROR).putExtra(InterfaceModule.EXTRA_MESSAGE, e.getMessage()));
+            //openSearchDialog(e.getMessage());
         }
     }
 
@@ -221,7 +219,7 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
         if (scaleModule != null){
             progressBarWeight.setMax(scaleModule.getMarginTenzo());
             progressBarWeight.setSecondaryProgress(scaleModule.getLimitTenzo());
-            progressBarStable.setMax(ModuleBluetooth.STABLE_NUM_MAX);
+            progressBarStable.setMax(Module.STABLE_NUM_MAX);
         }
 
         progressBarStable.setProgress(0);
@@ -366,7 +364,6 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
                         openSearchProgress(msg);
                         break;
                     case InterfaceModule.ACTION_CONNECT_ERROR:
-                        try {ModuleBluetooth.getInstance().dettach();}catch (Exception e){};
                         SpannableStringBuilder text = new SpannableStringBuilder("нет соединения");
                         text.setSpan(new TextAppearanceSpan(getActivity(), R.style.SpanTextKgMini),0,text.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                         weightTextView.setText(text, TextView.BufferType.SPANNABLE);
@@ -483,5 +480,4 @@ public class ScalesFragment extends Fragment implements View.OnClickListener/*, 
             }
         }
     }
-
 }

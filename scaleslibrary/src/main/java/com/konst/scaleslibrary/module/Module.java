@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class Module implements InterfaceModule{
     private final Context mContext;
-    protected WifiBaseManager wifiBaseManager;
+    //protected WifiBaseManager wifiBaseManager;
     protected ScaleVersion version;
     protected ObjectScales objectScales = new ObjectScales();
     private ThreadScalesProcess threadScalesProcess;
@@ -185,7 +185,6 @@ public abstract class Module implements InterfaceModule{
         }
         return false;
     }
-
     /** Получить время работы при бездействии модуля.
      * @return Время в минутах.  */
     public int getTimeOff() {
