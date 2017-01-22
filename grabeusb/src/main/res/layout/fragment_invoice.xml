@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:focusable="false"
+              android:background="@color/background">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/corners"
+            android:layout_marginRight="@dimen/corners"
+            android:background="@color/white"
+            android:layout_marginTop="@dimen/corners">
+
+        <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/corners"
+                android:layout_marginRight="@dimen/corners">
+
+            <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:showDividers="middle|beginning|end"
+                    android:gravity="center">
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:text="ДАТА"
+                        android:layout_weight="1"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:gravity="left|center"/>
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/invoiceDate"
+                        android:layout_weight="1"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:gravity="center_horizontal"
+                        android:textStyle="bold"/>
+
+            </TableRow>
+
+            <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:showDividers="middle|beginning|end">
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:text="НОМЕР"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:id="@+id/textView6"/>
+
+                <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/invoiceName"
+                        android:inputType="text"
+                        android:imeOptions="actionDone"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:textStyle="bold"
+                        android:textColor="@color/background2"
+                        android:singleLine="true"/>
+
+            </TableRow>
+
+            <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:text="ЗАГРУЗКА"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                    <EditText
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/invoiceLoading"
+                            android:inputType="numberDecimal"
+                            android:layout_weight="1"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:textSize="@dimen/text_medium"
+                            android:textStyle="bold"
+                            android:textColor="@color/background2"
+                            android:gravity="center"
+                            android:imeOptions="actionDone"
+                            android:singleLine="true"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="кг"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textColor="@color/background2"/>
+                </LinearLayout>
+
+            </TableRow>
+
+        </TableLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background2"
+            android:layout_marginLeft="@dimen/corners"
+            android:layout_marginRight="@dimen/corners"
+            android:gravity="center"
+            android:focusable="false">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/textViewStage"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:focusable="false"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/textViewBatch"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:focusable="false"/>
+    </LinearLayout>
+
+    <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:id="@+id/invoiceList"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/corners"
+            android:layout_marginRight="@dimen/corners"
+            android:background="@color/white"
+            android:dividerHeight="@dimen/padding"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/background1"
+            android:layout_marginLeft="@dimen/padding"
+            android:layout_marginRight="@dimen/padding">
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/corners"
+            android:layout_marginRight="@dimen/corners"
+            android:background="@color/white"
+            android:layout_marginBottom="@dimen/corners">
+
+        <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/corners"
+                android:layout_marginRight="@dimen/corners">
+
+            <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="ИТОГО:"
+                        android:gravity="left|center_horizontal"
+                        android:textSize="@dimen/text_margin"
+                        android:layout_gravity="center"/>
+
+                <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/invoiceTotal"
+                        android:gravity="center_horizontal"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:textSize="@dimen/text_large_x"
+                        android:layout_gravity="center"
+                        android:textStyle="bold"
+                        android:textColor="@color/background2"
+                        android:maxLines="1"
+                        android:layout_weight="1"
+                        android:singleLine="true"
+                        android:clickable="false"/>
+
+                <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="провести"
+                        android:id="@+id/buttonCloseInvoice"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:textSize="@dimen/text_large"/>
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+</LinearLayout>

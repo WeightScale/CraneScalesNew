@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/Settings">
+        <PreferenceScreen android:title="УСТАНОВКИ ДЛЯ ГРЕЙФЕРА" android:summary="Настройки для работы с грейфером магнитной шайбой и тп.">
+            <PreferenceCategory android:title="@string/Settings">
+                <com.konst.scaleslibrary.settings.IntegerEditPreference
+                        android:title="@string/auto_capture"
+                        android:key="@string/KEY_AUTO_CAPTURE"
+                        android:summary="Установка значения веса после которого программа начинает определять значение веса как стабильное."
+                        android:defaultValue="@integer/default_max_auto_capture" android:numeric="integer" android:inputType="number"/>
+                <com.konst.scaleslibrary.settings.IntegerEditPreference
+                        android:title="ДЕЛЬТА СТАБИЛИЗАЦИИ:"
+                        android:summary="Установка значения в диапазоне которого срабатывает стабилизация веса загруженого ковша."
+                        android:key="@string/KEY_DELTA_STAB"
+                        android:numeric="integer" android:inputType="number" android:defaultValue="10"/>
+                <PreferenceScreen android:title="НАСТРОЙКИ ЗАГРУЗКИ" android:summary="Настройки нормы веса который надо взвесить. Необходимо для слежения окончания загрузки.">
+                    <PreferenceCategory android:title="НОРМА ЗАГРУЗКИ" android:summary="Настройки нормы веса.">
+                        <SwitchPreference android:key="@string/KEY_SWITCH_LOADING" android:title="ЗАГРУЗКА ПО УМОЛЧАНИЮ"
+                                          android:summary="Добавлять при создании накладной вес загрузки по умолчанию." android:defaultValue="false"/>
+                        <com.konst.scaleslibrary.settings.IntegerEditPreference
+                                android:title="ВЕС ПО УМОЛЧАНИЮ" android:summary="Значение нормы веса по умолчанию будет дабавлятся в накладную. Необходимо для слежения окончания загрузки."
+                                android:key="@string/KEY_WEIGHT_LOADING"
+                                android:numeric="integer" android:inputType="number" android:defaultValue="1000"/>
+                    </PreferenceCategory>
+                </PreferenceScreen>
+                <SwitchPreference android:key="@string/KEY_CLOSING_INVOICE" android:title="ЗАКРЫВАТЬ НАКЛАДНУЮ"
+                                  android:summary="Закрывать накладную после загрузки по норме." android:defaultValue="false"/>
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <Preference android:title="УСТАНОВКИ ВЕСОВ" android:summary="Настройки весов (калибровка ...)" android:key="@string/KEY_SCALES"/>
+        <Preference android:title="ФАИЛ ФОРМЫ" android:summary="Загрузить фаил формы настроек. Загружается один раз. Получите фаил у администратора." android:key="@string/KEY_PATH_FORM"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Информация">
+        <Preference android:title="@string/about" android:key="@string/KEY_ABOUT"/>
+    </PreferenceCategory>
+</PreferenceScreen>
