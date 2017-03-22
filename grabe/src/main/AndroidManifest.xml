@@ -94,10 +94,6 @@
                   android:theme="@style/Theme.AppCompat.NoActionBar">
         </activity>
         <service
-                android:name=".services.ServiceScales"
-                android:enabled="true"
-                android:exported="true"/>
-        <service
                 android:name=".task.IntentServiceGoogleForm"
                 android:enabled="true"
                 android:exported="true"/>

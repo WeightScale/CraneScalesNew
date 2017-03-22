@@ -115,9 +115,9 @@ public class ActivityAbout extends Activity {
         globals = Globals.getInstance();
         scaleModule = globals.getScaleModule();
 
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        /*WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.screenBrightness = 1.0f;
-        getWindow().setAttributes(lp);
+        getWindow().setAttributes(lp);*/
 
         TextView textSoftVersion = (TextView) findViewById(R.id.textSoftVersion);
         textSoftVersion.setText(globals.getPackageInfo().versionName + " v." + String.valueOf(globals.getPackageInfo().versionCode));

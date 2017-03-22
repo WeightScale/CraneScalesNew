@@ -275,9 +275,9 @@ public class ActivityPreferences extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+        /*WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
         layoutParams.screenBrightness = 1.0f;
-        getWindow().setAttributes(layoutParams);
+        getWindow().setAttributes(layoutParams);*/
 
         globals = Globals.getInstance();
         settings = new Settings(this, ActivityTest.SETTINGS);

@@ -107,9 +107,9 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
         wakeLock = pm.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "TAG");
         wakeLock.acquire();*/
 
-        WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
+        /*WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
         lp.screenBrightness = 1.0f;
-        getActivity().getWindow().setAttributes(lp);
+        getActivity().getWindow().setAttributes(lp);*/
 
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -343,6 +343,7 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
             switch (key){
                 case DELTA_STAB:
                     deltaStab = settings.read(key.getResId(), 20);
+                    Globals.getInstance().getScaleModule().setDeltaStab(deltaStab);
                 break;
                 case CAPTURE:
                     capture = settings.read(key.getResId(), 100);

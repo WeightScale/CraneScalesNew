@@ -9,7 +9,7 @@ android {
         applicationId "com.kostya.scalegrab"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 2
+        versionCode 3
         versionName 'CraneScales'
         //versionName 'WeightScales'
         multiDexEnabled true
@@ -45,7 +45,7 @@ dependencies {
     //compile(name: 'scaleslibrary-release', ext: 'aar')
     compile project(':scaleslibrary')
     compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.google.android.gms:play-services-ads:9.6.1'
+    compile 'com.google.android.gms:play-services-ads:10.0.1'
     compile 'com.android.support:design:25.1.0'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-v4:25.1.0'

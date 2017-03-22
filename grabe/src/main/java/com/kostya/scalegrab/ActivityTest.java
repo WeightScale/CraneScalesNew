@@ -63,8 +63,8 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_main);
 
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        screenBrightness = lp.screenBrightness;
+        /*WindowManager.LayoutParams lp = getWindow().getAttributes();
+        screenBrightness = lp.screenBrightness;*/
 
         //getWindow().setAttributes(lp);
 
@@ -277,9 +277,9 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
             fab.setVisibility(View.VISIBLE);
             startService(new Intent(this, IntentServiceGoogleForm.class).setAction(IntentServiceGoogleForm.ACTION_EVENT_TABLE));
         }
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        /*WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.screenBrightness = screenBrightness;
-        getWindow().setAttributes(lp);
+        getWindow().setAttributes(lp);*/
     }
 
     @Override
