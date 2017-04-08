@@ -106,7 +106,7 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
         globals = Globals.getInstance();
         globals.initialize(this);
 
-        setupInterstitial();
+        //setupInterstitial();
 
         fragmentManager = getSupportFragmentManager();
 
@@ -153,11 +153,12 @@ public class ActivityTest extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.archive_invoice:
-                if (mInterstitialAd.isLoaded()) {
+                /*if (mInterstitialAd.isLoaded()) {
                     mInterstitialAd.show();
                 } else {
                     startActivity(new Intent(getApplicationContext(), ActivityArchive.class));
-                }
+                }*/
+                startActivity(new Intent(getApplicationContext(), ActivityArchive.class));
             break;
             case R.id.search_scales:
                 scalesView.openSearchScales();

@@ -2,6 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
+        config {
+            keyAlias 'konst'
+            keyPassword 'htcehc24'
+            storeFile file('D:/MY/Proect/GooglePlay/key_konst')
+            storePassword 'htcehc24'
+        }
     }
     compileSdkVersion 25
     buildToolsVersion "24.0.3"
@@ -9,7 +15,7 @@ android {
         applicationId "com.kostya.scalegrab"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 3
+        versionCode 4
         versionName 'CraneScales'
         //versionName 'WeightScales'
         multiDexEnabled true

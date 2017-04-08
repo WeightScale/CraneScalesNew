@@ -338,7 +338,8 @@ public class FragmentInvoice extends Fragment implements View.OnClickListener {
     }
 
     public void updateSettings(Settings settings){
-
+        if (settings == null)
+            return;
         for(ActivityPreferences.KEY key : ActivityPreferences.KEY.values()){
             switch (key){
                 case DELTA_STAB:

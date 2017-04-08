@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/CraneScales.iml" filepath="$PROJECT_DIR$/CraneScales.iml" />
       <module fileurl="file://$PROJECT_DIR$/grabe/grabe.iml" filepath="$PROJECT_DIR$/grabe/grabe.iml" />
       <module fileurl="file://$PROJECT_DIR$/grabe_wifi/grabe_wifi.iml" filepath="$PROJECT_DIR$/grabe_wifi/grabe_wifi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/grabeusb/grabeusb.iml" filepath="$PROJECT_DIR$/grabeusb/grabeusb.iml" />
       <module fileurl="file://$PROJECT_DIR$/scaleslibrary/scaleslibrary.iml" filepath="$PROJECT_DIR$/scaleslibrary/scaleslibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/testwifi/testwifi.iml" filepath="$PROJECT_DIR$/testwifi/testwifi.iml" />
     </modules>

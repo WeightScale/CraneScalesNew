@@ -59,4 +59,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Получить Версию"/>
+
+    <EditText
+            android:id="@+id/timeOutEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="100"
+            android:inputType="number|numberDecimal"
+            android:singleLine="true"/>
+
+    <Button
+            android:id="@+id/buttonFinedScales"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Найти Весы"/>
 </LinearLayout>
