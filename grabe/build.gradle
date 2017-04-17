@@ -50,12 +50,12 @@ dependencies {
     //compile 'com.konst.weightmodule:weightmodule-release@aar'
     //compile(name: 'scaleslibrary-release', ext: 'aar')
     compile project(':scaleslibrary')
-    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:appcompat-v7:25.1.1'
     compile 'com.google.android.gms:play-services-ads:10.0.1'
-    compile 'com.android.support:design:25.1.0'
+    compile 'com.android.support:design:25.1.1'
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:support-v4:25.1.0'
-    compile 'com.android.support:recyclerview-v7:25.1.0'
+    compile 'com.android.support:support-v4:25.1.1'
+    compile 'com.android.support:recyclerview-v7:25.1.1'
     compile 'com.google.guava:guava:20.0'
     compile 'cz.msebera.android:httpclient:4.4.1.2'
     testCompile 'junit:junit:4.12'
